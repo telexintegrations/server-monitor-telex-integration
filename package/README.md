@@ -108,5 +108,5 @@ ISC © [JC-Coder](https://github.com/jc-coder)
 
 ## Support
 
-- Issues: [GitHub Issues](https://github.com/JC-Coder/server-monitor-telex-integration/issues)
-- Documentation: [GitHub Wiki](https://github.com/JC-Coder/server-monitor-telex-integration/wiki)
+- Issues: [GitHub Issues](https://github.com/telexintegrations/server-monitor-telex-integration/issues)
+- Documentation: [GitHub Wiki](https://github.com/telexintegrations/server-monitor-telex-integration/wiki)
