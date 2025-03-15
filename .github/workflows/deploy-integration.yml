@@ -24,7 +24,7 @@ jobs:
             cd server-monitor-telex-integration
             # Stash changes to prevent conflicts
             git stash
-            git pull https://github.com/JC-Coder/server-monitor-telex-integration dev
+            git pull https://github.com/telexintegrations/server-monitor-telex-integration dev
             cd integration
             npm install
             export NODE_OPTIONS="--max-old-space-size=4096"
