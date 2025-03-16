@@ -161,6 +161,7 @@ export function closeSocket(): void {
   }
 }
 
+const dev_host = "127.0.0.1";
 async function getIntegrationServerHostAndPort(): Promise<{
   serverUrl: string;
   serverPort: number;
@@ -176,7 +177,8 @@ async function getIntegrationServerHostAndPort(): Promise<{
 
     console.log({ config });
 
-    const serverUrl = config.serverUrl;
+    const serverUrl =
+      process.env.NODE_ENV == "production" ? config.serverUrl : dev_host;
     const serverPort = config.serverPort;
 
     return { serverUrl, serverPort };

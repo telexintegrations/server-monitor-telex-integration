@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e # terminate immediately after an error
+
 # Function to print colored output
 print_message() {
     GREEN='\033[0;32m'
@@ -232,3 +234,4 @@ print_message "info" "The service will automatically start on system reboot"
 print_message "info" "You can check the status using: pm2 status telex-server-monitor"
 print_message "info" "View logs using: pm2 logs telex-server-monitor"
 print_message "info" "To manually restart the service: pm2 restart telex-server-monitor" 
+print_message "info" "To manually stop the service: pm2 stop telex-server-monitor" 
