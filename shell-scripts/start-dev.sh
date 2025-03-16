@@ -8,7 +8,7 @@ print_message "info" "Setting up Telex Server Monitoring application"
 
 
 ARGS=("$@")
-ALLOWED_ARGS=("--channel-id" "ci" "--app-host" "-ah" "--app-port" "-ap" "--server-port" "-sp")
+ALLOWED_ARGS=("--channel-id" "ci")
 
 
 run_check_allowed_args ARGS ALLOWED_ARGS
@@ -40,20 +40,6 @@ for i in "${!ARGS[@]}"; do
     case "$arg" in
         --channel-id | ci)
             CHANNEL_ID="${ARGS[$flag_arg_index]}"
-            ;;
-        --app-host | -ah)
-            validate $arg $flag_arg_index "app-host" ARGS
-            APP_HOST="${ARGS[$flag_arg_index]}"
-            ;;
-        --app-port | -ap)
-            validate $arg $flag_arg_index "app-port" ARGS
-            validate_port_num "${ARGS[$flag_arg_index]}" "--app-port"
-            APP_PORT="${ARGS[$flag_arg_index]}"
-            ;;
-        --server-port | -sp)
-            validate $arg $flag_arg_index "server-port" ARGS
-            validate_port_num "${ARGS[$flag_arg_index]}" "--server-port"
-            SERVER_PORT="${ARGS[$flag_arg_index]}"
             ;;
     esac
     
