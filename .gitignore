@@ -1,3 +1,5 @@
 nginx
 
 shell-scripts/setup-nginx.sh
+
+.gitignore
