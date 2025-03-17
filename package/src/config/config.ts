@@ -1,6 +1,7 @@
 import { AppConstants, getStoreData } from "../index.js";
 import { config } from "dotenv";
 config();
+
 // NOTE: this is not used , consider removing it
 export function checkIfPackageIsConfiguredAlready() {
   const storeData = getStoreData();
@@ -25,12 +26,10 @@ export function checkIfPackageIsConfiguredAlready() {
   );
 }
 
-export function serverUrlConfig(config: {
-  serverUrl: string;
-  serverPort: number;
-}) {
-  const url =
-    process.env.NODE_ENV == "production" ? config.serverUrl : "127.0.0.1";
+export const EnvVariables = {
+  NodeEnv: process.env.NODE_ENV,
+};
 
-  return url;
-}
+export const isDevEnvironment = ["staging", "dev", "development"].includes(
+  EnvVariables.NodeEnv!
+);

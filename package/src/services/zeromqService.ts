@@ -2,7 +2,7 @@ import { Subscriber, Publisher } from "zeromq";
 import { logger } from "../utils/logger.js";
 import { CollectorService } from "../metrics/collector.js";
 import { AppConstants } from "../utils/constant.js";
-import { serverUrlConfig } from "../config/config.js";
+import { isDevEnvironment } from "../config/config.js";
 
 export enum MessageType {
   getMetrics = "getMetrics",
@@ -167,6 +167,13 @@ async function getIntegrationServerHostAndPort(): Promise<{
   serverPort: number;
 } | null> {
   try {
+    if (isDevEnvironment) {
+      return {
+        serverUrl: "0.0.0.0",
+        serverPort: 3002,
+      };
+    }
+
     const response = await fetch(AppConstants.Package.GlobalConfigUrl);
 
     if (!response.ok) {
@@ -175,8 +182,7 @@ async function getIntegrationServerHostAndPort(): Promise<{
 
     const config = await response.json();
 
-    const serverUrl = serverUrlConfig(config);
-
+    const serverUrl = config.serverUrl;
     const serverPort = config.serverPort;
 
     return { serverUrl, serverPort };
