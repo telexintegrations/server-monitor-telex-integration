@@ -1,6 +1,6 @@
 {
   "name": "telex-server-monitor-sdk",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "publishConfig": {
     "access": "public"
   },
@@ -19,8 +19,7 @@
     "dev": "tsx src/cli/index.ts",
     "start": "tsc && tsx dist/cli/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "mkdir -p bin && echo '#!/usr/bin/env node\nimport \"tsx/cjs\";\nimport \"../dist/cli/index.js\";' > bin/cli.js && chmod +x bin/cli.js",
-    "publish": "tsc && npm publish"
+    "postinstall": "mkdir -p bin && echo '#!/usr/bin/env node\nimport \"tsx/cjs\";\nimport \"../dist/cli/index.js\";' > bin/cli.js && chmod +x bin/cli.js"
   },
   "keywords": [
     "telex",

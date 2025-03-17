@@ -6,535 +6,36 @@
     <title>Telex Server Monitor | Real-time Server Monitoring</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --primary: #4f46e5;
-        --primary-dark: #4338ca;
-        --primary-light: #818cf8;
-        --secondary: #10b981;
-        --secondary-dark: #059669;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-        --dark: #1e293b;
-        --light: #f8fafc;
-        --gray: #64748b;
-        --gray-light: #e2e8f0;
-        --gray-dark: #334155;
-        --border-radius: 8px;
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-          0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Inter", sans-serif;
-        color: var(--dark);
-        background-color: var(--light);
-        line-height: 1.6;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-      }
-
-      /* Header */
-      header {
-        background-color: white;
-        box-shadow: var(--shadow-sm);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-
-      .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.25rem 2rem;
-      }
-
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-weight: 700;
-        font-size: 1.5rem;
-        color: var(--primary);
-      }
-
-      .logo-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2.5rem;
-        height: 2.5rem;
-        background-color: var(--primary);
-        color: white;
-        border-radius: 8px;
-      }
-
-      nav ul {
-        display: flex;
-        gap: 2rem;
-        list-style: none;
-      }
-
-      nav a {
-        text-decoration: none;
-        color: var(--gray-dark);
-        font-weight: 500;
-        transition: color 0.2s;
-      }
-
-      nav a:hover {
-        color: var(--primary);
-      }
-
-      .cta-button {
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        border-radius: var(--border-radius);
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s;
-      }
-
-      .cta-button:hover {
-        background-color: var(--primary-dark);
-      }
-
-      /* Hero Section */
-      .hero {
-        padding: 6rem 0;
-        background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .hero::before {
-        content: "";
-        position: absolute;
-        top: -10%;
-        right: -10%;
-        width: 60%;
-        height: 70%;
-        background: radial-gradient(
-          circle,
-          var(--primary-light) 0%,
-          rgba(255, 255, 255, 0) 70%
-        );
-        opacity: 0.3;
-        z-index: 0;
-      }
-
-      .hero-content {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        gap: 4rem;
-      }
-
-      .hero-text {
-        flex: 1;
-      }
-
-      .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 1.5rem;
-        background: linear-gradient(to right, var(--primary), var(--secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .hero-subtitle {
-        font-size: 1.25rem;
-        color: var(--gray);
-        margin-bottom: 2rem;
-      }
-
-      .hero-image {
-        flex: 1;
-        position: relative;
-      }
-
-      .dashboard-preview {
-        width: 100%;
-        border-radius: 12px;
-        box-shadow: var(--shadow-lg);
-        transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
-        transition: transform 0.3s ease;
-      }
-
-      .dashboard-preview:hover {
-        transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
-      }
-
-      /* Features Section */
-      .features {
-        padding: 6rem 0;
-        background-color: white;
-      }
-
-      .section-title {
-        text-align: center;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-      }
-
-      .section-subtitle {
-        text-align: center;
-        color: var(--gray);
-        max-width: 600px;
-        margin: 0 auto 4rem;
-      }
-
-      .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-      }
-
-      .feature-card {
-        background-color: white;
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        box-shadow: var(--shadow);
-        transition: transform 0.3s, box-shadow 0.3s;
-      }
-
-      .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-lg);
-      }
-
-      .feature-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 3rem;
-        height: 3rem;
-        background-color: var(--primary-light);
-        color: var(--primary);
-        border-radius: 50%;
-        margin-bottom: 1.5rem;
-      }
-
-      .feature-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-      }
-
-      .feature-description {
-        color: var(--gray);
-      }
-
-      /* How It Works Section */
-      .how-it-works {
-        padding: 6rem 0;
-        background-color: var(--light);
-      }
-
-      .steps {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      .step {
-        display: flex;
-        gap: 2rem;
-        align-items: flex-start;
-      }
-
-      .step-number {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 3rem;
-        height: 3rem;
-        background-color: var(--primary);
-        color: white;
-        border-radius: 50%;
-        font-weight: 700;
-        flex-shrink: 0;
-      }
-
-      .step-content {
-        flex: 1;
-      }
-
-      .step-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-
-      .step-description {
-        color: var(--gray);
-      }
-
-      .step-code {
-        margin-top: 1rem;
-        background-color: var(--dark);
-        color: white;
-        padding: 1rem;
-        border-radius: var(--border-radius);
-        font-family: monospace;
-        overflow-x: auto;
-      }
-
-      /* Metrics Section */
-      .metrics {
-        padding: 6rem 0;
-        background-color: white;
-      }
-
-      .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-      }
-
-      .metric-card {
-        background-color: white;
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        box-shadow: var(--shadow);
-        text-align: center;
-        transition: transform 0.3s;
-      }
-
-      .metric-card:hover {
-        transform: translateY(-5px);
-      }
-
-      .metric-value {
-        font-size: 3rem;
-        font-weight: 700;
-        color: var(--primary);
-        margin-bottom: 0.5rem;
-      }
-
-      .metric-label {
-        color: var(--gray);
-        font-weight: 500;
-      }
-
-      /* CTA Section */
-      .cta {
-        padding: 6rem 0;
-        background: linear-gradient(
-          to right,
-          var(--primary),
-          var(--primary-dark)
-        );
-        color: white;
-        text-align: center;
-      }
-
-      .cta-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-      }
-
-      .cta-subtitle {
-        max-width: 600px;
-        margin: 0 auto 2rem;
-        opacity: 0.9;
-      }
-
-      .cta-button-white {
-        background-color: white;
-        color: var(--primary);
-        border: none;
-        border-radius: var(--border-radius);
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s, transform 0.2s;
-      }
-
-      .cta-button-white:hover {
-        background-color: var(--gray-light);
-        transform: scale(1.05);
-      }
-
-      /* Footer */
-      footer {
-        background-color: var(--dark);
-        color: white;
-        padding: 4rem 0 2rem;
-      }
-
-      .footer-logo {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-      }
-
-      .copyright {
-        text-align: center;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--gray-light);
-        font-size: 0.875rem;
-      }
-
-      /* Responsive Design */
-      @media (max-width: 992px) {
-        .hero-content {
-          flex-direction: column;
-          text-align: center;
-        }
-
-        .hero-title {
-          font-size: 2.5rem;
-        }
-
-        .dashboard-preview {
-          transform: none;
-        }
-
-        .dashboard-preview:hover {
-          transform: none;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .header-container {
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        nav ul {
-          gap: 1rem;
-        }
-
-        .section-title {
-          font-size: 2rem;
-        }
-
-        .feature-card {
-          text-align: center;
-        }
-
-        .step {
-          flex-direction: column;
-          text-align: center;
-        }
-
-        .step-number {
-          margin: 0 auto;
-        }
-      }
-
-      /* Animation */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .animate {
-        animation: fadeIn 0.6s ease forwards;
-      }
-
-      .delay-1 {
-        animation-delay: 0.2s;
-      }
-
-      .delay-2 {
-        animation-delay: 0.4s;
-      }
-
-      .delay-3 {
-        animation-delay: 0.6s;
-      }
-
-      /* Pulse animation for alerts */
-      @keyframes pulse {
-        0% {
-          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-        }
-        70% {
-          box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-        }
-      }
-
-      .pulse {
-        animation: pulse 2s infinite;
-      }
-
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: var(--gray-light);
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: var(--gray);
-        border-radius: 4px;
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--gray-dark);
-      }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Add Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              primary: '#4f46e5',
+              'primary-dark': '#4338ca',
+              'primary-light': '#818cf8',
+              secondary: '#10b981',
+              'secondary-dark': '#059669',
+              danger: '#ef4444',
+              warning: '#f59e0b',
+            },
+          },
+        },
+      }
+    </script>
   </head>
-  <body>
-    <header>
-      <div class="header-container container">
-        <div class="logo">
-          <div class="logo-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+  <body class="font-sans text-gray-800 bg-gray-50">
+    <header class="sticky top-0 z-10 bg-white shadow-sm">
+      <div class="container max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+        <div class="flex items-center gap-3 text-2xl font-bold text-primary">
+          <div class="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
               <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
               <line x1="6" y1="6" x2="6.01" y2="6"></line>
@@ -543,335 +44,216 @@
           </div>
           Telex Server Monitor
         </div>
-        <nav>
-          <ul>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#metrics">Metrics</a></li>
+        <nav class="hidden md:block">
+          <ul class="flex gap-8">
+            <li><a href="#features" class="font-medium text-gray-700 hover:text-primary transition-colors">Features</a></li>
+            <li><a href="#how-it-works" class="font-medium text-gray-700 hover:text-primary transition-colors">How It Works</a></li>
+            <li><a href="#metrics" class="font-medium text-gray-700 hover:text-primary transition-colors">Metrics</a></li>
           </ul>
         </nav>
-        <button class="cta-button">Get Started</button>
+        <button class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+          Get Started
+        </button>
       </div>
     </header>
 
-    <section class="hero">
-      <div class="container hero-content">
-        <div class="hero-text animate">
-          <h1 class="hero-title">Monitor Your Servers with Confidence</h1>
-          <p class="hero-subtitle">
+    <section class="bg-gradient-to-br from-blue-50 to-blue-100 py-24 relative overflow-hidden">
+      <div class="container max-w-7xl mx-auto px-8 flex flex-col md:flex-row items-center gap-16">
+        <div class="flex-1 animate-fade-in">
+          <h1 class="text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Monitor Your Servers with Confidence
+          </h1>
+          <p class="text-xl text-gray-600 mb-8">
             Real-time server monitoring that integrates seamlessly with Telex.
             Get alerts, track performance, and ensure your infrastructure is
             always running smoothly.
           </p>
-          <a href="https://telex.im" target="_blank" class="cta-button"
-            >Install Now</a
-          >
+          <a href="https://telex.im" target="_blank" class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+            Install Now
+          </a>
         </div>
-        <div class="hero-image animate delay-1">
-          <img
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            alt="Server Monitoring Dashboard"
-            class="dashboard-preview"
-          />
+        <div class="flex-1 animate-fade-in delay-100">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+               alt="Server Monitoring Dashboard" 
+               class="w-full rounded-xl shadow-2xl transform perspective-1000 hover:scale-105 transition-transform duration-300" />
         </div>
       </div>
     </section>
 
-    <section class="features" id="features">
-      <div class="container">
-        <h2 class="section-title animate">Powerful Monitoring Features</h2>
-        <p class="section-subtitle animate delay-1">
+    <!-- Features Section -->
+    <section id="features" class="bg-white py-24">
+      <div class="container max-w-7xl mx-auto px-8">
+        <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">Powerful Monitoring Features</h2>
+        <p class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100">
           Everything you need to keep your servers running at peak performance
         </p>
-        <div class="features-grid">
-          <div class="feature-card animate delay-1">
-            <div class="feature-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                ></path>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
               </svg>
             </div>
-            <h3 class="feature-title">Seamless Telex Integration</h3>
-            <p class="feature-description">
-              Integrates directly with your Telex channels for instant setup and
-              real-time alerts where your team already communicates.
-            </p>
+            <h3 class="text-xl font-semibold mb-4">Seamless Telex Integration</h3>
+            <p class="text-gray-600">Integrates directly with your Telex channels for instant setup and real-time alerts where your team already communicates.</p>
           </div>
-          <div class="feature-card animate delay-2">
-            <div class="feature-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
               </svg>
             </div>
-            <h3 class="feature-title">CPU Usage Tracking</h3>
-            <p class="feature-description">
-              Monitor CPU usage in real-time with customizable thresholds to
-              detect performance issues before they impact your users.
-            </p>
+            <h3 class="text-xl font-semibold mb-4">CPU Usage Tracking</h3>
+            <p class="text-gray-600">Monitor CPU usage in real-time with customizable thresholds to detect performance issues before they impact your users.</p>
           </div>
-
-          <div class="feature-card animate delay-3">
-            <div class="feature-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                ></path>
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                 <line x1="12" y1="9" x2="12" y2="13"></line>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
             </div>
-            <h3 class="feature-title">Intelligent Alerts</h3>
-            <p class="feature-description">
-              Receive automatic alerts when CPU usage exceeds thresholds, with
-              smart notifications that reduce alert fatigue.
-            </p>
+            <h3 class="text-xl font-semibold mb-4">Intelligent Alerts</h3>
+            <p class="text-gray-600">Receive automatic alerts when CPU usage exceeds thresholds, with smart notifications that reduce alert fatigue.</p>
           </div>
-          <div class="feature-card animate delay-1">
-            <div class="feature-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="3" y1="9" x2="21" y2="9"></line>
                 <line x1="9" y1="21" x2="9" y2="9"></line>
               </svg>
             </div>
-            <h3 class="feature-title">Simple Installation</h3>
-            <p class="feature-description">
-              Get up and running in minutes with our one-line installation
-              command that automatically configures everything for you.
-            </p>
+            <h3 class="text-xl font-semibold mb-4">Simple Installation</h3>
+            <p class="text-gray-600">Get up and running in minutes with our one-line installation command that automatically configures everything for you.</p>
           </div>
-          <div class="feature-card animate delay-2">
-            <div class="feature-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
             </div>
-            <h3 class="feature-title">Comprehensive Logging</h3>
-            <p class="feature-description">
-              Detailed logs help you troubleshoot issues quickly, with error
-              logs separated for easier debugging.
-            </p>
+            <h3 class="text-xl font-semibold mb-4">Comprehensive Logging</h3>
+            <p class="text-gray-600">Detailed logs help you troubleshoot issues quickly, with error logs separated for easier debugging.</p>
           </div>
-          <div class="feature-card animate delay-3">
-            <div class="feature-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
             </div>
-            <h3 class="feature-title">Multi-Server Support</h3>
-            <p class="feature-description">
-              Monitor multiple servers from a single Telex channel, with clear
-              identification of which server is reporting issues.
-            </p>
+            <h3 class="text-xl font-semibold mb-4">Multi-Server Support</h3>
+            <p class="text-gray-600">Monitor multiple servers from a single Telex channel, with clear identification of which server is reporting issues.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="how-it-works" id="how-it-works">
-      <div class="container">
-        <h2 class="section-title animate">How It Works</h2>
-        <p class="section-subtitle animate delay-1">
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="bg-gray-50 py-24">
+      <div class="container max-w-7xl mx-auto px-8">
+        <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">How It Works</h2>
+        <p class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100">
           Get started in just a few simple steps
         </p>
-        <div class="steps">
-          <div class="step animate delay-1">
-            <div class="step-number">1</div>
-            <div class="step-content">
-              <h3 class="step-title">Add the Integration to Telex</h3>
-              <p class="step-description">
-                First, add the Server Monitor integration to your Telex
-                workspace using the integration configuration URL.
-              </p>
-              <div class="step-code">
-                https://telex-server-monitor.umoru.tech/integration-config
-              </div>
+        <div class="max-w-3xl mx-auto space-y-8">
+          <div class="flex gap-8 items-start animate-fade-in delay-100">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">1</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Add the Integration to Telex</h3>
+              <p class="text-gray-600">First, add the Server Monitor integration to your Telex workspace using the integration configuration URL.</p>
+              <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto">https://telex-server-monitor.umoru.tech/integration-config</div>
             </div>
           </div>
-          <div class="step animate delay-2">
-            <div class="step-number">2</div>
-            <div class="step-content">
-              <h3 class="step-title">Run the Setup Command in Telex</h3>
-              <p class="step-description">
-                After adding the integration, run the setup command in your
-                Telex channel to initialize the monitoring.
-              </p>
-              <div class="step-code">/setup-monitoring</div>
+          <div class="flex gap-8 items-start animate-fade-in delay-200">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">2</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Run the Setup Command in Telex</h3>
+              <p class="text-gray-600">After adding the integration, run the setup command in your Telex channel to initialize the monitoring.</p>
+              <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto">/setup-monitoring</div>
             </div>
           </div>
-          <div class="step animate delay-3">
-            <div class="step-number">3</div>
-            <div class="step-content">
-              <h3 class="step-title">Install the Agent on Your Server</h3>
-              <p class="step-description">
-                Copy the installation command provided by Telex and run it on
-                your server with root/sudo access.
-              </p>
-              <div class="step-code">
-                curl -sSL https://telex.example.com/install/&lt;unique-token&gt;
-                | sudo bash
-              </div>
+          <div class="flex gap-8 items-start animate-fade-in delay-300">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">3</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Install the Agent on Your Server</h3>
+              <p class="text-gray-600">Copy the installation command provided by Telex and run it on your server with root/sudo access.</p>
+              <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto">curl -sSL https://telex.example.com/install/&lt;unique-token&gt; | sudo bash</div>
             </div>
           </div>
-          <div class="step animate delay-3">
-            <div class="step-number">4</div>
-            <div class="step-content">
-              <h3 class="step-title">Verify the Installation</h3>
-              <p class="step-description">
-                Check that the monitoring agent is running correctly on your
-                server.
-              </p>
-              <div class="step-code">sudo systemctl status telex-monitor</div>
+          <div class="flex gap-8 items-start animate-fade-in delay-300">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">4</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Verify the Installation</h3>
+              <p class="text-gray-600">Check that the monitoring agent is running correctly on your server.</p>
+              <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto">sudo systemctl status telex-monitor</div>
             </div>
           </div>
-          <div class="step animate delay-3">
-            <div class="step-number">5</div>
-            <div class="step-content">
-              <h3 class="step-title">Start Receiving Alerts</h3>
-              <p class="step-description">
-                That's it! You'll now receive real-time alerts and periodic
-                reports in your Telex channel whenever your server needs
-                attention.
-              </p>
+          <div class="flex gap-8 items-start animate-fade-in delay-300">
+            <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">5</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Start Receiving Alerts</h3>
+              <p class="text-gray-600">That's it! You'll now receive real-time alerts and periodic reports in your Telex channel whenever your server needs attention.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="metrics" id="metrics">
-      <div class="container">
-        <h2 class="section-title animate">Key Metrics Monitored</h2>
-        <p class="section-subtitle animate delay-1">
-          Keep track of these critical server metrics to ensure optimal
-          performance
+    <!-- Metrics Section -->
+    <section id="metrics" class="bg-white py-24">
+      <div class="container max-w-7xl mx-auto px-8">
+        <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">Key Metrics Monitored</h2>
+        <p class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100">
+          Keep track of these critical server metrics to ensure optimal performance
         </p>
-        <div class="metrics-grid">
-          <div class="metric-card animate delay-1">
-            <div class="metric-value">CPU</div>
-            <p class="metric-label">
-              Real-time CPU usage tracking with threshold alerts
-            </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+            <div class="text-3xl font-bold text-primary mb-4">CPU</div>
+            <p class="text-gray-600">Real-time CPU usage tracking with threshold alerts</p>
           </div>
-          <div class="metric-card animate delay-2">
-            <div class="metric-value">RAM</div>
-            <p class="metric-label">
-              Memory consumption monitoring and leak detection
-            </p>
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200">
+            <div class="text-3xl font-bold text-primary mb-4">RAM</div>
+            <p class="text-gray-600">Memory consumption monitoring and leak detection</p>
           </div>
-          <div class="metric-card animate delay-3">
-            <div class="metric-value">DISK</div>
-            <p class="metric-label">
-              Storage capacity and I/O performance tracking
-            </p>
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300">
+            <div class="text-3xl font-bold text-primary mb-4">DISK</div>
+            <p class="text-gray-600">Storage capacity and I/O performance tracking</p>
           </div>
-          <div class="metric-card animate delay-1">
-            <div class="metric-value">NET</div>
-            <p class="metric-label">
-              Network traffic and bandwidth utilization
-            </p>
+          <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+            <div class="text-3xl font-bold text-primary mb-4">NET</div>
+            <p class="text-gray-600">Network traffic and bandwidth utilization</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="cta">
-      <div class="container">
-        <h2 class="cta-title animate">Ready to Monitor Your Servers?</h2>
-        <p class="cta-subtitle animate delay-1">
-          Get started today and ensure your infrastructure is always running at
-          peak performance.
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-r from-primary to-primary-dark text-white py-24 text-center">
+      <div class="container max-w-7xl mx-auto px-8">
+        <h2 class="text-4xl font-bold mb-6 animate-fade-in">Ready to Monitor Your Servers?</h2>
+        <p class="text-xl opacity-90 max-w-2xl mx-auto mb-8 animate-fade-in delay-100">
+          Get started today and ensure your infrastructure is always running at peak performance.
         </p>
-        <a
-          href="https://telex.im"
-          target="_blank"
-          class="cta-button-white animate delay-2"
-          >Install Now</a
-        >
+        <a href="https://telex.im" target="_blank" 
+           class="inline-block bg-white hover:bg-gray-100 text-primary font-semibold px-8 py-4 rounded-lg transition-colors transform hover:scale-105 animate-fade-in delay-200">
+          Install Now
+        </a>
       </div>
     </section>
 
-    <footer>
-      <div class="container">
-        <div class="footer-logo">
-          <div class="logo-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+      <div class="container max-w-7xl mx-auto px-8">
+        <div class="flex items-center gap-3 text-2xl font-bold mb-4">
+          <div class="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
               <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
               <line x1="6" y1="6" x2="6.01" y2="6"></line>
@@ -880,33 +262,28 @@
           </div>
           Telex Server Monitor
         </div>
-        <div class="copyright">
-          &copy; <span id="footer-year"></span> Telex Server Monitor. All rights
-          reserved. ISC ©
-          <a
-            href="https://github.com/telexintegrations/server-monitor-telex-integration"
-            style="color: var(--gray-light)"
-            >The TELIN Team</a
-          >
+        <div class="text-sm text-gray-400 text-center pt-8 border-t border-gray-800">
+          &copy; <span id="footer-year"></span> Telex Server Monitor. All rights reserved. ISC ©
+          <a href="https://github.com/telexintegrations/server-monitor-telex-integration" 
+             class="text-gray-400 hover:text-white transition-colors">The TELIN Team</a>
         </div>
       </div>
     </footer>
 
     <script>
       // Update the year in the footer
-      document.getElementById("footer-year").textContent =
-        new Date().getFullYear();
+      document.getElementById("footer-year").textContent = new Date().getFullYear();
 
-      // Simple animation on scroll
+      // Intersection Observer for animations
       document.addEventListener("DOMContentLoaded", function () {
-        const animatedElements = document.querySelectorAll(".animate");
+        const animatedElements = document.querySelectorAll("[class*='animate-fade-in']");
 
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                entry.target.style.opacity = "1";
-                entry.target.style.transform = "translateY(0)";
+                entry.target.classList.add("opacity-100", "translate-y-0");
+                entry.target.classList.remove("opacity-0", "translate-y-5");
               }
             });
           },
@@ -914,135 +291,27 @@
         );
 
         animatedElements.forEach((element) => {
-          element.style.opacity = "0";
-          element.style.transform = "translateY(20px)";
-          element.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+          element.classList.add("opacity-0", "translate-y-5", "transition-all", "duration-500", "ease-out");
           observer.observe(element);
         });
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-          anchor.addEventListener("click", function (e) {
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const targetId = this.getAttribute("href");
-            if (targetId === "#") return;
-
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-              window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: "smooth",
+              targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
               });
             }
           });
         });
-
-        // Add active class to nav links on scroll
-        const sections = document.querySelectorAll("section[id]");
-        window.addEventListener("scroll", () => {
-          let current = "";
-          sections.forEach((section) => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (pageYOffset >= sectionTop - 200) {
-              current = section.getAttribute("id");
-            }
-          });
-
-          document.querySelectorAll("nav ul li a").forEach((link) => {
-            link.classList.remove("active");
-            if (link.getAttribute("href") === `#${current}`) {
-              link.classList.add("active");
-            }
-          });
-        });
-
-        // Mobile menu toggle (for smaller screens)
-        const createMobileMenu = () => {
-          if (
-            window.innerWidth <= 768 &&
-            !document.querySelector(".mobile-menu-toggle")
-          ) {
-            const nav = document.querySelector("nav");
-            const headerContainer = document.querySelector(".header-container");
-
-            // Create mobile menu toggle button
-            const mobileMenuToggle = document.createElement("button");
-            mobileMenuToggle.classList.add("mobile-menu-toggle");
-            mobileMenuToggle.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg>
-                    `;
-
-            // Insert toggle button before nav
-            headerContainer.insertBefore(mobileMenuToggle, nav);
-
-            // Add toggle functionality
-            mobileMenuToggle.addEventListener("click", () => {
-              nav.classList.toggle("active");
-              mobileMenuToggle.classList.toggle("active");
-            });
-
-            // Add styles for mobile menu
-            const style = document.createElement("style");
-            style.textContent = `
-                        @media (max-width: 768px) {
-                            .header-container {
-                                flex-direction: row;
-                                justify-content: space-between;
-                                align-items: center;
-                            }
-                            
-                            nav {
-                                display: none;
-                                position: absolute;
-                                top: 100%;
-                                left: 0;
-                                width: 100%;
-                                background-color: white;
-                                box-shadow: var(--shadow);
-                                z-index: 100;
-                                padding: 1rem 0;
-                            }
-                            
-                            nav.active {
-                                display: block;
-                            }
-                            
-                            nav ul {
-                                flex-direction: column;
-                                align-items: center;
-                            }
-                            
-                            nav ul li {
-                                margin: 0.5rem 0;
-                            }
-                            
-                            .mobile-menu-toggle {
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                background: none;
-                                border: none;
-                                cursor: pointer;
-                                color: var(--dark);
-                            }
-                            
-                            .mobile-menu-toggle.active {
-                                color: var(--primary);
-                            }
-                        }
-                    `;
-            document.head.appendChild(style);
-          }
-        };
-
-        // Call on load and resize
-        createMobileMenu();
-        window.addEventListener("resize", createMobileMenu);
       });
     </script>
   </body>
