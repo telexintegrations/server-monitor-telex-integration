@@ -9,7 +9,7 @@
     "dev": "nodemon --exec 'tsx' src/index.ts",
     "dev:mastra": "mastra dev",
     "start": "tsc && tsx dist/index.js",
-    "start:prod": "pm2 startOrReload ./ecosystem.config.cjs"
+    "start:prod": "pm2 startOrReload ./ecosystem.config.json"
   },
   "keywords": [
     "telex",
