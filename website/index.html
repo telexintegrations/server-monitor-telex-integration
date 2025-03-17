@@ -592,7 +592,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="#fff"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -616,7 +616,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="#fff"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -639,7 +639,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="#fff"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -665,7 +665,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="#fff"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -689,7 +689,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="#fff"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -713,7 +713,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="#fff"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -881,7 +881,8 @@
           Telex Server Monitor
         </div>
         <div class="copyright">
-          &copy; 2023 Telex Server Monitor. All rights reserved. ISC ©
+          &copy; <span id="footer-year"></span> Telex Server Monitor. All rights
+          reserved. ISC ©
           <a
             href="https://github.com/telexintegrations/server-monitor-telex-integration"
             style="color: var(--gray-light)"
@@ -892,6 +893,10 @@
     </footer>
 
     <script>
+      // Update the year in the footer
+      document.getElementById("footer-year").textContent =
+        new Date().getFullYear();
+
       // Simple animation on scroll
       document.addEventListener("DOMContentLoaded", function () {
         const animatedElements = document.querySelectorAll(".animate");
