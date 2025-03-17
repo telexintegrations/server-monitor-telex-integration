@@ -2,9 +2,6 @@
 
 set -e
 
-
-BASE_PATH=$(echo "$PWD" | sed 's:/shell-scripts::')
-
 # Function to print colored output
 print_message() {
     GREEN='\033[0;32m'
@@ -63,18 +60,3 @@ run_check_allowed_args() {
 }
 
 
-validate() {
-    local -n val_args=$4
-    if [ -z "${val_args[$2]}" ]; then
-        print_message "error" "invalid arg passed $1 <$3>"
-        exit 1
-    fi
-}
-
-
-validate_port_num() {
-    if [ "$1" -le 30 ]; then
-        print_message "error" "Port number must be greater than 30. $2"
-        exit 1;
-    fi
-}
