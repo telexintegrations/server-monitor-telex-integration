@@ -84,7 +84,13 @@ bash start-dev.sh --channel-id <channel-id>
 
 ```
 
-4. The application will be live on port: `3002`
+4. To stop applications simply run
+
+```bash
+bash stop-dev.sh
+```
+
+5. The application will be live on port: `3002`
 
 ### Simulating Requests
 

@@ -107,6 +107,8 @@ cd ../package
 install_dependencies "package"
 run "package"
 
+cd ../shell-scripts
+chmod +x stop-dev.sh
 
 print_message "success" "applications up and running\n"
 print_message "info" "To stop running application run ${GREEN}bash stop-dev.sh"
