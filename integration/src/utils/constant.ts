@@ -12,7 +12,7 @@ export const IntegrationConstants = {
     Repository:
       "https://github.com/telexintegrations/server-monitor-telex-integration",
     InstallationScriptUrl: (channelId: string) => {
-      return `curl -sSL https://github.com/telexintegrations/server-monitor-telex-integration/refs/heads/dev/install-telex-sdk.sh | bash -s -- --channel-id ${channelId}`;
+      return `curl -sSL https://raw.githubusercontent.com/telexintegrations/server-monitor-telex-integration/refs/heads/dev/install-telex-sdk.sh | bash -s -- --channel-id ${channelId}`;
     },
   },
   Telex: {
