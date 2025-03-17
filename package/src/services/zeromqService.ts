@@ -2,6 +2,7 @@ import { Subscriber, Publisher } from "zeromq";
 import { logger } from "../utils/logger.js";
 import { CollectorService } from "../metrics/collector.js";
 import { AppConstants } from "../utils/constant.js";
+import { serverUrlConfig } from "../config/config.js";
 
 export enum MessageType {
   getMetrics = "getMetrics",
@@ -161,7 +162,6 @@ export function closeSocket(): void {
   }
 }
 
-const dev_host = "127.0.0.1";
 async function getIntegrationServerHostAndPort(): Promise<{
   serverUrl: string;
   serverPort: number;
@@ -175,10 +175,8 @@ async function getIntegrationServerHostAndPort(): Promise<{
 
     const config = await response.json();
 
-    console.log({ config });
+    const serverUrl = serverUrlConfig(config);
 
-    const serverUrl =
-      process.env.NODE_ENV == "production" ? config.serverUrl : dev_host;
     const serverPort = config.serverPort;
 
     return { serverUrl, serverPort };

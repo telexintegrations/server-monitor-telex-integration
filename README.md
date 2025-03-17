@@ -70,27 +70,13 @@ To set up the project locally, follow these steps:
 git clone https://github.com/telexintegrations/server-monitor-telex-integration.git
 ```
 
-2. Navigate into the integrations folder and install dependencies:
+2. Move to the shell-scripts directory:
 
 ```bash
-cd server-monitor-telex-integration/integrations
-npm install
+cd server-monitor-telex-integration/shell-scripts
 ```
 
-3. Navigate into the package folder and install dependencies:
-
-```bash
-cd ../package
-npm install
-```
-
-4. Move to the shell-scripts directory:
-
-```bash
-cd ../shell-scripts
-```
-
-5. Grant execution permissions to the startup script and run startup script:
+3. Grant execution permissions to the startup script and run startup script:
 
 ```bash
 chmod +x start-dev.sh
@@ -98,7 +84,7 @@ bash start-dev.sh --channel-id <channel-id>
 
 ```
 
-6. The application will be live on port: `3002`
+4. The application will be live on port: `3002`
 
 ### Simulating Requests
 
