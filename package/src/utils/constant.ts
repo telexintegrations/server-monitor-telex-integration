@@ -13,7 +13,7 @@ export const AppConstants = {
     StoreFile: path.join(TELEX_MONITOR_DIR, "store.json"),
     LogsDir: path.join(TELEX_MONITOR_DIR, "logs"),
     GlobalConfigUrl:
-      "https://raw.githubusercontent.com/JC-Coder/server-monitor-telex-integration/dev/global.json",
+      "https://raw.githubusercontent.com/telexintegrations/server-monitor-telex-integration/refs/heads/dev/global.json",
   },
   Telex: {
     BaseUrl: TELEX_API_URL,
