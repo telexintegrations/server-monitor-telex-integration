@@ -44,9 +44,7 @@ The installation script will:
 - Set up initial monitoring settings
 - Start the monitoring service
 
-## Usage
-
-### Service Management
+#### Usage
 
 ```bash
 # Check monitoring status
@@ -61,6 +59,62 @@ sudo systemctl start telex-monitor
 # Restart monitoring
 sudo systemctl restart telex-monitor
 ```
+
+### Local Development or Machine Setup
+
+To set up the project locally, follow these steps:
+
+1. Clone the repository from GitHub:
+
+```bash
+git clone https://github.com/telexintegrations/server-monitor-telex-integration.git
+```
+
+2. Move to the shell-scripts directory:
+
+```bash
+cd server-monitor-telex-integration/shell-scripts
+```
+
+3. Grant execution permissions to the startup script and run startup script:
+
+```bash
+chmod +x start-dev.sh
+bash start-dev.sh --channel-id <channel-id>
+
+```
+
+4. To stop applications simply run
+
+```bash
+bash stop-dev.sh
+```
+
+5. The application will be live on port: `3002`
+
+### Simulating Requests
+
+To simulate a request from Telex to the `/tick` endpoint, use Postman or cURL:
+
+```bash
+curl --location 'http://localhost:3002/tick' \
+--header 'Content-Type: application/json' \
+--data '{
+     "channel_id": "<your-test-telex-channel-id>",
+    "return_url": "https://ping.telex.im/v1/return/<your-test-telex-channel-id>",
+   "settings": [
+        {
+        "label": "interval",
+        "type": "text",
+        "required": true,
+        "default": "* * * * *"
+      }
+    ]
+}'
+```
+
+If the setup is successful, you will receive a notification of your server metrics in the specified Telex channel.
+![setup Successful](./valid.png)
 
 ### Configuration
 
@@ -105,3 +159,4 @@ Common issues and solutions:
 ## License
 
 ISC © [JC-Coder](https://github.com/jc-coder)
+[Knowledge-JO](https://github.com/Knowledge-JO)

@@ -2,6 +2,7 @@ import { Subscriber, Publisher } from "zeromq";
 import { logger } from "../utils/logger.js";
 import { CollectorService } from "../metrics/collector.js";
 import { AppConstants } from "../utils/constant.js";
+import { serverUrlConfig } from "../config/config.js";
 
 export enum MessageType {
   getMetrics = "getMetrics",
@@ -174,9 +175,8 @@ async function getIntegrationServerHostAndPort(): Promise<{
 
     const config = await response.json();
 
-    console.log({ config });
+    const serverUrl = serverUrlConfig(config);
 
-    const serverUrl = config.serverUrl;
     const serverPort = config.serverPort;
 
     return { serverUrl, serverPort };

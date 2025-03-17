@@ -26,7 +26,7 @@ app.get("/health", (_, res) => {
 });
 
 // Integration config endpoint
-app.get("/integration-config", (req: Request, res: Response) => {
+app.get("/integration-json", (req: Request, res: Response) => {
   res.status(200).json(telexGeneratedConfig);
 });
 

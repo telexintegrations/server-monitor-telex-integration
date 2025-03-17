@@ -47,3 +47,5 @@ todo.md
 tmp/
 temp/
 *.tmp
+
+ecosystem.config.cjs

@@ -51,3 +51,5 @@ temp/
 # Integration specific
 config.local.json
 credentials.json
+
+dev-ecosystem.config.cjs
