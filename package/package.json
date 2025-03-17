@@ -1,6 +1,6 @@
 {
   "name": "telex-server-monitor-sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "publishConfig": {
     "access": "public"
   },
@@ -19,7 +19,8 @@
     "dev": "tsx src/cli/index.ts",
     "start": "tsc && tsx dist/cli/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "mkdir -p bin && echo '#!/usr/bin/env node\nimport \"tsx/cjs\";\nimport \"../dist/cli/index.js\";' > bin/cli.js && chmod +x bin/cli.js"
+    "postinstall": "mkdir -p bin && echo '#!/usr/bin/env node\nimport \"tsx/cjs\";\nimport \"../dist/cli/index.js\";' > bin/cli.js && chmod +x bin/cli.js",
+    "publish": "tsc && npm publish"
   },
   "keywords": [
     "telex",
@@ -35,7 +36,6 @@
   "homepage": "https://github.com/telexintegrations/server-monitor-telex-integration/blob/dev/package",
   "readme": "https://github.com/telexintegrations/server-monitor-telex-integration/blob/dev/README.md",
   "dependencies": {
-    "axios": "^1.6.7",
     "commander": "^12.0.0",
     "dotenv": "^16.4.7",
     "luxon": "^3.5.0",

@@ -177,7 +177,11 @@ async function getIntegrationServerHostAndPort(): Promise<{
     const response = await fetch(AppConstants.Package.GlobalConfigUrl);
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch global config: ${response.statusText}`);
+      console.error(`Failed to fetch global config: ${response.statusText}`);
+      return {
+        serverUrl: "13.61.63.138",
+        serverPort: 3002,
+      };
     }
 
     const config = await response.json();
