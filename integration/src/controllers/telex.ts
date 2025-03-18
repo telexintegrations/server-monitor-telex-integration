@@ -6,8 +6,6 @@ import {
   getMetricsFromPackage,
 } from "../services/metricsService.js";
 
-const fallbackMessage = `Sorry 😔, I am not able to get metrics from your server at this time, ensure the agent is active on your server`;
-
 export async function webhook(req: Request, res: Response) {
   const { channel_id, message, settings } = req.body;
   console.log("new webhook from telex", req.body);
@@ -80,13 +78,13 @@ export async function webhook(req: Request, res: Response) {
   const result = await getMetricsFromPackage(channel_id, settings);
 
   if (!result) {
-    webhookResponse(channel_id, fallbackMessage);
+    webhookResponse(channel_id);
   }
 
   if (message.includes("/loadAvgs")) {
     const resp = await getLoadAveragesFromPackage(channel_id, settings);
     if (!resp) {
-      webhookResponse(channel_id, fallbackMessage);
+      webhookResponse(channel_id);
     }
   }
 }
@@ -101,11 +99,12 @@ export async function tick(req: Request, res: Response) {
   const result = await getMetricsFromPackage(channel_id, settings);
 
   if (!result) {
-    webhookResponse(channel_id, fallbackMessage);
+    webhookResponse(channel_id);
   }
 }
 
-function webhookResponse(channelId: string, message: string) {
+const defaultMessage = `Sorry 😔, I am not able to get metrics from your server at this time, ensure the agent is active on your server`;
+function webhookResponse(channelId: string, message = defaultMessage) {
   TelexService.SendWebhookResponse({
     channelId,
     message,
