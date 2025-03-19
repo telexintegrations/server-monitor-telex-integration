@@ -6,6 +6,11 @@ export interface MetricsData {
     cores?: number;
     load_avg?: number[];
   };
+  loadAvgs?: {
+    "1min": number;
+    "5mins": number;
+    "15mins": number;
+  };
 }
 
 export const getMetricsFromPackage = async (
@@ -17,7 +22,7 @@ export const getMetricsFromPackage = async (
       type: "getMetrics",
       channelId,
       data: { settings },
-      timestamp: new Date().toISOString(),
+      timestamp: dateToISO(),
     });
     return true;
   } catch (error) {
@@ -25,3 +30,25 @@ export const getMetricsFromPackage = async (
     return false;
   }
 };
+
+export const getLoadAveragesFromPackage = async (
+  channelId: string,
+  settings: any
+) => {
+  try {
+    await zeromqServer.publish(channelId, {
+      type: "getLoadAverages",
+      channelId,
+      data: { settings },
+      timestamp: dateToISO(),
+    });
+    return true;
+  } catch (error) {
+    console.error("Failed to request CPU load average check: ", error);
+    return false;
+  }
+};
+
+function dateToISO() {
+  return new Date().toISOString();
+}

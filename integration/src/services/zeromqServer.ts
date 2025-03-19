@@ -1,6 +1,10 @@
 import { Publisher, Subscriber } from "zeromq";
 import { integrationEnvConfig } from "../utils/config.js";
 import { TelexService } from "./telexRequest.js";
+import {
+  formatMetricsMessage,
+  getFormattedLoadAverages,
+} from "./messageFormatters.js";
 
 export interface IZeromqMessage {
   type: string;
@@ -79,17 +83,16 @@ class ZeromqServer {
           );
 
           // Process the reply based on message type
-          if (message.type === "reply" && message.data.metrics) {
+          if (
+            message.type === "replyWithGeneralMetrics" &&
+            message.data.metrics
+          ) {
             // Format metrics message for Telex
-            const metricsMessage = this.formatMetricsMessage(
-              message.data.metrics
-            );
-
-            // Send formatted metrics to Telex
-            await TelexService.SendWebhookResponse({
-              channelId: channelId.toString(),
-              message: metricsMessage,
-            });
+            const metricsMessage = formatMetricsMessage(message.data.metrics);
+            this.sendTelexResponse(channelId.toString(), metricsMessage);
+          } else if (message.type === "replyWithLoadAvgs") {
+            const avgsMessage = getFormattedLoadAverages(message.data.metrics);
+            this.sendTelexResponse(channelId.toString(), avgsMessage);
           }
         } catch (error) {
           console.error(`Error processing reply: ${(error as Error).message}`);
@@ -100,21 +103,12 @@ class ZeromqServer {
     }
   }
 
-  private formatMetricsMessage(metrics: any): string {
-    try {
-      const { cpu } = metrics;
-      return (
-        `📊 Current Server Metrics\n\n` +
-        `🔸 CPU Usage: ${cpu?.usage?.toFixed(2)}%\n` +
-        `🔸 CPU Cores: ${cpu?.cores || "N/A"}\n` +
-        `🔸 Load Average: ${cpu?.load_avg?.[0]?.toFixed(2) || "N/A"}`
-      );
-    } catch (error) {
-      console.error(
-        `Error formatting metrics message: ${(error as Error).message}`
-      );
-      return "Error formatting metrics data";
-    }
+  private async sendTelexResponse(channelId: string, message: string) {
+    // Send formatted metrics to Telex
+    await TelexService.SendWebhookResponse({
+      channelId: channelId.toString(),
+      message,
+    });
   }
 
   public async publish(
