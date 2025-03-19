@@ -81,7 +81,7 @@ export async function webhook(req: Request, res: Response) {
     webhookResponse(channel_id);
   }
 
-  if (message.includes("/loadAvgs")) {
+  if (message.includes("/loadAvg")) {
     const resp = await getLoadAveragesFromPackage(channel_id, settings);
     if (!resp) {
       webhookResponse(channel_id);
