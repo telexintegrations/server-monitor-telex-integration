@@ -177,6 +177,35 @@ program
     }
   });
 
+// Update CPU threshold command
+program
+  .command("update-cpu-threshold <threshold>")
+  .description("Update the CPU threshold in the store (value between 1-100)")
+  .action(async (threshold) => {
+    try {
+      const thresholdValue = parseInt(threshold, 10);
+
+      if (isNaN(thresholdValue) || thresholdValue < 1 || thresholdValue > 100) {
+        throw new Error("CPU threshold must be a number between 1 and 100");
+      }
+
+      saveStoreData({ cpuUsageThreshold: thresholdValue });
+
+      logger.info(`CPU threshold updated to ${thresholdValue}%`);
+
+      if (isMonitoringRunning()) {
+        await stopMonitoring();
+      }
+
+      await startMonitoring();
+    } catch (error) {
+      logger.error(
+        `Failed to update CPU threshold: ${(error as Error).message}`
+      );
+      process.exit(1);
+    }
+  });
+
 // Parse command line arguments
 program.parse(process.argv);
 

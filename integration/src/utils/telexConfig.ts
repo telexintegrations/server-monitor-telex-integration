@@ -6,7 +6,7 @@ export const telexGeneratedConfig = {
   data: {
     date: {
       created_at: "2025-03-11",
-      updated_at: "2025-03-11",
+      updated_at: "2025-03-19",
     },
     integration_category: "AI & Machine Learning",
     integration_type: "interval",
@@ -43,6 +43,6 @@ export const telexGeneratedConfig = {
     endpoints: [],
     is_active: true,
     author: "JC CODER",
-    version: "1.0.0",
+    version: "1.1.0",
   },
 };

@@ -8,7 +8,7 @@ const PACKAGE_NAME = "telex-server-monitor";
 
 export const AppConstants = {
   Package: {
-    Version: "v1.0.0",
+    Version: "v1.1.0",
     BaseDir: TELEX_MONITOR_DIR,
     StoreFile: path.join(TELEX_MONITOR_DIR, "store.json"),
     LogsDir: path.join(TELEX_MONITOR_DIR, "logs"),
