@@ -4,6 +4,13 @@ import { TelexService } from "../services/telexRequest.js";
 import { getMetricsFromPackage } from "../services/metricsService.js";
 import { MetricType } from "../types/metricType.js";
 
+// Add this helper function at the top of the file after imports
+function cleanMessage(message: string): string {
+  return message
+    .replace(/<\/?[^>]+(>|$)/g, "") // Remove HTML tags
+    .trim(); // Remove leading/trailing whitespace
+}
+
 export async function webhook(req: Request, res: Response) {
   const { channel_id, message, settings } = req.body;
   console.log("new webhook from telex", req.body);
@@ -11,13 +18,15 @@ export async function webhook(req: Request, res: Response) {
   // Return initial response to telex immediately
   res.status(200).json({ status: "success", message: "Message received" });
 
+  const cleanedMessage = cleanMessage(message);
+
   // don't do anything if the message is from this integration
-  if (message.includes(IntegrationConstants.App.Name)) {
+  if (cleanedMessage.includes(IntegrationConstants.App.Name)) {
     return;
   }
 
   // Handle setup command specifically
-  if (message.includes("/setup-monitoring")) {
+  if (cleanedMessage === "/setup-monitoring") {
     const installCommand =
       IntegrationConstants.Github.InstallationScriptUrl(channel_id);
     const setupInstructions = `
@@ -73,7 +82,7 @@ export async function webhook(req: Request, res: Response) {
     return;
   }
 
-  if (message.includes("/cpu")) {
+  if (cleanedMessage === "/cpu") {
     const resp = await getMetricsFromPackage(
       MetricType.getCpuMetrics,
       channel_id,
@@ -85,7 +94,7 @@ export async function webhook(req: Request, res: Response) {
     return;
   }
 
-  if (message.includes("/cpuAvg")) {
+  if (cleanedMessage === "/cpuAvg") {
     const resp = await getMetricsFromPackage(
       MetricType.getCpuLoadAverages,
       channel_id,
@@ -94,6 +103,7 @@ export async function webhook(req: Request, res: Response) {
     if (!resp) {
       handleMetricError(channel_id);
     }
+    return;
   }
 }
 
