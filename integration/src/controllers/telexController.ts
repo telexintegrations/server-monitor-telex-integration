@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import { IntegrationConstants } from "../utils/constant.js";
+import { IntegrationConstants, MessageConstant } from "../utils/constant.js";
 import { TelexService } from "../services/telexRequest.js";
-import {
-  getLoadAveragesFromPackage,
-  getMetricsFromPackage,
-} from "../services/metricsService.js";
+import { getMetricsFromPackage } from "../services/metricsService.js";
+import { MetricType } from "../types/metricType.js";
 
 export async function webhook(req: Request, res: Response) {
   const { channel_id, message, settings } = req.body;
@@ -75,16 +73,26 @@ export async function webhook(req: Request, res: Response) {
     return;
   }
 
-  const result = await getMetricsFromPackage(channel_id, settings);
-
-  if (!result) {
-    webhookResponse(channel_id);
+  if (message.includes("/cpu")) {
+    const resp = await getMetricsFromPackage(
+      MetricType.getCpuMetrics,
+      channel_id,
+      settings
+    );
+    if (!resp) {
+      handleMetricError(channel_id);
+    }
+    return;
   }
 
-  if (message.includes("/loadAvgs")) {
-    const resp = await getLoadAveragesFromPackage(channel_id, settings);
+  if (message.includes("/cpuAvg")) {
+    const resp = await getMetricsFromPackage(
+      MetricType.getCpuLoadAverages,
+      channel_id,
+      settings
+    );
     if (!resp) {
-      webhookResponse(channel_id);
+      handleMetricError(channel_id);
     }
   }
 }
@@ -96,16 +104,22 @@ export async function tick(req: Request, res: Response) {
   // Return initial response to telex immediately
   res.status(200).json({ status: "success", message: "Message received" });
 
-  const result = await getMetricsFromPackage(channel_id, settings);
+  const result = await getMetricsFromPackage(
+    MetricType.getCpuMetrics,
+    channel_id,
+    settings
+  );
 
   if (!result) {
-    webhookResponse(channel_id);
+    handleMetricError(channel_id);
   }
 }
 
-const defaultMessage = `Sorry 😔, I am not able to get metrics from your server at this time, ensure the agent is active on your server`;
-function webhookResponse(channelId: string, message = defaultMessage) {
-  TelexService.SendWebhookResponse({
+async function handleMetricError(
+  channelId: string,
+  message = MessageConstant.UnableToGetMetrics
+) {
+  await TelexService.SendWebhookResponse({
     channelId,
     message,
   });

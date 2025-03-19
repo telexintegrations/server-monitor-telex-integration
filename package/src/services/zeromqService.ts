@@ -3,18 +3,26 @@ import { logger } from "../utils/logger.js";
 import { CollectorService } from "../metrics/collector.js";
 import { AppConstants } from "../utils/constant.js";
 import { isDevEnvironment } from "../config/config.js";
+import { getStoreData, saveStoreData } from "../utils/store.js";
+import os from "os";
 
-export enum MessageType {
-  getMetrics = "getMetrics",
-  getLoadAverages = "getLoadAverages",
+export enum IncomingMessageType {
+  getAllMetrics = "getAllMetrics",
+  getCpuMetrics = "getCpuMetrics",
+  getCpuLoadAverages = "getCpuLoadAverages",
   ping = "ping",
+}
+
+export enum OutGoingMessageReplyType {
+  getAllMetrics = "getAllMetricsReply",
+  getCpuMetrics = "getCpuMetricsReply",
+  getCpuLoadAverages = "getCpuLoadAveragesReply",
+  cpuThresholdAlert = "cpuThresholdAlert",
   replyPong = "replyPong",
-  replyWithGeneralMetrics = "replyWithGeneralMetrics",
-  replyWithLoadAvgs = "replyWithLoadAvgs",
 }
 
 export interface IZeromqMessage {
-  type: MessageType | string;
+  type: IncomingMessageType | string;
   channelId: string;
   data: any;
   timestamp: string;
@@ -45,7 +53,7 @@ export async function connectToIntegrationServer(
     const serverUrl = serverConfig?.serverUrl;
     const serverPort = serverConfig?.serverPort + 1;
 
-    console.log("serverConfig", serverConfig);
+    logger.info(`Integration server: ${serverUrl}:${serverPort}`);
 
     // Set up subscriber socket
     subSocket = new Subscriber();
@@ -76,10 +84,10 @@ export async function connectToIntegrationServer(
 /**
  * Send a reply back to the integration server
  */
-async function sendReply(
+export async function sendReply(
   channelId: string,
   data: any,
-  messageType: MessageType
+  messageType: OutGoingMessageReplyType
 ): Promise<void> {
   if (!pubSocket) {
     throw new Error("Reply socket not connected");
@@ -94,16 +102,54 @@ async function sendReply(
     };
 
     await pubSocket.send([channelId, JSON.stringify(reply)]);
-    logger.info(`Sent reply to channel ${channelId}: ${JSON.stringify(data)}`);
+    logger.info(`Sent ${messageType} to channel ${channelId}`);
   } catch (error) {
     logger.error(`Failed to send reply: ${(error as Error).message}`);
   }
 }
 
-async function sendMetrics(channelId: string, messageType: MessageType) {
+/**
+ * Send metrics to the integration server
+ */
+export async function sendMetrics(
+  channelId: string,
+  messageType: OutGoingMessageReplyType
+) {
   const metrics = await CollectorService.getMetrics();
-  logger.info(`Metrics: ${JSON.stringify(metrics)}`);
+  logger.info(`Collected metrics for ${channelId}`);
   await sendReply(channelId, { metrics }, messageType);
+}
+
+/**
+ * Send a CPU threshold alert to the integration server
+ */
+export async function sendCpuAlert(
+  channelId: string,
+  metrics: any,
+  threshold: number,
+  isCritical: boolean
+) {
+  const severityEmoji = isCritical ? "🔥" : "⚠️";
+  const severityText = isCritical ? "CRITICAL" : "WARNING";
+
+  const alertMessage = {
+    metrics,
+    threshold,
+    severity: isCritical ? "critical" : "warning",
+    message: `${severityEmoji} ${severityText}: CPU Usage Alert ${severityEmoji}\n\nCPU usage (${metrics.cpu.usage.toFixed(
+      1
+    )}%) has exceeded the threshold (${threshold}%)\n\nServer: ${
+      getStoreData()?.serverName || "Unknown"
+    }\nCPU Cores: ${
+      metrics.cpu?.cores || "N/A"
+    }\nTimestamp: ${new Date().toLocaleString()}`,
+  };
+
+  await sendReply(
+    channelId,
+    alertMessage,
+    OutGoingMessageReplyType.cpuThresholdAlert
+  );
 }
 
 /**
@@ -118,23 +164,63 @@ async function handleMessages(channelId: string): Promise<void> {
     for await (const [topic, messageBuffer] of subSocket) {
       try {
         const message = JSON.parse(messageBuffer.toString()) as IZeromqMessage;
-        logger.info(`Received message: ${JSON.stringify(message)}`);
+        logger.info(`Received message type: ${message.type}`);
 
         if (topic.toString() !== channelId) {
           continue;
         }
 
+        // Store settings if provided
+        if (message.data?.settings && Array.isArray(message.data.settings)) {
+          const cpuThresholdSetting = message.data.settings.find(
+            (s: any) => s.label === "cpu_threshold"
+          );
+
+          if (cpuThresholdSetting) {
+            const thresholdValue = Number(
+              cpuThresholdSetting.value || cpuThresholdSetting.default || 80
+            );
+
+            saveStoreData({
+              cpuThreshold: thresholdValue,
+            });
+
+            logger.info(`Stored CPU threshold setting: ${thresholdValue}%`);
+          }
+
+          // Store server name if available
+          if (!getStoreData()?.serverName) {
+            saveStoreData({
+              serverName: `${os.hostname()}`,
+            });
+          }
+        }
+
         // Process different types of requests
         const incomingMessageType = message.type;
-        if (incomingMessageType === MessageType.getMetrics) {
-          await sendMetrics(channelId, MessageType.replyWithGeneralMetrics);
-        } else if (incomingMessageType == MessageType.getLoadAverages) {
-          await sendMetrics(channelId, MessageType.replyWithLoadAvgs);
-        } else if (incomingMessageType === MessageType.ping) {
-          logger.info("Received ping from integration server");
-          await sendReply(channelId, { status: "pong" }, MessageType.replyPong);
-        } else {
-          logger.warn(`Unknown message type: ${incomingMessageType}`);
+
+        switch (incomingMessageType) {
+          case IncomingMessageType.getAllMetrics:
+            await sendMetrics(
+              channelId,
+              OutGoingMessageReplyType.getAllMetrics
+            );
+            break;
+          case IncomingMessageType.getCpuMetrics:
+            await sendMetrics(
+              channelId,
+              OutGoingMessageReplyType.getCpuMetrics
+            );
+            break;
+          case IncomingMessageType.getCpuLoadAverages:
+            await sendMetrics(
+              channelId,
+              OutGoingMessageReplyType.getCpuLoadAverages
+            );
+            break;
+          default:
+            logger.warn(`Unknown message type: ${incomingMessageType}`);
+            break;
         }
       } catch (error) {
         logger.error(`Error processing message: ${(error as Error).message}`);
@@ -187,23 +273,33 @@ async function getIntegrationServerHostAndPort(): Promise<{
       };
     }
 
-    const response = await fetch(AppConstants.Package.GlobalConfigUrl);
+    try {
+      const response = await fetch(AppConstants.Package.GlobalConfigUrl);
 
-    if (!response.ok) {
-      console.error(`Failed to fetch global config: ${response.statusText}`);
+      if (!response.ok) {
+        logger.warn(`Failed to fetch global config: ${response.statusText}`);
+        return {
+          serverUrl: "13.61.63.138",
+          serverPort: 3002,
+        };
+      }
+
+      const config = await response.json();
+      return {
+        serverUrl: config.serverUrl,
+        serverPort: config.serverPort,
+      };
+    } catch (error) {
+      logger.warn(
+        `Error fetching config, using default: ${(error as Error).message}`
+      );
       return {
         serverUrl: "13.61.63.138",
         serverPort: 3002,
       };
     }
-
-    const config = await response.json();
-
-    const serverUrl = config.serverUrl;
-    const serverPort = config.serverPort;
-
-    return { serverUrl, serverPort };
   } catch (error) {
+    logger.error(`Failed to get server config: ${(error as Error).message}`);
     return null;
   }
 }

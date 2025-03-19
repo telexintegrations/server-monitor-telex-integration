@@ -45,3 +45,7 @@ export const AppResponse = (payload: {
     },
   };
 };
+
+export const MessageConstant = {
+  UnableToGetMetrics: `Sorry 😔, I am not able to get metrics from your server at this time, ensure the agent is active on your server`,
+};

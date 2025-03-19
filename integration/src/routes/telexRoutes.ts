@@ -1,5 +1,5 @@
 import express from "express";
-import { tick, webhook } from "../controllers/telex.js";
+import { tick, webhook } from "../controllers/telexController.js";
 
 const router = express.Router();
 

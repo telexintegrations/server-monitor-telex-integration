@@ -53,4 +53,65 @@ function cpuLoadStatus(percent: number): string {
   return "✅Status: System is running smoothly.";
 }
 
-export { formatMetricsMessage, getFormattedLoadAverages };
+/**
+ * Format a CPU threshold alert message
+ * @param metrics The metrics data
+ * @param threshold The threshold that was exceeded
+ * @param isCritical Whether this is a critical alert
+ */
+function formatCpuAlertMessage(
+  metrics: any,
+  threshold: number,
+  isCritical = false
+): string {
+  try {
+    const { cpu } = metrics;
+    const serverName = metrics.serverName || "Your Server";
+
+    // Emojis and styling based on severity
+    const severityEmoji = isCritical ? "🔥" : "⚠️";
+    const severityText = isCritical ? "CRITICAL" : "WARNING";
+    const borderChar = isCritical ? "═" : "─";
+
+    // Build a border for the message
+    const border = borderChar.repeat(40);
+
+    // Format the timestamp
+    const timestamp = new Date().toLocaleString();
+
+    // Determine the performance impact
+    let impactText = "No impact expected";
+    if (cpu?.usage >= 95) {
+      impactText = "Severe performance degradation likely";
+    } else if (cpu?.usage >= 90) {
+      impactText = "Significant performance impact possible";
+    } else if (cpu?.usage >= 80) {
+      impactText = "Some performance impact may occur";
+    }
+
+    return `${severityEmoji} ${severityText} CPU ALERT ${severityEmoji}\n${border}\n
+CPU usage has exceeded the configured threshold!
+
+🖥️ Server: ${serverName}
+📈 Current Usage: ${cpu?.usage?.toFixed(1)}%
+🔍 Threshold: ${threshold}%
+⏱️ Cores: ${cpu?.cores || "N/A"}
+🕒 Detected at: ${timestamp}
+
+📊 Performance Impact: ${impactText}
+
+${border}
+
+${isCritical ? "👉 Immediate action recommended!" : "👉 Please investigate when possible."}
+`;
+  } catch (error) {
+    console.error(`Error formatting CPU alert: ${(error as Error).message}`);
+    return `CPU Usage Alert: CPU usage has exceeded the ${threshold}% threshold.`;
+  }
+}
+
+export {
+  formatMetricsMessage,
+  getFormattedLoadAverages,
+  formatCpuAlertMessage,
+};

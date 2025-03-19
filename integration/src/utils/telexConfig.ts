@@ -39,6 +39,12 @@ export const telexGeneratedConfig = {
         required: true,
         default: "* * * * *",
       },
+      {
+        label: "cpu_threshold",
+        type: "number",
+        required: true,
+        default: 80,
+      },
     ],
     endpoints: [],
     is_active: true,
