@@ -18,6 +18,9 @@ export const AppConstants = {
   Telex: {
     BaseUrl: TELEX_API_URL,
     WebhookUrl: "https://ping.telex.im/v1/webhooks",
+    ReturnUrl: (channelId: string) => {
+      return `https://ping.telex.im/v1/return/${channelId}`;
+    },
     LoginUrl: `${TELEX_API_URL}/auth/login`,
     GetOrganisationIntegrationsUrl: (organisationId: string) => {
       return `${TELEX_API_URL}/organisations/${organisationId}/integrations/custom`;

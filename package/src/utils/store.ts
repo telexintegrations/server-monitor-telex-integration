@@ -10,6 +10,7 @@ export interface IStore {
   outputFrequency: number; // this is in minutes
   outputChannelId: string;
   cpuUsageThreshold: number;
+  lastAlertSentAt: number; // the time in milliseconds from the Date class
 }
 
 // Ensure store directory exists
