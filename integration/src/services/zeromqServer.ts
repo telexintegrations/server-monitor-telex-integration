@@ -4,7 +4,9 @@ import { TelexService } from "./telexRequest.js";
 import {
   formatMetricsMessage,
   getFormattedLoadAverages,
+  formatCpuAlertMessage,
 } from "./messageFormatters.js";
+import { MetricReplyType } from "../types/metricType.js";
 
 export interface IZeromqMessage {
   type: string;
@@ -79,20 +81,45 @@ class ZeromqServer {
             messageBuffer.toString()
           ) as IZeromqMessage;
           console.info(
-            `Received reply from channel ${channelId}: ${JSON.stringify(message)}`
+            `Received reply message type "${message.type}" from channel ${channelId}`
           );
 
           // Process the reply based on message type
-          if (
-            message.type === "replyWithGeneralMetrics" &&
-            message.data.metrics
-          ) {
-            // Format metrics message for Telex
-            const metricsMessage = formatMetricsMessage(message.data.metrics);
-            this.sendTelexResponse(channelId.toString(), metricsMessage);
-          } else if (message.type === "replyWithLoadAvgs") {
-            const avgsMessage = getFormattedLoadAverages(message.data.metrics);
-            this.sendTelexResponse(channelId.toString(), avgsMessage);
+          switch (message.type) {
+            case MetricReplyType.getCpuMetrics:
+              // For regular metrics, format them
+              const metricsMessage = formatMetricsMessage(message.data.metrics);
+              await this.sendTelexResponse(
+                channelId.toString(),
+                metricsMessage
+              );
+              break;
+
+            case MetricReplyType.getCpuLoadAverages:
+              const avgsMessage = getFormattedLoadAverages(
+                message.data.metrics
+              );
+              await this.sendTelexResponse(channelId.toString(), avgsMessage);
+              break;
+
+            case MetricReplyType.cpuThresholdAlert:
+              // Handle the CPU threshold alert
+              console.warn(
+                `CPU threshold alert received: ${message.data.severity} level`
+              );
+              // If a message is provided in the data, use it, otherwise format it ourselves
+              const alertMessage =
+                message.data.message ||
+                formatCpuAlertMessage(
+                  message.data.metrics,
+                  message.data.threshold,
+                  message.data.severity === "critical"
+                );
+              await this.sendTelexResponse(channelId.toString(), alertMessage);
+              break;
+
+            default:
+              console.info(`Unhandled message type: ${message.type}`);
           }
         } catch (error) {
           console.error(`Error processing reply: ${(error as Error).message}`);
@@ -122,7 +149,7 @@ class ZeromqServer {
     try {
       await this.pubSocket.send([channelId, JSON.stringify(message)]);
       console.info(
-        `Published message to channel ${channelId}: ${JSON.stringify(message)}`
+        `Published message type "${message.type}" to channel ${channelId}`
       );
     } catch (error) {
       console.error(`Failed to publish message: ${(error as Error).message}`);

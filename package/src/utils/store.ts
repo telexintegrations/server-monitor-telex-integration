@@ -9,6 +9,7 @@ export interface IStore {
   monitorServer: boolean;
   outputFrequency: number; // this is in minutes
   outputChannelId: string;
+  cpuThreshold: number; // Added CPU threshold setting
 }
 
 // Ensure store directory exists
