@@ -6,8 +6,11 @@ import { isDevEnvironment } from "../config/config.js";
 
 export enum MessageType {
   getMetrics = "getMetrics",
+  getLoadAverages = "getLoadAverages",
   ping = "ping",
-  reply = "reply",
+  replyPong = "replyPong",
+  replyWithGeneralMetrics = "replyWithGeneralMetrics",
+  replyWithLoadAvgs = "replyWithLoadAvgs",
 }
 
 export interface IZeromqMessage {
@@ -73,14 +76,18 @@ export async function connectToIntegrationServer(
 /**
  * Send a reply back to the integration server
  */
-async function sendReply(channelId: string, data: any): Promise<void> {
+async function sendReply(
+  channelId: string,
+  data: any,
+  messageType: MessageType
+): Promise<void> {
   if (!pubSocket) {
     throw new Error("Reply socket not connected");
   }
 
   try {
     const reply: IZeromqMessage = {
-      type: MessageType.reply,
+      type: messageType,
       channelId,
       data,
       timestamp: new Date().toISOString(),
@@ -91,6 +98,12 @@ async function sendReply(channelId: string, data: any): Promise<void> {
   } catch (error) {
     logger.error(`Failed to send reply: ${(error as Error).message}`);
   }
+}
+
+async function sendMetrics(channelId: string, messageType: MessageType) {
+  const metrics = await CollectorService.getMetrics();
+  logger.info(`Metrics: ${JSON.stringify(metrics)}`);
+  await sendReply(channelId, { metrics }, messageType);
 }
 
 /**
@@ -114,12 +127,12 @@ async function handleMessages(channelId: string): Promise<void> {
         // Process different types of requests
         const incomingMessageType = message.type;
         if (incomingMessageType === MessageType.getMetrics) {
-          const metrics = await CollectorService.getMetrics();
-          logger.info(`Metrics: ${JSON.stringify(metrics)}`);
-          await sendReply(channelId, { metrics });
+          await sendMetrics(channelId, MessageType.replyWithGeneralMetrics);
+        } else if (incomingMessageType == MessageType.getLoadAverages) {
+          await sendMetrics(channelId, MessageType.replyWithLoadAvgs);
         } else if (incomingMessageType === MessageType.ping) {
           logger.info("Received ping from integration server");
-          await sendReply(channelId, { status: "pong" });
+          await sendReply(channelId, { status: "pong" }, MessageType.replyPong);
         } else {
           logger.warn(`Unknown message type: ${incomingMessageType}`);
         }

@@ -82,7 +82,7 @@ mode () {
         fi
 
         if [[ $DEVELOPMENT_MODE = true ]]; then
-            pm2 start "npm run $1" -n "$instance_name" -i 1
+            pm2 start "npm run $1" -n "$instance_name" -i 1 --watch
         else
             pm2 start "npm run $2" -n "$instance_name" -i 1
         fi
