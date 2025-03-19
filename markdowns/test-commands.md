@@ -12,10 +12,3 @@ npm run dev -- status
 
 // check logs
 npm run dev -- logs
-
-// integration cleanup script
-
-sudo systemctl stop telex-server-monitor
-sudo systemctl disable telex-server-monitor
-sudo rm /etc/systemd/system/telex-server-monitor.service
-sudo systemctl daemon-reload
