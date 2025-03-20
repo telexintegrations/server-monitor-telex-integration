@@ -138,9 +138,9 @@ ${formattedCores}
 }
 
 function getCpuUsageStatus(percentage: number) {
-  if (percentage >= 80) return "🔴(High Load)";
-  if (percentage >= 50) return "🟠(Moderate Load)";
-  return "🟢(Low Load)";
+  if (percentage >= 80) return "🔴(High usage)";
+  if (percentage >= 50) return "🟠(Moderate usage)";
+  return "🟢(Low usage)";
 }
 
 export {
