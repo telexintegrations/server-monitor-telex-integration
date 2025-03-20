@@ -5,6 +5,7 @@ import {
   formatMetricsMessage,
   getFormattedLoadAverages,
   formatCpuAlertMessage,
+  formatCpuUsagePerCoreMetrics,
 } from "./messageFormatters.js";
 import { MetricReplyType } from "../types/metricType.js";
 
@@ -100,6 +101,16 @@ class ZeromqServer {
                 message.data.metrics
               );
               await this.sendTelexResponse(channelId.toString(), avgsMessage);
+              break;
+
+            case MetricReplyType.getCpuUsagePerCore:
+              const cpuCoresMessage = formatCpuUsagePerCoreMetrics(
+                message.data.metrics
+              );
+              await this.sendTelexResponse(
+                channelId.toString(),
+                cpuCoresMessage
+              );
               break;
 
             case MetricReplyType.cpuThresholdAlert:

@@ -94,9 +94,20 @@ export async function webhook(req: Request, res: Response) {
     return;
   }
 
-  if (cleanedMessage === "/cpuAvg") {
+  if (cleanedMessage === "/cpuLoadAvg") {
     const resp = await getMetricsFromPackage(
       MetricType.getCpuLoadAverages,
+      channel_id,
+      settings
+    );
+    if (!resp) {
+      handleMetricError(channel_id);
+    }
+    return;
+  }
+  if (cleanedMessage === "/perCoreUsage") {
+    const resp = await getMetricsFromPackage(
+      MetricType.getCpuUsagePerCore,
       channel_id,
       settings
     );

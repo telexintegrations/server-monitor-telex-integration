@@ -14,10 +14,12 @@ export interface MetricsData {
 export enum MetricType {
   getCpuMetrics = "getCpuMetrics",
   getCpuLoadAverages = "getCpuLoadAverages",
+  getCpuUsagePerCore = "getCpuUsagePerCore",
 }
 
 export enum MetricReplyType {
   getCpuMetrics = "getCpuMetricsReply",
   getCpuLoadAverages = "getCpuLoadAveragesReply",
+  getCpuUsagePerCore = "getCpuUsagePerCoreReply",
   cpuThresholdAlert = "cpuThresholdAlert",
 }

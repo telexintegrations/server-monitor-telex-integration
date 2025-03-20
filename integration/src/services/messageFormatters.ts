@@ -1,11 +1,13 @@
 function formatMetricsMessage(metrics: any): string {
   try {
-    const { cpu } = metrics;
+    const { cpu, memory } = metrics;
+    const formatMem = `🖥️ Memory Usage: ${memory.used.toFixed(2)} GB / ${memory.total.toFixed(2)} GB (${memory.percentage.toFixed(2)}% ${getCpuUsageStatus(memory.percentage)})`;
     return (
       `📊 Current Server Metrics\n\n` +
       `🔸 CPU Usage: ${cpu?.usage?.toFixed(2)}%\n` +
       `🔸 CPU Cores: ${cpu?.cores || "N/A"}\n` +
-      `🔸 Load Average: ${cpu?.load_avg?.[0]?.toFixed(2) || "N/A"}`
+      `🔸 Load Average: ${cpu?.load_avg?.[0]?.toFixed(2) || "N/A"}\n\n` +
+      formatMem
     );
   } catch (error) {
     console.error(
@@ -110,8 +112,40 @@ ${isCritical ? "👉 Immediate action recommended!" : "👉 Please investigate w
   }
 }
 
+function formatCpuUsagePerCoreMetrics(metrics: any) {
+  const { coresLoad } = metrics;
+  const numCores = coresLoad.length;
+  const avg =
+    coresLoad.reduce((curr: number, acc: number) => curr + acc, 0) / numCores;
+
+  const formattedCores = coresLoad
+    .map((load: number, index: number) => {
+      const usage = load.toFixed(1);
+      const status = getCpuUsageStatus(load);
+      return `  ⚡ Core ${index + 1}: ${usage}% ${status}\n`;
+    })
+    .join("\n");
+
+  return `
+📊 CPU Usage Per Core
+
+🖥️  Total Cores: ${numCores}
+
+${formattedCores}
+
+📊 Average Usage: ${avg.toFixed(1)}%
+`;
+}
+
+function getCpuUsageStatus(percentage: number) {
+  if (percentage >= 80) return "🔴(High Load)";
+  if (percentage >= 50) return "🟠(Moderate Load)";
+  return "🟢(Low Load)";
+}
+
 export {
   formatMetricsMessage,
   getFormattedLoadAverages,
   formatCpuAlertMessage,
+  formatCpuUsagePerCoreMetrics,
 };

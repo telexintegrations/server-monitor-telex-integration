@@ -10,6 +10,7 @@ export enum IncomingMessageType {
   getAllMetrics = "getAllMetrics",
   getCpuMetrics = "getCpuMetrics",
   getCpuLoadAverages = "getCpuLoadAverages",
+  getCpuUsagePerCore = "getCpuUsagePerCore",
   ping = "ping",
 }
 
@@ -17,6 +18,7 @@ export enum OutGoingMessageReplyType {
   getAllMetrics = "getAllMetricsReply",
   getCpuMetrics = "getCpuMetricsReply",
   getCpuLoadAverages = "getCpuLoadAveragesReply",
+  getCpuUsagePerCore = "getCpuUsagePerCoreReply",
   cpuThresholdAlert = "cpuThresholdAlert",
   replyPong = "replyPong",
 }
@@ -115,7 +117,12 @@ export async function sendMetrics(
   channelId: string,
   messageType: OutGoingMessageReplyType
 ) {
-  const metrics = await CollectorService.getMetrics();
+  let metrics;
+  if (messageType == OutGoingMessageReplyType.getCpuUsagePerCore) {
+    metrics = await CollectorService.getCpuUsagePerCoreMetrics();
+  } else {
+    metrics = await CollectorService.getMetrics();
+  }
   logger.info(`Collected metrics for ${channelId}`);
   await sendReply(channelId, { metrics }, messageType);
 }
@@ -216,6 +223,12 @@ async function handleMessages(channelId: string): Promise<void> {
             await sendMetrics(
               channelId,
               OutGoingMessageReplyType.getCpuLoadAverages
+            );
+            break;
+          case IncomingMessageType.getCpuUsagePerCore:
+            await sendMetrics(
+              channelId,
+              OutGoingMessageReplyType.getCpuUsagePerCore
             );
             break;
           default:
