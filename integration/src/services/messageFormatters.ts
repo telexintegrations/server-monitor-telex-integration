@@ -1,151 +1,146 @@
-function formatMetricsMessage(metrics: any): string {
-  try {
-    const { cpu, memory } = metrics;
-    const formatMem = `🖥️ Memory Usage: ${memory.used.toFixed(2)} GB / ${memory.total.toFixed(2)} GB (${memory.percentage.toFixed(2)}% ${getCpuUsageStatus(memory.percentage)})`;
-    return (
-      `📊 Current Server Metrics\n\n` +
-      `🔸 CPU Usage: ${cpu?.usage?.toFixed(2)}%\n` +
-      `🔸 CPU Cores: ${cpu?.cores || "N/A"}\n` +
-      `🔸 Load Average: ${cpu?.load_avg?.[0]?.toFixed(2) || "N/A"}\n\n` +
-      formatMem
-    );
-  } catch (error) {
-    console.error(
-      `Error formatting metrics message: ${(error as Error).message}`
-    );
-    return "Error formatting metrics data";
-  }
-}
+import { MetricsData, MetricReplyType } from "../types/metricType.js";
 
-function getFormattedLoadAverages(metrics: any): string {
-  try {
-    const { loadAvgs } = metrics;
-    if (!loadAvgs) return "Error: Could not retrieve CPU load averages";
-    const minute_1 = loadAvgs["1min"];
-    const minutes_5 = loadAvgs["5mins"];
-    const minutes_15 = loadAvgs["15mins"];
-    return `
-    📊 Current load average Metrics\n\n
-    🕒 1-Min Ago
-    📊 CPU Load: ${minute_1.toFixed(2)}%
-    ${cpuLoadStatus(minute_1)}\n
-    🕒 5-Min Ago
-    📊 CPU Load: ${minutes_5.toFixed(2)}%
-    ${cpuLoadStatus(minutes_5)}\n
-    🕒 15-Min Ago
-    📊 CPU Load: ${minutes_15.toFixed(2)}%
-    ${cpuLoadStatus(minutes_15)}
-    `;
-  } catch (error) {
-    console.error(
-      `Error formatting load avgs message: ${(error as Error).message}`
-    );
-    return "Error formatting load avgs data";
+/**
+ * Formats CPU metrics for display
+ */
+export function formatMetricsMessage(metrics: MetricsData): string {
+  if (!metrics.cpu) {
+    return "No CPU metrics available";
   }
-}
 
-function cpuLoadStatus(percent: number): string {
-  if (percent >= 250)
-    return "🔥Status: Critical overload! Expect major slowdowns.";
-  if (percent >= 200)
-    return "⚠️Status: CPU is overloaded! Processes are waiting.";
-  if (percent >= 150)
-    return "⚠️Status: High CPU usage! Performance may degrade.";
-  if (percent >= 100) return "⚠️Status: CPU is fully utilized.";
-  return "✅Status: System is running smoothly.";
+  return `
+┌─────────────────────────┐
+     📊 CPU METRICS     
+└─────────────────────────┘
+
+▶ Usage:        ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(metrics.cpu.usage)}
+▶ Cores:        ${metrics.cpu.cores || "N/A"}
+▶ Load Average: ${metrics.cpu.load_avg?.[0]?.toFixed(2) || "N/A"}
+${formatMemoryMetrics(metrics)}`;
 }
 
 /**
- * Format a CPU threshold alert message
- * @param metrics The metrics data
- * @param threshold The threshold that was exceeded
- * @param isCritical Whether this is a critical alert
+ * Returns a visual indicator based on usage percentage
  */
-function formatCpuAlertMessage(
-  metrics: any,
-  threshold: number,
-  isCritical = false
-): string {
-  try {
-    const { cpu } = metrics;
-    const serverName = metrics.serverName || "Your Server";
-
-    // Emojis and styling based on severity
-    const severityEmoji = isCritical ? "🔥" : "⚠️";
-    const severityText = isCritical ? "CRITICAL" : "WARNING";
-    const borderChar = isCritical ? "═" : "─";
-
-    // Build a border for the message
-    const border = borderChar.repeat(40);
-
-    // Format the timestamp
-    const timestamp = new Date().toLocaleString();
-
-    // Determine the performance impact
-    let impactText = "No impact expected";
-    if (cpu?.usage >= 95) {
-      impactText = "Severe performance degradation likely";
-    } else if (cpu?.usage >= 90) {
-      impactText = "Significant performance impact possible";
-    } else if (cpu?.usage >= 80) {
-      impactText = "Some performance impact may occur";
-    }
-
-    return `${severityEmoji} ${severityText} CPU ALERT ${severityEmoji}\n${border}\n
-CPU usage has exceeded the configured threshold!
-
-🖥️ Server: ${serverName}
-📈 Current Usage: ${cpu?.usage?.toFixed(1)}%
-🔍 Threshold: ${threshold}%
-⏱️ Cores: ${cpu?.cores || "N/A"}
-🕒 Detected at: ${timestamp}
-
-📊 Performance Impact: ${impactText}
-
-${border}
-
-${isCritical ? "👉 Immediate action recommended!" : "👉 Please investigate when possible."}
-`;
-  } catch (error) {
-    console.error(`Error formatting CPU alert: ${(error as Error).message}`);
-    return `CPU Usage Alert: CPU usage has exceeded the ${threshold}% threshold.`;
-  }
+function getUsageIndicator(usage: number): string {
+  if (usage >= 90) return "🔴 High";
+  if (usage >= 70) return "🟠 Moderate";
+  return "🟢 Normal";
 }
 
-function formatCpuUsagePerCoreMetrics(metrics: any) {
-  const { coresLoad } = metrics;
-  const numCores = coresLoad.length;
-  const avg =
-    coresLoad.reduce((curr: number, acc: number) => curr + acc, 0) / numCores;
+/**
+ * Formats memory metrics if available
+ */
+function formatMemoryMetrics(metrics: MetricsData): string {
+  if (!metrics.memory) {
+    return "";
+  }
 
-  const formattedCores = coresLoad
-    .map((load: number, index: number) => {
-      const usage = load.toFixed(1);
-      const status = getCpuUsageStatus(load);
-      return `  ⚡ Core ${index + 1}: ${usage}% ${status}\n`;
-    })
+  const memoryPercentage = metrics.memory.percentage;
+  const memoryIndicator = getUsageIndicator(memoryPercentage);
+
+  return `
+┌─────────────────────────┐
+     💾 MEMORY STATS     
+└─────────────────────────┘
+
+▶ Used:  ${metrics.memory.used.toFixed(2)} GB
+▶ Total: ${metrics.memory.total.toFixed(2)} GB
+▶ Usage: ${memoryPercentage.toFixed(2)}%  ${memoryIndicator}`;
+}
+
+/**
+ * Formats CPU load averages
+ */
+export function getFormattedLoadAverages(metrics: MetricsData): string {
+  if (!metrics.cpuLoadAvgs) {
+    return "CPU load average data not available";
+  }
+
+  const load1min = metrics.cpuLoadAvgs["1min"];
+  const load5min = metrics.cpuLoadAvgs["5mins"];
+  const load15min = metrics.cpuLoadAvgs["15mins"];
+
+  return `
+┌─────────────────────────┐
+   ⏱️ CPU LOAD AVERAGES   
+└─────────────────────────┘
+
+▶ 1 minute:   ${load1min.toFixed(2)}%  ${getUsageIndicator(load1min)}
+▶ 5 minutes:  ${load5min.toFixed(2)}%  ${getUsageIndicator(load5min)}
+▶ 15 minutes: ${load15min.toFixed(2)}%  ${getUsageIndicator(load15min)}`;
+}
+
+/**
+ * Formats CPU usage per core metrics
+ */
+export function formatCpuUsagePerCoreMetrics(metrics: MetricsData): string {
+  if (!metrics.cpuUsagePerCore || metrics.cpuUsagePerCore.length === 0) {
+    return "CPU per-core metrics not available";
+  }
+
+  const coresInfo = metrics.cpuUsagePerCore
+    .map(
+      (usage: number, index: number) =>
+        `▶ Core ${index.toString().padEnd(2)}: ${usage.toFixed(2).padEnd(5)}% ${getUsageIndicator(usage)}`
+    )
     .join("\n");
 
   return `
-📊 CPU Usage Per Core
+┌─────────────────────────┐
+   ⚡ CPU USAGE PER CORE  
+└─────────────────────────┘
 
-🖥️  Total Cores: ${numCores}
-
-${formattedCores}
-
-📊 Average Usage: ${avg.toFixed(1)}%
-`;
+${coresInfo}`;
 }
 
-function getCpuUsageStatus(percentage: number) {
-  if (percentage >= 80) return "🔴(High usage)";
-  if (percentage >= 50) return "🟠(Moderate usage)";
-  return "🟢(Low usage)";
+/**
+ * Formats CPU alert messages
+ */
+export function formatCpuAlertMessage(
+  metrics: MetricsData,
+  threshold: number,
+  isCritical: boolean
+): string {
+  const severityEmoji = isCritical ? "🔥" : "⚠️";
+  const severityText = isCritical ? "CRITICAL" : "WARNING";
+
+  if (!metrics.cpu) {
+    return `${severityEmoji} ${severityText}: CPU usage data not available`;
+  }
+
+  return `
+┌─────────────────────────┐
+ ${severityEmoji} ${severityText} CPU ALERT 
+└─────────────────────────┘
+
+CPU usage (${metrics.cpu.usage.toFixed(1)}%) has exceeded the threshold (${threshold}%)
+
+▶ Cores:     ${metrics.cpu.cores || "N/A"}
+▶ Timestamp: ${new Date().toLocaleString()}
+
+${isCritical ? "IMMEDIATE ACTION REQUIRED!" : "Please investigate when possible."}`;
 }
 
-export {
-  formatMetricsMessage,
-  getFormattedLoadAverages,
-  formatCpuAlertMessage,
-  formatCpuUsagePerCoreMetrics,
-};
+/**
+ * Universal formatter that determines the appropriate format based on metric type
+ */
+export function formatMetricResponse(
+  type: string,
+  metrics: MetricsData
+): string {
+  switch (type) {
+    case MetricReplyType.getCpuMetrics:
+      return formatMetricsMessage(metrics);
+    case MetricReplyType.getCpuLoadAverages:
+      return getFormattedLoadAverages(metrics);
+    case MetricReplyType.getCpuUsagePerCore:
+      return formatCpuUsagePerCoreMetrics(metrics);
+    case MetricReplyType.cpuThresholdAlert:
+      // This typically needs additional parameters beyond just metrics
+      // Default threshold value used as fallback
+      return formatCpuAlertMessage(metrics, 80, false);
+    default:
+      return formatMetricsMessage(metrics);
+  }
+}

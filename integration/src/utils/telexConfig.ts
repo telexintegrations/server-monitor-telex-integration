@@ -36,14 +36,23 @@ export const telexGeneratedConfig = {
       {
         label: "interval",
         type: "text",
-        required: true,
         default: "* * * * *",
+        description:
+          "The interval at which the server will send metrics to the user. The format is a cron expression. For example, '* * * * *' means every minute.",
+      },
+      {
+        label: "enable_interval_metrics_reporting",
+        type: "checkbox",
+        default: true,
+        description:
+          "Enable interval metrics reporting to the server. This will send metrics to the server at the specified interval.",
       },
       {
         label: "cpu_threshold",
         type: "number",
-        required: true,
         default: 80,
+        description:
+          "The threshold for CPU usage. If the CPU usage exceeds this threshold, the server will send an alert to the user.",
       },
     ],
     endpoints: [],

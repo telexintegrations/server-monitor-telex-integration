@@ -1,4 +1,6 @@
 import { MetricType } from "../types/metricType.js";
+import { MessageConstant } from "../utils/constant.js";
+import { TelexService } from "./telexRequest.js";
 import { zeromqServer } from "./zeromqServer.js";
 
 export const getMetricsFromPackage = async (
@@ -16,6 +18,10 @@ export const getMetricsFromPackage = async (
     return true;
   } catch (error) {
     console.error("Failed to request CPU threshold check: ", error);
+    await TelexService.SendWebhookResponse({
+      channelId,
+      message: MessageConstant.UnableToGetMetrics,
+    });
     return false;
   }
 };

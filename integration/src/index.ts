@@ -1,11 +1,10 @@
 import cors from "cors";
-import express, { Request, Response } from "express";
+import express from "express";
 import { GlobalErrorHandler } from "./middleware/errorHandler.js";
 import telexRouter from "./routes/telexRoutes.js";
 import { zeromqServer } from "./services/zeromqServer.js";
 import { integrationEnvConfig } from "./utils/config.js";
 import { AppResponse, IntegrationConstants } from "./utils/constant.js";
-import { telexGeneratedConfig } from "./utils/telexConfig.js";
 
 const app = express();
 const PORT = integrationEnvConfig.hostPort;
@@ -13,20 +12,6 @@ const PORT = integrationEnvConfig.hostPort;
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Health check endpoint
-app.get("/health", (_, res) => {
-  return AppResponse({
-    res,
-    statusCode: 200,
-    message: "Server is healthy",
-  }).Success();
-});
-
-// Integration config endpoint
-app.get("/integration-config", (req: Request, res: Response) => {
-  res.status(200).json(telexGeneratedConfig);
-});
 
 app.use(telexRouter);
 

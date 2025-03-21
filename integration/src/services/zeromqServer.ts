@@ -2,10 +2,8 @@ import { Publisher, Subscriber } from "zeromq";
 import { integrationEnvConfig } from "../utils/config.js";
 import { TelexService } from "./telexRequest.js";
 import {
-  formatMetricsMessage,
-  getFormattedLoadAverages,
+  formatMetricResponse,
   formatCpuAlertMessage,
-  formatCpuUsagePerCoreMetrics,
 } from "./messageFormatters.js";
 import { MetricReplyType } from "../types/metricType.js";
 
@@ -84,32 +82,21 @@ class ZeromqServer {
           console.info(
             `Received reply message type "${message.type}" from channel ${channelId}`
           );
+          console.log("message from package", message);
 
           // Process the reply based on message type
           switch (message.type) {
             case MetricReplyType.getCpuMetrics:
-              // For regular metrics, format them
-              const metricsMessage = formatMetricsMessage(message.data.metrics);
-              await this.sendTelexResponse(
-                channelId.toString(),
-                metricsMessage
-              );
-              break;
-
             case MetricReplyType.getCpuLoadAverages:
-              const avgsMessage = getFormattedLoadAverages(
-                message.data.metrics
-              );
-              await this.sendTelexResponse(channelId.toString(), avgsMessage);
-              break;
-
             case MetricReplyType.getCpuUsagePerCore:
-              const cpuCoresMessage = formatCpuUsagePerCoreMetrics(
+              // Use the universal formatter for standard metric types
+              const formattedMessage = formatMetricResponse(
+                message.type,
                 message.data.metrics
               );
               await this.sendTelexResponse(
                 channelId.toString(),
-                cpuCoresMessage
+                formattedMessage
               );
               break;
 

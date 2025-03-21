@@ -9,11 +9,12 @@ export interface IMetricsData {
     cores?: number;
     load_avg?: number[];
   };
-  loadAvgs?: {
+  cpuLoadAvgs?: {
     "1min": number;
     "5mins": number;
     "15mins": number;
   };
+  cpuUsagePerCore?: number[]; // array of cores usage in percentage
   memory?: {
     used: number;
     total: number;
@@ -21,11 +22,8 @@ export interface IMetricsData {
   };
 }
 
-/**
- * Get all CPU metrics
- * @returns Promise that resolves to complete CPU metrics
- */
-async function getCpuMetrics(): Promise<IMetricsData> {
+// Get all CPU metrics
+async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
   try {
     const [currentLoad, cpuInfo] = await Promise.all([
       si.currentLoad(),
@@ -62,7 +60,7 @@ async function getCpuMetrics(): Promise<IMetricsData> {
         cores: cpuInfo.cores,
         load_avg: [load.avgLoad],
       },
-      loadAvgs: normalizedLoad,
+      cpuLoadAvgs: normalizedLoad,
       memory: memData,
     };
   } catch (error) {
@@ -71,13 +69,12 @@ async function getCpuMetrics(): Promise<IMetricsData> {
   }
 }
 
-async function getCpuUsagePerCoreMetrics() {
+async function getCpuUsagePerCoreMetrics(): Promise<Partial<IMetricsData>> {
   try {
     const cl = await si.currentLoad();
     const cpus = cl.cpus;
     const coresLoad = cpus.map((cpu) => cpu.load);
-    console.log({ coresLoad });
-    return { coresLoad };
+    return { cpuUsagePerCore: coresLoad };
   } catch (error) {
     logger.error(
       `Failed to get CPU usage per core: ${(error as Error).message}`
@@ -109,12 +106,14 @@ Load Average: ${cpuMetrics.load_avg?.[0]?.toFixed(2) || "N/A"}
 }
 
 const getMetrics = async (): Promise<IMetricsData> => {
-  const { cpu, loadAvgs, memory } = await getCpuMetrics();
+  const { cpu, cpuLoadAvgs, memory } = await getCpuMetrics();
+  const { cpuUsagePerCore } = await getCpuUsagePerCoreMetrics();
 
   return {
     cpu,
-    loadAvgs,
+    cpuLoadAvgs,
     memory,
+    cpuUsagePerCore,
   };
 };
 
