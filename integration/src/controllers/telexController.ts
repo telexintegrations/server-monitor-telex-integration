@@ -109,7 +109,7 @@ export async function webhook(req: Request, res: Response) {
 
 export async function tick(req: Request, res: Response) {
   const { channel_id, settings } = req.body;
-  console.log("new tick from telex", req.body);
+  console.log("new tick => channel_id :", channel_id);
 
   // Return initial response to telex immediately
   res.status(200).json({ status: "success", message: "Message received" });
@@ -119,7 +119,9 @@ export async function tick(req: Request, res: Response) {
     (setting: any) => setting.label === "enable_interval_metrics_reporting"
   );
 
-  if (!intervalMetricsReporting) {
+  console.log("intervalMetricsReporting", intervalMetricsReporting);
+
+  if (!intervalMetricsReporting.default) {
     return;
   }
 
