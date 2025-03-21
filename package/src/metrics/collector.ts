@@ -14,6 +14,11 @@ export interface IMetricsData {
     "5mins": number;
     "15mins": number;
   };
+  memory?: {
+    used: number;
+    total: number;
+    percentage: number;
+  };
 }
 
 /**
@@ -28,12 +33,27 @@ async function getCpuMetrics(): Promise<IMetricsData> {
     ]);
 
     const load = await si.currentLoad();
+
+    // CPU Load average
     const loadAverages = os.loadavg();
     const numCores = cpuInfo.cores;
+
     const normalizedLoad = {
       "1min": (loadAverages[0] / numCores) * 100,
       "5mins": (loadAverages[1] / numCores) * 100,
       "15mins": (loadAverages[2] / numCores) * 100,
+    };
+
+    // CPU memory
+    const mem = await si.mem();
+    const usedGB = mem.used / 1024 ** 3; // Convert to GB
+    const totalGB = mem.total / 1024 ** 3;
+    const percentUsed = (mem.used / mem.total) * 100;
+
+    const memData = {
+      used: usedGB,
+      total: totalGB,
+      percentage: percentUsed,
     };
 
     return {
@@ -43,9 +63,25 @@ async function getCpuMetrics(): Promise<IMetricsData> {
         load_avg: [load.avgLoad],
       },
       loadAvgs: normalizedLoad,
+      memory: memData,
     };
   } catch (error) {
     logger.error(`Failed to get CPU metrics: ${(error as Error).message}`);
+    throw error;
+  }
+}
+
+async function getCpuUsagePerCoreMetrics() {
+  try {
+    const cl = await si.currentLoad();
+    const cpus = cl.cpus;
+    const coresLoad = cpus.map((cpu) => cpu.load);
+    console.log({ coresLoad });
+    return { coresLoad };
+  } catch (error) {
+    logger.error(
+      `Failed to get CPU usage per core: ${(error as Error).message}`
+    );
     throw error;
   }
 }
@@ -73,15 +109,17 @@ Load Average: ${cpuMetrics.load_avg?.[0]?.toFixed(2) || "N/A"}
 }
 
 const getMetrics = async (): Promise<IMetricsData> => {
-  const { cpu, loadAvgs } = await getCpuMetrics();
+  const { cpu, loadAvgs, memory } = await getCpuMetrics();
 
   return {
     cpu,
     loadAvgs,
+    memory,
   };
 };
 
 export const CollectorService = {
   getMetrics,
   getFormattedCpuMetrics,
+  getCpuUsagePerCoreMetrics,
 };
