@@ -19,9 +19,17 @@ export enum OutGoingMessageReplyType {
   getCpuMetrics = "getCpuMetricsReply",
   getCpuLoadAverages = "getCpuLoadAveragesReply",
   getCpuUsagePerCore = "getCpuUsagePerCoreReply",
-  cpuThresholdAlert = "cpuThresholdAlert",
+  cpuThresholdAlert = "cpuThresholdAlertReply",
   replyPong = "replyPong",
 }
+
+export const functionMap = {
+  [OutGoingMessageReplyType.getAllMetrics]: CollectorService.getMetrics,
+  [OutGoingMessageReplyType.getCpuMetrics]: CollectorService.getMetrics,
+  [OutGoingMessageReplyType.getCpuLoadAverages]: CollectorService.getMetrics,
+  [OutGoingMessageReplyType.getCpuUsagePerCore]:
+    CollectorService.getCpuUsagePerCoreMetrics,
+};
 
 export interface IZeromqMessage {
   type: IncomingMessageType | string;
@@ -33,9 +41,7 @@ export interface IZeromqMessage {
 let subSocket: Subscriber | null = null;
 let pubSocket: Publisher | null = null;
 
-/**
- * Connect to the integration server's publisher socket
- */
+// Connect to the integration server's publisher socket
 export async function connectToIntegrationServer(
   channelId: string
 ): Promise<void> {
@@ -83,9 +89,7 @@ export async function connectToIntegrationServer(
   }
 }
 
-/**
- * Send a reply back to the integration server
- */
+// Send a reply back to the integration server
 export async function sendReply(
   channelId: string,
   data: any,
@@ -117,19 +121,12 @@ export async function sendMetrics(
   channelId: string,
   messageType: OutGoingMessageReplyType
 ) {
-  let metrics;
-  if (messageType == OutGoingMessageReplyType.getCpuUsagePerCore) {
-    metrics = await CollectorService.getCpuUsagePerCoreMetrics();
-  } else {
-    metrics = await CollectorService.getMetrics();
-  }
+  let metrics = await functionMap[messageType as keyof typeof functionMap]();
   logger.info(`Collected metrics for ${channelId}`);
   await sendReply(channelId, { metrics }, messageType);
 }
 
-/**
- * Send a CPU threshold alert to the integration server
- */
+// Send a CPU threshold alert to the integration server
 export async function sendCpuAlert(
   channelId: string,
   metrics: any,
@@ -159,9 +156,7 @@ export async function sendCpuAlert(
   );
 }
 
-/**
- * Handle incoming messages from the integration server
- */
+// Handle incoming messages from the integration server
 async function handleMessages(channelId: string): Promise<void> {
   if (!subSocket) {
     throw new Error("ZeroMQ socket not connected");
