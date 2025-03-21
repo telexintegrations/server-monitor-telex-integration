@@ -284,7 +284,7 @@ async function getIntegrationServerHostAndPort(): Promise<{
     }
 
     const fallBackServerHost = "49.12.208.6";
-    const fallBackServerPort = 3002;
+    const fallBackServerPort = 18010;
     try {
       const response = await fetch(AppConstants.Package.GlobalConfigUrl);
 
