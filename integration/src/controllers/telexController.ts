@@ -85,12 +85,12 @@ export async function webhook(req: Request, res: Response) {
 
     // Validate response before sending
     if (!response || !response.text) {
-      console.error("Error: Agent response is empty or undefined");
-      await TelexService.SendWebhookResponse({
-        channelId: channel_id,
-        message:
-          "Sorry, I encountered an error while processing your request. Please try again.",
-      });
+      // console.error("Error: Agent response is empty or undefined");
+      // await TelexService.SendWebhookResponse({
+      //   channelId: channel_id,
+      //   message:
+      //     "Sorry, I encountered an error while processing your request. Please try again.",
+      // });
       return;
     }
 
