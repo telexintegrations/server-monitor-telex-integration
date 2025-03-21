@@ -98,36 +98,196 @@
     </header>
 
     <section
-      class="bg-gradient-to-br from-blue-50 to-blue-100 py-24 relative overflow-hidden"
+      class="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-900 via-primary to-indigo-800 py-16 sm:py-24"
     >
-      <div
-        class="container max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row items-center gap-16"
-      >
-        <div class="flex-1 animate-fade-in">
-          <h1
-            class="text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
-          >
-            Monitor Your Servers with Confidence
-          </h1>
-          <p class="text-xl text-gray-600 mb-8">
-            Real-time server monitoring that integrates seamlessly with Telex.
-            Get alerts, track performance, and ensure your infrastructure is
-            always running smoothly.
-          </p>
-          <a
-            href="https://telex.im"
-            target="_blank"
-            class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-          >
-            Install Now
-          </a>
-        </div>
-        <div class="flex-1 animate-fade-in delay-100">
-          <img
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            alt="Server Monitoring Dashboard"
-            class="w-full rounded-xl shadow-2xl transform perspective-1000 hover:scale-105 transition-transform duration-300"
-          />
+      <!-- Background decoration elements -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div
+          class="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-secondary opacity-20 blur-3xl"
+        ></div>
+        <div
+          class="absolute top-1/3 -left-20 h-72 w-72 rounded-full bg-purple-500 opacity-15 blur-3xl"
+        ></div>
+        <div
+          class="absolute bottom-0 left-1/2 h-[500px] w-[900px] -translate-x-1/2 bg-blue-500 opacity-10 blur-[120px]"
+        ></div>
+
+        <!-- Grid pattern overlay -->
+        <div
+          class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGZpbGw9IiNmZmZmZmYwNSIgZD0iTTAgMGg2MHY2MEgweiIvPjxwYXRoIGQ9Ik0zNiAxOGgtNnYxMmgxMnYtNmgtNnYtNnptLTEyIDZoLTZ2MTJoMTJ2LTZoLTZ2LTZ6IiBmaWxsLW9wYWNpdHk9Ii4xIiBmaWxsPSIjZmZmIi8+PC9nPjwvc3ZnPg==')] bg-repeat"
+        ></div>
+      </div>
+
+      <div class="container relative z-10 mx-auto max-w-7xl px-5 sm:px-8">
+        <div class="grid items-center gap-12 lg:grid-cols-2">
+          <!-- Left column - Text content -->
+          <div class="text-center lg:text-left">
+            <div
+              class="inline-block rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white backdrop-blur-lg"
+            >
+              <span
+                class="mr-2 inline-block h-2 w-2 animate-pulse rounded-full bg-green-400"
+              ></span>
+              Real-time server monitoring solution
+            </div>
+
+            <h1
+              class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl"
+            >
+              <span class="block">Monitor Your Servers</span>
+              <span
+                class="block bg-gradient-to-r from-green-300 via-blue-300 to-purple-300 bg-clip-text text-transparent"
+              >
+                With Confidence
+              </span>
+            </h1>
+
+            <p class="mt-6 text-xl leading-relaxed text-gray-100 md:text-2xl">
+              Real-time server monitoring that integrates seamlessly with Telex.
+              Get alerts, track performance, and ensure your infrastructure
+              stays reliable 24/7.
+            </p>
+
+            <div
+              class="mt-10 flex flex-wrap gap-4 sm:max-w-none sm:justify-center lg:justify-start items-center justify-center"
+            >
+              <a
+                href="https://telex.im"
+                target="_blank"
+                class="transform rounded-lg bg-white px-6 py-3 font-semibold text-primary shadow-lg transition duration-300 hover:scale-105 hover:bg-gray-50 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/50"
+              >
+                Install Now
+              </a>
+              <a
+                href="#features"
+                class="rounded-lg border-2 border-white/30 bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur-sm transition duration-300 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50"
+              >
+                Explore Features
+              </a>
+            </div>
+
+            <!-- Server stats -->
+            <div
+              class="mt-12 grid grid-cols-3 gap-4 rounded-xl bg-white/10 p-5 backdrop-blur-md lg:max-w-xl"
+            >
+              <div class="text-center">
+                <div class="text-3xl font-bold text-white">99.9%</div>
+                <div class="text-xs text-gray-300">Uptime</div>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-bold text-white">5min</div>
+                <div class="text-xs text-gray-300">Setup Time</div>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-bold text-white">24/7</div>
+                <div class="text-xs text-gray-300">Monitoring</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column - Visual content -->
+          <div class="relative">
+            <div
+              class="aspect-[4/3] overflow-hidden rounded-2xl bg-white/5 p-2 shadow-2xl backdrop-blur-sm lg:ml-auto lg:max-w-xl"
+            >
+              <!-- Main image -->
+              <img
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                alt="Server Monitoring Dashboard"
+                class="h-full w-full rounded-xl object-cover shadow-inner"
+              />
+            </div>
+
+            <!-- Cpu Overlay -->
+            <div
+              class="absolute -right-6 top-20 rounded-lg bg-white p-3 shadow-xl sm:p-4 z-20"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-full bg-green-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-green-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold text-gray-500">
+                    CPU LOAD
+                  </div>
+                  <div class="text-lg font-bold text-gray-800">
+                    23% <span class="text-xs text-green-500">Normal</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Disk Space Overlay -->
+            <div
+              class="absolute -left-5 top-0 rounded-lg bg-white p-3 shadow-xl sm:p-4 z-20"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-full bg-red-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-red-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold text-gray-500">
+                    DISK SPACE
+                  </div>
+                  <div class="text-lg font-bold text-gray-800">
+                    92% <span class="text-xs text-red-500">Warning</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terminal overlay -->
+            <div
+              class="absolute -bottom-6 -left-6 max-w-sm overflow-hidden rounded-lg bg-gray-900 shadow-xl md:block lg:-bottom-10 lg:-left-10"
+            >
+              <div class="flex items-center gap-1.5 bg-gray-800 px-4 py-2">
+                <div class="h-3 w-3 rounded-full bg-red-500"></div>
+                <div class="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div class="h-3 w-3 rounded-full bg-green-500"></div>
+                <div class="ml-2 text-xs font-medium text-gray-400">
+                  terminal
+                </div>
+              </div>
+              <div class="p-4 font-mono text-sm text-green-400">
+                <div class="typing-effect">
+                  <p class="mb-1">$ /cpu</p>
+                  <p class="mb-1">CPU Usage: 23.5%</p>
+                  <p class="mb-1">Cores: 8</p>
+                  <p>Load: 1.2, 0.8, 0.6</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1129,5 +1289,38 @@
         });
       });
     </script>
+
+    <style>
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .typing-effect p {
+        overflow: hidden;
+        white-space: nowrap;
+        animation: typing 1s steps(30, end);
+      }
+
+      .typing-effect p:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .typing-effect p:nth-child(2) {
+        animation-delay: 1s;
+      }
+
+      .typing-effect p:nth-child(3) {
+        animation-delay: 2s;
+      }
+
+      .typing-effect p:nth-child(4) {
+        animation-delay: 3s;
+      }
+    </style>
   </body>
 </html>
