@@ -1,765 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Telex Server Monitor | Real-time Server Monitoring</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Add Tailwind CSS from CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-            },
-            colors: {
-              primary: "#4f46e5",
-              "primary-dark": "#4338ca",
-              "primary-light": "#818cf8",
-              secondary: "#10b981",
-              "secondary-dark": "#059669",
-              danger: "#ef4444",
-              warning: "#f59e0b",
-            },
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telex Server Monitor | Real-time Server Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Add Tailwind CSS from CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+          },
+          colors: {
+            primary: "#4f46e5",
+            "primary-dark": "#4338ca",
+            "primary-light": "#818cf8",
+            secondary: "#10b981",
+            "secondary-dark": "#059669",
+            danger: "#ef4444",
+            warning: "#f59e0b",
           },
         },
-      };
-    </script>
-  </head>
-  <body class="font-sans text-gray-800 bg-gray-50">
-    <header class="sticky top-0 z-10 bg-white shadow-sm">
-      <div
-        class="container max-w-7xl mx-auto px-8 py-5 flex justify-between items-center"
-      >
-        <div class="flex items-center gap-3 text-2xl font-bold text-primary">
-          <div
-            class="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-lg"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-              <line x1="6" y1="6" x2="6.01" y2="6"></line>
-              <line x1="6" y1="18" x2="6.01" y2="18"></line>
-            </svg>
-          </div>
-          Telex Server Monitor
-        </div>
-        <nav class="hidden md:block">
-          <ul class="flex gap-8">
-            <li>
-              <a
-                href="#features"
-                class="font-medium text-gray-700 hover:text-primary transition-colors"
-                >Features</a
-              >
-            </li>
-            <li>
-              <a
-                href="#how-it-works"
-                class="font-medium text-gray-700 hover:text-primary transition-colors"
-                >How It Works</a
-              >
-            </li>
-            <li>
-              <a
-                href="#metrics"
-                class="font-medium text-gray-700 hover:text-primary transition-colors"
-                >Metrics</a
-              >
-            </li>
-          </ul>
-        </nav>
-        <button
-          class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-        >
-          Get Started
-        </button>
-      </div>
-    </header>
+      },
+    };
+  </script>
 
-    <section
-      class="bg-gradient-to-br from-blue-50 to-blue-100 py-24 relative overflow-hidden"
-    >
-      <div
-        class="container max-w-7xl mx-auto px-8 flex flex-col md:flex-row items-center gap-16"
-      >
-        <div class="flex-1 animate-fade-in">
-          <h1
-            class="text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
-          >
-            Monitor Your Servers with Confidence
-          </h1>
-          <p class="text-xl text-gray-600 mb-8">
-            Real-time server monitoring that integrates seamlessly with Telex.
-            Get alerts, track performance, and ensure your infrastructure is
-            always running smoothly.
-          </p>
-          <a
-            href="https://telex.im"
-            target="_blank"
-            class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-          >
-            Install Now
-          </a>
-        </div>
-        <div class="flex-1 animate-fade-in delay-100">
-          <img
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            alt="Server Monitoring Dashboard"
-            class="w-full rounded-xl shadow-2xl transform perspective-1000 hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-      </div>
-    </section>
+</head>
 
-    <!-- Features Section -->
-    <section id="features" class="bg-white py-24">
-      <div class="container max-w-7xl mx-auto px-8">
-        <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">
-          Powerful Monitoring Features
-        </h2>
-        <p
-          class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100"
-        >
-          Everything you need to keep your servers running at peak performance
+<body class="font-sans text-gray-800 bg-gray-50">
+  <header class="sticky top-0 z-10 bg-white shadow-sm">
+    <div class="container max-w-7xl mx-auto px-5 py-5 flex justify-between items-center gap-3 sm:px-8">
+      <div class="flex items-center gap-1 font-bold text-primary sm:gap-3 sm:text-2xl">
+        <div class="flex items-center justify-center w-7 h-7 bg-primary text-white rounded-lg sm:w-10 sm:h-10">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+          </svg>
+        </div>
+        Telex Server Monitor
+      </div>
+      <nav class="hidden md:block">
+        <ul class="flex gap-8">
+          <li>
+            <a href="#features" class="font-medium text-gray-700 hover:text-primary transition-colors">Features</a>
+          </li>
+          <li>
+            <a href="#how-it-works" class="font-medium text-gray-700 hover:text-primary transition-colors">How It Works</a>
+          </li>
+          <li>
+            <a href="#metrics" class="font-medium text-gray-700 hover:text-primary transition-colors">Metrics</a>
+          </li>
+        </ul>
+      </nav>
+      <button class="bg-primary hover:bg-primary-dark text-white font-semibold px-4 py-2 rounded-lg transition-colors text-xs sm:text-base sm:px-6 sm:py-3">
+        Get Started
+      </button>
+    </div>
+  </header>
+
+  <section class="bg-gradient-to-br from-blue-50 to-blue-100 py-24 relative overflow-hidden">
+    <div class="container max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row items-center gap-16">
+      <div class="flex-1 animate-fade-in">
+        <h1 class="text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          Monitor Your Servers with Confidence
+        </h1>
+        <p class="text-xl text-gray-600 mb-8">
+          Real-time server monitoring that integrates seamlessly with Telex.
+          Get alerts, track performance, and ensure your infrastructure is
+          always running smoothly.
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100"
-          >
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                ></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-4">
-              Seamless Telex Integration
-            </h3>
-            <p class="text-gray-600">
-              Integrates directly with your Telex channels for instant setup and
-              real-time alerts where your team already communicates.
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200"
-          >
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-4">CPU Usage Tracking</h3>
-            <p class="text-gray-600">
-              Monitor CPU usage in real-time with customizable thresholds to
-              detect performance issues before they impact your users.
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300"
-          >
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                ></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-4">Intelligent Alerts</h3>
-            <p class="text-gray-600">
-              Receive automatic alerts when CPU usage exceeds thresholds, with
-              smart notifications that reduce alert fatigue.
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100"
-          >
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="3" y1="9" x2="21" y2="9"></line>
-                <line x1="9" y1="21" x2="9" y2="9"></line>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-4">Simple Installation</h3>
-            <p class="text-gray-600">
-              Get up and running in minutes with our one-line installation
-              command that automatically configures everything for you.
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200"
-          >
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-4">Comprehensive Logging</h3>
-            <p class="text-gray-600">
-              Detailed logs help you troubleshoot issues quickly, with error
-              logs separated for easier debugging.
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300"
-          >
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-4">Multi-Server Support</h3>
-            <p class="text-gray-600">
-              Monitor multiple servers from a single Telex channel, with clear
-              identification of which server is reporting issues.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section id="how-it-works" class="bg-gray-50 py-24">
-      <div class="container max-w-7xl mx-auto px-8">
-        <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">
-          How It Works
-        </h2>
-        <p
-          class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100"
-        >
-          Get started in just a few simple steps
-        </p>
-        <div class="max-w-3xl mx-auto space-y-8">
-          <div class="flex gap-8 items-start animate-fade-in delay-100">
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0"
-            >
-              1
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-2">
-                Configure Telex Integration
-              </h3>
-              <p class="text-gray-600">
-                First, go to the Integrations section in Telex and create a new
-                integration. Provide the below URL and save to install the
-                integration
-              </p>
-              <div
-                class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto"
-              >
-                https://telex-server-monitor.umoru.tech/integration-config
-              </div>
-            </div>
-          </div>
-
-          <div class="flex gap-8 items-start animate-fade-in delay-200">
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0"
-            >
-              2
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-2">
-                Run Setup Command in Telex
-              </h3>
-              <p class="text-gray-600">
-                After installing the integration , activate the integration and
-                run the setup command in the Telex channel you want to monitor.
-              </p>
-              <div
-                class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto"
-              >
-                /setup-monitoring
-              </div>
-            </div>
-          </div>
-          <div class="flex gap-8 items-start animate-fade-in delay-300">
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0"
-            >
-              3
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-2">
-                Copy & Run Installation Command
-              </h3>
-              <p class="text-gray-600">
-                Telex will provide an installation command with your unique
-                channel ID. Run this command on your server with sudo access.
-              </p>
-              <div
-                class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto"
-              >
-                curl -sSL
-                https://raw.githubusercontent.com/telexintegrations/server-monitor-telex-integration/refs/heads/dev/install-telex-sdk.sh
-                | bash -s -- --channel-id &lt;your-channel-id&gt;
-              </div>
-            </div>
-          </div>
-          <div class="flex gap-8 items-start animate-fade-in delay-300">
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0"
-            >
-              4
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-2">
-                Automatic Installation Process
-              </h3>
-              <p class="text-gray-600">
-                The installation script will automatically:
-              </p>
-              <ul class="list-disc pl-6 mt-2 text-gray-600 space-y-1">
-                <li>
-                  Install Node.js and PM2 if they're not already on your server
-                </li>
-                <li>Install the Telex Server Monitor package globally</li>
-                <li>Configure the monitoring agent with your channel ID</li>
-                <li>Set up PM2 to ensure the agent runs on system boot</li>
-                <li>Start the monitoring service immediately</li>
-              </ul>
-            </div>
-          </div>
-          <div class="flex gap-8 items-start animate-fade-in delay-300">
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0"
-            >
-              5
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-2">Verify Installation</h3>
-              <p class="text-gray-600">
-                Check that the monitoring agent is running correctly on your
-                server.
-              </p>
-              <div
-                class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto"
-              >
-                pm2 status telex-server-monitor
-              </div>
-            </div>
-          </div>
-          <div class="flex gap-8 items-start animate-fade-in delay-300">
-            <div
-              class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0"
-            >
-              6
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-2">Start Receiving Alerts</h3>
-              <p class="text-gray-600">
-                That's it! You'll now receive real-time alerts and periodic
-                reports in your Telex channel whenever your server needs
-                attention.
-              </p>
-            </div>
-          </div>
-
-          <!-- New Commands Section -->
-          <div class="mt-12 bg-gray-100 p-8 rounded-xl">
-            <h3 class="text-2xl font-bold mb-6">Available Commands</h3>
-            <div class="space-y-6">
-              <div>
-                <div class="flex items-center gap-4 mb-2">
-                  <code class="bg-gray-900 text-white px-4 py-2 rounded-lg">/cpu</code>
-                  <span class="text-gray-700">Get current CPU metrics</span>
-                </div>
-                <p class="text-gray-600 text-sm">Shows detailed CPU usage statistics for your server</p>
-              </div>
-              <div>
-                <div class="flex items-center gap-4 mb-2">
-                  <code class="bg-gray-900 text-white px-4 py-2 rounded-lg">/cpuAvg</code>
-                  <span class="text-gray-700">Get CPU load averages</span>
-                </div>
-                <p class="text-gray-600 text-sm">Displays CPU load averages over time</p>
-              </div>
-              <div class="bg-blue-50 p-4 rounded-lg mt-4">
-                <p class="text-blue-800">
-                  <strong>Note:</strong> These commands can be run at any time in your Telex channel 
-                  to get immediate server metrics. The system also sends automatic alerts when 
-                  critical thresholds are exceeded.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Metrics Section -->
-    <section id="metrics" class="bg-white py-24">
-      <div class="container max-w-7xl mx-auto px-8">
-        <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">
-          Key Metrics Monitored
-        </h2>
-        <p
-          class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100"
-        >
-          Keep track of these critical server metrics to ensure optimal
-          performance
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100"
-          >
-            <div class="text-3xl font-bold text-primary mb-4">CPU</div>
-            <p class="text-gray-600">
-              Real-time CPU usage tracking with threshold alerts
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200"
-          >
-            <div class="text-3xl font-bold text-primary mb-4">RAM</div>
-            <p class="text-gray-600">
-              Memory consumption monitoring and leak detection
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300"
-          >
-            <div class="text-3xl font-bold text-primary mb-4">DISK</div>
-            <p class="text-gray-600">
-              Storage capacity and I/O performance tracking
-            </p>
-          </div>
-          <div
-            class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100"
-          >
-            <div class="text-3xl font-bold text-primary mb-4">NET</div>
-            <p class="text-gray-600">
-              Network traffic and bandwidth utilization
-            </p>
-          </div>
-        </div>
-
-        <div class="mt-20">
-          <h2 class="text-3xl font-bold text-center mb-6 animate-fade-in">
-            Managing Your Monitoring Service
-          </h2>
-          <div class="max-w-3xl mx-auto bg-gray-50 p-8 rounded-xl shadow-sm">
-            <p class="text-lg text-gray-700 mb-6">
-              After installation, you can manage your monitoring service using
-              these PM2 commands:
-            </p>
-            <div class="space-y-4">
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
-                >
-                  pm2 status telex-server-monitor
-                </div>
-                <p class="text-gray-600">
-                  Check if the monitoring service is running
-                </p>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
-                >
-                  pm2 logs telex-server-monitor
-                </div>
-                <p class="text-gray-600">
-                  View real-time logs from the monitoring service
-                </p>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
-                >
-                  pm2 restart telex-server-monitor
-                </div>
-                <p class="text-gray-600">
-                  Restart the monitoring service if needed
-                </p>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
-                >
-                  pm2 stop telex-server-monitor
-                </div>
-                <p class="text-gray-600">
-                  Temporarily stop the monitoring service
-                </p>
-              </div>
-            </div>
-            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h4 class="font-semibold text-blue-800 mb-2">
-                Troubleshooting Tips
-              </h4>
-              <ul class="list-disc pl-6 text-gray-700 space-y-1">
-                <li>
-                  If the service isn't running, try restarting with
-                  <code class="bg-gray-200 px-1 rounded"
-                    >pm2 restart telex-server-monitor</code
-                  >
-                </li>
-                <li>
-                  Check logs for any errors with
-                  <code class="bg-gray-200 px-1 rounded"
-                    >pm2 logs telex-server-monitor</code
-                  >
-                </li>
-                <li>
-                  Logs are also stored in
-                  <code class="bg-gray-200 px-1 rounded"
-                    >/var/log/telex-server-monitor/</code
-                  >
-                </li>
-                <li>
-                  If changes don't appear to be working, ensure PM2 startup is
-                  configured:
-                  <code class="bg-gray-200 px-1 rounded">pm2 save</code>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section
-      class="bg-gradient-to-r from-primary to-primary-dark text-white py-24 text-center"
-    >
-      <div class="container max-w-7xl mx-auto px-8">
-        <h2 class="text-4xl font-bold mb-6 animate-fade-in">
-          Ready to Monitor Your Servers?
-        </h2>
-        <p
-          class="text-xl opacity-90 max-w-2xl mx-auto mb-8 animate-fade-in delay-100"
-        >
-          Get started today in just two simple steps.
-        </p>
-        <div
-          class="max-w-lg mx-auto bg-white bg-opacity-10 rounded-xl p-6 mb-8 backdrop-blur-sm"
-        >
-          <div class="text-left mb-4">
-            <div
-              class="inline-block bg-white bg-opacity-20 w-8 h-8 rounded-full text-center leading-8 font-bold mr-2"
-            >
-              1
-            </div>
-            <span class="text-lg font-medium">In your Telex channel, run:</span>
-          </div>
-          <div
-            class="bg-black bg-opacity-30 p-3 rounded-lg font-mono text-left mb-6 overflow-x-auto"
-          >
-            /setup-monitoring
-          </div>
-          <div class="text-left mb-4">
-            <div
-              class="inline-block bg-white bg-opacity-20 w-8 h-8 rounded-full text-center leading-8 font-bold mr-2"
-            >
-              2
-            </div>
-            <span class="text-lg font-medium"
-              >Copy & run the provided command on your server</span
-            >
-          </div>
-        </div>
-        <a
-          href="https://github.com/telexintegrations/server-monitor-telex-integration"
-          target="_blank"
-          class="inline-block bg-white hover:bg-gray-100 text-primary font-semibold px-8 py-4 rounded-lg transition-colors transform hover:scale-105 animate-fade-in delay-200"
-        >
-          Visit GitHub Repository
+        <a href="https://telex.im" target="_blank" class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+          Install Now
         </a>
       </div>
-    </section>
+      <div class="flex-1 animate-fade-in delay-100">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Server Monitoring Dashboard" class="w-full rounded-xl shadow-2xl transform perspective-1000 hover:scale-105 transition-transform duration-300" />
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white pt-16 pb-8">
-      <div class="container max-w-7xl mx-auto px-8">
-        <div class="flex items-center gap-3 text-2xl font-bold mb-4">
-          <div
-            class="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-lg"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-              <line x1="6" y1="6" x2="6.01" y2="6"></line>
-              <line x1="6" y1="18" x2="6.01" y2="18"></line>
+  <!-- Features Section -->
+  <section id="features" class="bg-white py-24">
+    <div class="container max-w-7xl mx-auto px-8">
+      <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">
+        Powerful Monitoring Features
+      </h2>
+      <p class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100">
+        Everything you need to keep your servers running at peak performance
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
             </svg>
           </div>
-          Telex Server Monitor
+          <h3 class="text-xl font-semibold mb-4">
+            Seamless Telex Integration
+          </h3>
+          <p class="text-gray-600">
+            Integrates directly with your Telex channels for instant setup and
+            real-time alerts where your team already communicates.
+          </p>
         </div>
-        <div
-          class="text-sm text-gray-400 text-center pt-8 border-t border-gray-800"
-        >
-          &copy; <span id="footer-year"></span> Telex Server Monitor. All rights
-          reserved. ISC ©
-          <a
-            href="https://github.com/telexintegrations/server-monitor-telex-integration"
-            class="text-gray-400 hover:text-white transition-colors"
-            >The TELIN Team</a
-          >
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">CPU Usage Tracking</h3>
+          <p class="text-gray-600">
+            Monitor CPU usage in real-time with customizable thresholds to
+            detect performance issues before they impact your users.
+          </p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">Intelligent Alerts</h3>
+          <p class="text-gray-600">
+            Receive automatic alerts when CPU usage exceeds thresholds, with
+            smart notifications that reduce alert fatigue.
+          </p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">Simple Installation</h3>
+          <p class="text-gray-600">
+            Get up and running in minutes with our one-line installation
+            command that automatically configures everything for you.
+          </p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">Comprehensive Logging</h3>
+          <p class="text-gray-600">
+            Detailed logs help you troubleshoot issues quickly, with error
+            logs separated for easier debugging.
+          </p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary-light text-primary rounded-full mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">Multi-Server Support</h3>
+          <p class="text-gray-600">
+            Monitor multiple servers from a single Telex channel, with clear
+            identification of which server is reporting issues.
+          </p>
         </div>
       </div>
-    </footer>
+    </div>
+  </section>
 
-    <script>
-      // Update the year in the footer
-      document.getElementById("footer-year").textContent =
-        new Date().getFullYear();
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="bg-gray-50 py-24">
+    <div class="container max-w-7xl mx-auto px-5 sm:px-8">
+      <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">
+        How It Works
+      </h2>
+      <p class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100">
+        Get started in just a few simple steps
+      </p>
+      <div class="max-w-3xl mx-auto space-y-10">
+        <div class="flex flex-col animate-fade-in delay-100 gap-4 lg:gap-8 lg:flex-row">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary text-white text-sm rounded-full font-bold flex-shrink-0 sm:text-base">
+            1
+          </div>
+          <div class="">
+            <h3 class="text-xl font-semibold mb-2">
+              Configure Telex Integration
+            </h3>
+            <p class="text-gray-600">
+              First, go to the Integrations section in Telex and create a new
+              integration. Provide the below URL and save to install the
+              integration
+            </p>
+            <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto whitespace-nowrap">
 
-      // Intersection Observer for animations
-      document.addEventListener("DOMContentLoaded", function () {
-        const animatedElements = document.querySelectorAll(
-          "[class*='animate-fade-in']"
-        );
+              https://telex-server-monitor.umoru.tech/integration-config
 
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("opacity-100", "translate-y-0");
-                entry.target.classList.remove("opacity-0", "translate-y-5");
-              }
-            });
-          },
-          { threshold: 0.1 }
-        );
+            </div>
+          </div>
+        </div>
 
-        animatedElements.forEach((element) => {
-          element.classList.add(
-            "opacity-0",
-            "translate-y-5",
-            "transition-all",
-            "duration-500",
-            "ease-out"
-          );
-          observer.observe(element);
-        });
+        <div class="flex flex-col animate-fade-in delay-200 gap-4 lg:gap-8 lg:flex-row">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">
+            2
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-2">
+              Run Setup Command in Telex
+            </h3>
+            <p class="text-gray-600">
+              After installing the integration , activate the integration and
+              run the setup command in the Telex channel you want to monitor.
+            </p>
+            <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto">
+              /setup-monitoring
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col animate-fade-in delay-300 gap-4 lg:gap-8 lg:flex-row">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">
+            3
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-2">
+              Copy & Run Installation Command
+            </h3>
+            <p class="text-gray-600">
+              Telex will provide an installation command with your unique
+              channel ID. Run this command on your server with sudo access.
+            </p>
+            <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto">
+              curl -sSL
+              https://raw.githubusercontent.com/telexintegrations/server-monitor-telex-integration/refs/heads/dev/install-telex-sdk.sh
+              | bash -s -- --channel-id &lt;your-channel-id&gt;
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col animate-fade-in delay-300 gap-4 lg:gap-8 lg:flex-row">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">
+            4
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-2">
+              Automatic Installation Process
+            </h3>
+            <p class="text-gray-600">
+              The installation script will automatically:
+            </p>
+            <ul class="list-disc pl-6 mt-2 text-gray-600 space-y-1">
+              <li>
+                Install Node.js and PM2 if they're not already on your server
+              </li>
+              <li>Install the Telex Server Monitor package globally</li>
+              <li>Configure the monitoring agent with your channel ID</li>
+              <li>Set up PM2 to ensure the agent runs on system boot</li>
+              <li>Start the monitoring service immediately</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flex flex-col animate-fade-in delay-300 gap-4 lg:gap-8 lg:flex-row">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">
+            5
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-2">Verify Installation</h3>
+            <p class="text-gray-600">
+              Check that the monitoring agent is running correctly on your
+              server.
+            </p>
+            <div class="mt-4 bg-gray-900 text-white p-4 rounded-lg font-mono overflow-x-auto">
+              pm2 status telex-server-monitor
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col animate-fade-in delay-300 gap-4 lg:gap-8 lg:flex-row">
+          <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full font-bold flex-shrink-0">
+            6
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-2">Start Receiving Alerts</h3>
+            <p class="text-gray-600">
+              That's it! You'll now receive real-time alerts and periodic
+              reports in your Telex channel whenever your server needs
+              attention.
+            </p>
+          </div>
+        </div>
 
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-          anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute("href");
-            if (targetId === "#") return;
+        <!-- New Commands Section -->
+        <div class="mt-12 bg-gray-100 p-8 rounded-xl">
+          <h3 class="text-2xl font-bold mb-6">Available Commands</h3>
+          <div class="space-y-8">
+            <div>
+              <div class="flex flex-col gap-4 mb-1 sm:flex-row sm:items-center">
+                <code class="bg-gray-900 text-white px-4 py-2 rounded-lg w-fit">/cpu</code>
+                <span class="text-gray-700 font-bold">Get current CPU metrics</span>
+              </div>
+              <p class="text-gray-600 text-sm">Shows detailed CPU usage statistics for your server</p>
+            </div>
+            <div>
+              <div class="flex flex-col gap-4 mb-1 sm:flex-row sm:items-center">
+                <code class="bg-gray-900 text-white px-4 py-2 rounded-lg w-fit">/cpuLoadAvg</code>
+                <span class="text-gray-700 font-bold">Get CPU load averages</span>
+              </div>
+              <p class="text-gray-600 text-sm">Displays CPU load averages over time</p>
+            </div>
+            <div>
+              <div class="flex flex-col gap-4 mb-1 sm:flex-row sm:items-center">
+                <code class="bg-gray-900 text-white px-4 py-2 rounded-lg w-fit">/perCoreUsage</code>
+                <span class="text-gray-700 font-bold">Get CPU usage metric per core</span>
+              </div>
+              <p class="text-gray-600 text-sm">Displays CPU usage metric for each individual core</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg mt-4">
+              <p class="text-blue-800">
+                <strong>Note:</strong> These commands can be run at any time in your Telex channel
+                to get immediate server metrics. The system also sends automatic alerts when
+                critical thresholds are exceeded.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-              targetElement.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-                inline: "nearest",
-              });
+  <!-- Metrics Section -->
+  <section id="metrics" class="bg-white py-24">
+    <div class="container max-w-7xl mx-auto px-8">
+      <h2 class="text-4xl font-bold text-center mb-4 animate-fade-in">
+        Key Metrics Monitored
+      </h2>
+      <p class="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-16 animate-fade-in delay-100">
+        Keep track of these critical server metrics to ensure optimal
+        performance
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+          <div class="text-3xl font-bold text-primary mb-4">CPU</div>
+          <p class="text-gray-600">
+            Real-time CPU usage tracking with threshold alerts
+          </p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-200">
+          <div class="text-3xl font-bold text-primary mb-4">RAM</div>
+          <p class="text-gray-600">
+            Memory consumption monitoring and leak detection
+          </p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-300">
+          <div class="text-3xl font-bold text-primary mb-4">DISK</div>
+          <p class="text-gray-600">
+            Storage capacity and I/O performance tracking
+          </p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow transition-transform transform hover:-translate-y-1 hover:shadow-lg animate-fade-in delay-100">
+          <div class="text-3xl font-bold text-primary mb-4">NET</div>
+          <p class="text-gray-600">
+            Network traffic and bandwidth utilization
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-20">
+        <h2 class="text-3xl font-bold text-center mb-6 animate-fade-in">
+          Managing Your Monitoring Service
+        </h2>
+        <div class="max-w-3xl mx-auto bg-gray-50 p-8 rounded-xl shadow-sm">
+          <p class="text-lg text-gray-700 mb-6">
+            After installation, you can manage your monitoring service using
+            these PM2 commands:
+          </p>
+          <div class="space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+              <div class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0">
+                pm2 status telex-server-monitor
+              </div>
+              <p class="text-gray-600">
+                Check if the monitoring service is running
+              </p>
+            </div>
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+              <div class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0">
+                pm2 logs telex-server-monitor
+              </div>
+              <p class="text-gray-600">
+                View real-time logs from the monitoring service
+              </p>
+            </div>
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+              <div class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0">
+                pm2 restart telex-server-monitor
+              </div>
+              <p class="text-gray-600">
+                Restart the monitoring service if needed
+              </p>
+            </div>
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+              <div class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0">
+                pm2 stop telex-server-monitor
+              </div>
+              <p class="text-gray-600">
+                Temporarily stop the monitoring service
+              </p>
+            </div>
+          </div>
+          <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 class="font-semibold text-blue-800 mb-2">
+              Troubleshooting Tips
+            </h4>
+            <ul class="list-disc pl-6 text-gray-700 space-y-1">
+              <li>
+                If the service isn't running, try restarting with
+                <code class="bg-gray-200 px-1 rounded">pm2 restart telex-server-monitor</code>
+              </li>
+              <li>
+                Check logs for any errors with
+                <code class="bg-gray-200 px-1 rounded">pm2 logs telex-server-monitor</code>
+              </li>
+              <li>
+                Logs are also stored in
+                <code class="bg-gray-200 px-1 rounded">/var/log/telex-server-monitor/</code>
+              </li>
+              <li>
+                If changes don't appear to be working, ensure PM2 startup is
+                configured:
+                <code class="bg-gray-200 px-1 rounded">pm2 save</code>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-gradient-to-r from-primary to-primary-dark text-white py-24 text-center">
+    <div class="container max-w-7xl mx-auto px-8">
+      <h2 class="text-4xl font-bold mb-6 animate-fade-in">
+        Ready to Monitor Your Servers?
+      </h2>
+      <p class="text-xl opacity-90 max-w-2xl mx-auto mb-8 animate-fade-in delay-100">
+        Get started today in just two simple steps.
+      </p>
+      <div class="max-w-lg mx-auto bg-white bg-opacity-10 rounded-xl p-6 mb-8 backdrop-blur-sm">
+        <div class="text-left mb-4">
+          <div class="inline-block bg-white bg-opacity-20 w-8 h-8 rounded-full text-center leading-8 font-bold mr-2">
+            1
+          </div>
+          <span class="text-lg font-medium">In your Telex channel, run:</span>
+        </div>
+        <div class="bg-black bg-opacity-30 p-3 rounded-lg font-mono text-left mb-6 overflow-x-auto">
+          /setup-monitoring
+        </div>
+        <div class="text-left mb-4">
+          <div class="inline-block bg-white bg-opacity-20 w-8 h-8 rounded-full text-center leading-8 font-bold mr-2">
+            2
+          </div>
+          <span class="text-lg font-medium">Copy & run the provided command on your server</span>
+        </div>
+      </div>
+      <a href="https://github.com/telexintegrations/server-monitor-telex-integration" target="_blank" class="inline-block bg-white hover:bg-gray-100 text-primary font-semibold px-8 py-4 rounded-lg transition-colors transform hover:scale-105 animate-fade-in delay-200">
+        Visit GitHub Repository
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container max-w-7xl mx-auto px-8">
+      <div class="flex items-center gap-3 text-2xl font-bold mb-4">
+        <div class="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+          </svg>
+        </div>
+        Telex Server Monitor
+      </div>
+      <div class="text-sm text-gray-400 text-center pt-8 border-t border-gray-800">
+        &copy; <span id="footer-year"></span> Telex Server Monitor. All rights
+        reserved. ISC ©
+        <a href="https://github.com/telexintegrations/server-monitor-telex-integration" class="text-gray-400 hover:text-white transition-colors">The TELIN Team</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Update the year in the footer
+    document.getElementById("footer-year").textContent =
+      new Date().getFullYear();
+
+    // Intersection Observer for animations
+    document.addEventListener("DOMContentLoaded", function() {
+      const animatedElements = document.querySelectorAll(
+        "[class*='animate-fade-in']"
+      );
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("opacity-100", "translate-y-0");
+              entry.target.classList.remove("opacity-0", "translate-y-5");
             }
           });
+        }, {
+          threshold: 0.1
+        }
+      );
+
+      animatedElements.forEach((element) => {
+        element.classList.add(
+          "opacity-0",
+          "translate-y-5",
+          "transition-all",
+          "duration-500",
+          "ease-out"
+        );
+        observer.observe(element);
+      });
+
+      // Smooth scrolling
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute("href");
+          if (targetId === "#") return;
+
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+              inline: "nearest",
+            });
+          }
         });
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
+
 </html>
