@@ -83,22 +83,27 @@ export async function webhook(req: Request, res: Response) {
 
     console.log("response text =>", response.text);
 
+    // Check if the response contains a tool call
+    const containsToolCall =
+      response.toolCalls && response.toolCalls.length > 0;
+
     // Validate response before sending
     if (!response || !response.text) {
-      // console.error("Error: Agent response is empty or undefined");
-      // await TelexService.SendWebhookResponse({
-      //   channelId: channel_id,
-      //   message:
-      //     "Sorry, I encountered an error while processing your request. Please try again.",
-      // });
       return;
     }
 
-    // Send the agent's response to telex
-    await TelexService.SendWebhookResponse({
-      channelId: channel_id,
-      message: response.text,
-    });
+    // Only send a response if there's no tool call
+    if (!containsToolCall) {
+      // Send the agent's response to telex
+      await TelexService.SendWebhookResponse({
+        channelId: channel_id,
+        message: response.text,
+      });
+    } else {
+      console.log(
+        "Tool call detected, not sending immediate response to Telex"
+      );
+    }
   } catch (error) {
     console.error("Error sending webhook response:", error);
     // Attempt to send error message back to user
