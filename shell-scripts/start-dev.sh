@@ -14,6 +14,40 @@ ALLOWED_ARGS=("--channel-id" "-ci", "--dev", "-d" )
 run_check_allowed_args ARGS ALLOWED_ARGS
 
 
+# Detect OS
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$NAME
+else
+    OS=$(uname -s)
+fi
+
+print_message "info" "Detected OS: $OS"
+
+# Ensure jq is installed
+if ! command_exists jq; then
+    print_message "info" "jq not found. Installing jq..."
+    
+    case $OS in
+        "Ubuntu" | "Debian GNU/Linux" | "KDE neon")
+            sudo apt-get install -y jq
+            ;;
+        "CentOS Linux" | "Red Hat Enterprise Linux")
+            sudo yum install -y jq
+            ;;
+        "Darwin")
+            brew install jq
+            ;;
+        *)
+            print_message "error" "Unsupported operating system: $OS"
+            exit 1
+            ;;
+    esac
+    
+    print_message "success" "jq installed successfully"
+fi
+
+
 check_channel_id() {
     local found_channel_id=-1
     for i in "${!ARGS[@]}"; do
@@ -23,10 +57,23 @@ check_channel_id() {
         fi
     done
     
-    if [ $found_channel_id -lt 0 ]; then
-        print_message "error" "Channel ID is required. --channel-id <channel-id>."
-        exit
+    local storePath="$HOME/.telex-monitor/store.json"
+
+    if [ -f "$storePath" ]; then
+        print_message "info" "store.json file exists"
+        CHANNEL_ID=$(jq -r ".outputChannelId // empty" "$storePath")
+        if [[ -z "$CHANNEL_ID" && $found_channel_id -lt 0 ]]; then
+             print_message "error" "Channel ID is not set. Run $0 --channel-id <channel-id>"
+             exit
+        fi
+    else
+        if [ $found_channel_id -lt 0 ]; then
+            print_message "error" "Channel ID is required. --channel-id <channel-id>."
+            exit
+        fi
     fi
+
+   
 }
 
 check_channel_id
@@ -81,7 +128,7 @@ mode () {
             node dist/cli/index.js setup --channel-id "$CHANNEL_ID"
         fi
 
-        if [[ $DEVELOPMENT_MODE = true ]]; then
+        if [[ $DEVELOPMENT_MODE == true ]]; then
             pm2 start "npm run $1" -n "$instance_name" -i 1 --watch
         else
             pm2 start "npm run $2" -n "$instance_name" -i 1
