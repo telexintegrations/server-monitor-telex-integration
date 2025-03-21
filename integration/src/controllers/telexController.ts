@@ -95,12 +95,10 @@ export async function webhook(req: Request, res: Response) {
     }
 
     // Send the agent's response to telex
-    // TODO: don't send response because we'd handle it from the zero mq server
-
-    // await TelexService.SendWebhookResponse({
-    //   channelId: channel_id,
-    //   message: response.text,
-    // });
+    await TelexService.SendWebhookResponse({
+      channelId: channel_id,
+      message: response.text,
+    });
   } catch (error) {
     console.error("Error sending webhook response:", error);
     // Attempt to send error message back to user
