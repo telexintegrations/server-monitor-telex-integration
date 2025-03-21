@@ -119,11 +119,12 @@ export async function sendReply(
  */
 export async function sendMetrics(
   channelId: string,
-  messageType: OutGoingMessageReplyType
+  messageType: OutGoingMessageReplyType,
+  userMessage?: string
 ) {
   let metrics = await functionMap[messageType as keyof typeof functionMap]();
   logger.info(`Collected metrics for ${channelId}`);
-  await sendReply(channelId, { metrics }, messageType);
+  await sendReply(channelId, { metrics, userMessage }, messageType);
 }
 
 // Send a CPU threshold alert to the integration server
@@ -205,7 +206,8 @@ async function handleMessages(channelId: string): Promise<void> {
           case IncomingMessageType.getAllMetrics:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getAllMetrics
+              OutGoingMessageReplyType.getAllMetrics,
+              message.data?.userMessage
             );
             break;
           case IncomingMessageType.getCpuMetrics:

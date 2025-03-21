@@ -6,6 +6,7 @@ import {
   formatCpuAlertMessage,
 } from "./messageFormatters.js";
 import { MetricReplyType } from "../types/metricType.js";
+import { mastra } from "../mastra/index.js";
 
 export interface IZeromqMessage {
   type: string;
@@ -73,12 +74,33 @@ class ZeromqServer {
       // Subscribe to all channels
       await this.subSocket.subscribe("");
 
+      // Track processed message IDs to prevent duplicates
+      const processedMessages = new Set<string>();
+
       // Handle incoming replies
       for await (const [channelId, messageBuffer] of this.subSocket) {
         try {
           const message = JSON.parse(
             messageBuffer.toString()
           ) as IZeromqMessage;
+
+          // Create a unique message identifier using channelId and timestamp
+          const messageId = `${channelId}_${message.timestamp}`;
+
+          // Skip if we've already processed this message
+          if (processedMessages.has(messageId)) {
+            continue;
+          }
+
+          // Add to processed messages
+          processedMessages.add(messageId);
+
+          // Clean up old messages (keep last 1000)
+          if (processedMessages.size > 1000) {
+            const oldestMessages = Array.from(processedMessages).slice(0, 100);
+            oldestMessages.forEach((id) => processedMessages.delete(id));
+          }
+
           console.info(
             `Received reply message type "${message.type}" from channel ${channelId}`
           );
@@ -114,6 +136,44 @@ class ZeromqServer {
                   message.data.severity === "critical"
                 );
               await this.sendTelexResponse(channelId.toString(), alertMessage);
+              break;
+
+            case MetricReplyType.getAllMetrics:
+              // Get the metrics agent instance
+              const agent = mastra.getAgent("metricsAgent");
+              // Generate a response using the agent with the metrics data
+              const response = await agent.generate(
+                message.data.userMessage ||
+                  "Analyze these system metrics and provide insights",
+                {
+                  threadId: channelId.toString(),
+                  resourceId: channelId.toString(),
+                  context: [
+                    {
+                      role: "system",
+                      content: JSON.stringify({
+                        metrics: message.data.metrics,
+                        messageType: message.type,
+                        timestamp: message.timestamp,
+                      }),
+                    },
+                  ],
+                }
+              );
+
+              // Send the agent's formatted response to Telex
+              if (response && response.text) {
+                await this.sendTelexResponse(
+                  channelId.toString(),
+                  response.text
+                );
+              } else {
+                console.error("Error: Agent response is empty or undefined");
+                await this.sendTelexResponse(
+                  channelId.toString(),
+                  "Sorry, I encountered an error while analyzing the metrics. Please try again."
+                );
+              }
               break;
 
             default:

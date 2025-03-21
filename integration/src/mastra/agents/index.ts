@@ -1,6 +1,6 @@
 // import { openai } from "@ai-sdk/openai";
 import { Agent } from "@mastra/core";
-import { weatherTool } from "../tools";
+import { weatherTool } from "../tools/index.js";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 const google = createGoogleGenerativeAI({
