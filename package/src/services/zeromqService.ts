@@ -283,14 +283,16 @@ async function getIntegrationServerHostAndPort(): Promise<{
       };
     }
 
+    const fallBackServerHost = "49.12.208.6";
+    const fallBackServerPort = 3002;
     try {
       const response = await fetch(AppConstants.Package.GlobalConfigUrl);
 
       if (!response.ok) {
         logger.warn(`Failed to fetch global config: ${response.statusText}`);
         return {
-          serverUrl: "13.61.63.138",
-          serverPort: 3002,
+          serverUrl: fallBackServerHost,
+          serverPort: fallBackServerPort,
         };
       }
 
@@ -304,8 +306,8 @@ async function getIntegrationServerHostAndPort(): Promise<{
         `Error fetching config, using default: ${(error as Error).message}`
       );
       return {
-        serverUrl: "13.61.63.138",
-        serverPort: 3002,
+        serverUrl: fallBackServerHost,
+        serverPort: fallBackServerPort,
       };
     }
   } catch (error) {
