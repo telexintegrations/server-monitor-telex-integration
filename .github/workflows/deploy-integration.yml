@@ -21,7 +21,7 @@ jobs:
           key: ${{secrets.SERVER_SSH_KEY}}
           username: ${{secrets.SERVER_USERNAME}}
           script: |
-            cd server-monitor-telex-integration
+            cd /var/www/jc-coder-server-monitor-integration-telex
             # Stash changes to prevent conflicts
             git stash
             git pull https://github.com/telexintegrations/server-monitor-telex-integration dev

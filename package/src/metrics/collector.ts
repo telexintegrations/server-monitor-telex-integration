@@ -109,12 +109,13 @@ const getMetrics = async (): Promise<IMetricsData> => {
   const { cpu, cpuLoadAvgs, memory } = await getCpuMetrics();
   const { cpuUsagePerCore } = await getCpuUsagePerCoreMetrics();
 
-  return {
+  const allMetrics = {
     cpu,
     cpuLoadAvgs,
     memory,
     cpuUsagePerCore,
   };
+  return allMetrics;
 };
 
 export const CollectorService = {

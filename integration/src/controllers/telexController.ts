@@ -5,64 +5,113 @@ import {
   SetupInstruction,
 } from "../utils/constant.js";
 import { TelexService } from "../services/telexRequest.js";
-import { getMetricsFromPackage } from "../services/metricsService.js";
-import { MetricType } from "../types/metricType.js";
 import { HelperService } from "../utils/helper.js";
 import { telexGeneratedConfig } from "../utils/telexConfig.js";
+import { mastra } from "../mastra/index.js";
+import { getMetricsFromPackage } from "../services/metricsService.js";
+import { MetricType } from "../types/metricType.js";
 
 export async function webhook(req: Request, res: Response) {
   const { channel_id, message, settings } = req.body;
-  console.log("new webhook from telex", req.body);
+  console.log("=> new webhook from telex =>", message);
+  try {
+    // Return initial response to telex immediately
+    res.status(200).json({ status: "success", message: "Message received" });
 
-  // Return initial response to telex immediately
-  res.status(200).json({ status: "success", message: "Message received" });
+    const cleanedMessage = HelperService.cleanTelexMessage(message);
 
-  const cleanedMessage = HelperService.cleanTelexMessage(message);
-
-  // don't do anything if the message is from this integration
-  if (cleanedMessage.includes(IntegrationConstants.App.Name)) {
-    return;
-  }
-
-  // Handle / commands
-  if (cleanedMessage.startsWith("/")) {
-    switch (cleanedMessage) {
-      case "/setup-monitoring":
-        const installCommand =
-          IntegrationConstants.Github.InstallationScriptUrl(channel_id);
-
-        // send the setup instructions to the channel
-        TelexService.SendWebhookResponse({
-          channelId: channel_id,
-          message: SetupInstruction(installCommand),
-        });
-        break;
-      case "/cpu":
-        await getMetricsFromPackage(
-          MetricType.getCpuMetrics,
-          channel_id,
-          settings
-        );
-        break;
-      case "/cpuLoadAvg":
-        await getMetricsFromPackage(
-          MetricType.getCpuLoadAverages,
-          channel_id,
-          settings
-        );
-        break;
-      case "/perCoreUsage":
-        await getMetricsFromPackage(
-          MetricType.getCpuUsagePerCore,
-          channel_id,
-          settings
-        );
-        break;
-      default:
-        break;
+    // don't do anything if the message is from this integration
+    if (cleanedMessage.includes(IntegrationConstants.App.Name)) {
+      return;
     }
 
-    return;
+    // Handle / commands
+    if (cleanedMessage.startsWith("/")) {
+      switch (cleanedMessage) {
+        case "/setup-monitoring":
+          const installCommand =
+            IntegrationConstants.Github.InstallationScriptUrl(channel_id);
+
+          // send the setup instructions to the channel
+          TelexService.SendWebhookResponse({
+            channelId: channel_id,
+            message: SetupInstruction(installCommand),
+          });
+          break;
+        case "/cpu":
+          await getMetricsFromPackage(
+            MetricType.getCpuMetrics,
+            channel_id,
+            settings
+          );
+          break;
+        case "/cpuLoadAvg":
+          await getMetricsFromPackage(
+            MetricType.getCpuLoadAverages,
+            channel_id,
+            settings
+          );
+          break;
+        case "/perCoreUsage":
+          await getMetricsFromPackage(
+            MetricType.getCpuUsagePerCore,
+            channel_id,
+            settings
+          );
+          break;
+        default:
+          break;
+      }
+      return;
+    }
+
+    // Use the metrics agent to handle the request
+    const agent = mastra.getAgent("metricsAgent");
+    const response = await agent.generate(cleanedMessage, {
+      threadId: channel_id,
+      resourceId: channel_id,
+      context: [
+        {
+          role: "system",
+          content: JSON.stringify({
+            channelId: channel_id,
+            settings: settings,
+          }),
+        },
+      ],
+    });
+
+    console.log("response text =>", response.text);
+
+    // Validate response before sending
+    if (!response || !response.text) {
+      console.error("Error: Agent response is empty or undefined");
+      await TelexService.SendWebhookResponse({
+        channelId: channel_id,
+        message:
+          "Sorry, I encountered an error while processing your request. Please try again.",
+      });
+      return;
+    }
+
+    // Send the agent's response to telex
+
+    await TelexService.SendWebhookResponse({
+      channelId: channel_id,
+      message: response.text,
+    });
+  } catch (error) {
+    console.error("Error sending webhook response:", error);
+    // Attempt to send error message back to user
+    try {
+      await TelexService.SendWebhookResponse({
+        channelId: channel_id,
+        message:
+          "Sorry, I encountered an error while sending the response. Please try again.",
+      });
+    } catch (e) {
+      console.error("Failed to send error message:", e);
+    }
   }
 }
 
@@ -77,8 +126,6 @@ export async function tick(req: Request, res: Response) {
   const intervalMetricsReporting = settings.find(
     (setting: any) => setting.label === "enable_interval_metrics_reporting"
   );
-
-  console.log("intervalMetricsReporting", intervalMetricsReporting);
 
   if (!intervalMetricsReporting.default) {
     return;

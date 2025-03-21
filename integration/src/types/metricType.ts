@@ -27,6 +27,7 @@ export interface MetricsData {
 }
 
 export enum MetricType {
+  getAllMetrics = "getAllMetrics",
   getCpuMetrics = "getCpuMetrics",
   getCpuLoadAverages = "getCpuLoadAverages",
   getCpuUsagePerCore = "getCpuUsagePerCore",

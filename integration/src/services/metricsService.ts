@@ -6,13 +6,14 @@ import { zeromqServer } from "./zeromqServer.js";
 export const getMetricsFromPackage = async (
   type: MetricType,
   channelId: string,
-  settings: any
+  settings: any,
+  userMessage?: string
 ) => {
   try {
     await zeromqServer.publish(channelId, {
       type: type,
       channelId,
-      data: { settings },
+      data: { settings, userMessage },
       timestamp: new Date().toISOString(),
     });
     return true;
