@@ -114,6 +114,15 @@ export async function tick(req: Request, res: Response) {
   // Return initial response to telex immediately
   res.status(200).json({ status: "success", message: "Message received" });
 
+  // check if the interval metrics reporting is enabled
+  const intervalMetricsReporting = settings.find(
+    (setting: any) => setting.label === "enable_interval_metrics_reporting"
+  );
+
+  if (!intervalMetricsReporting) {
+    return;
+  }
+
   const result = await getMetricsFromPackage(
     MetricType.getCpuMetrics,
     channel_id,
