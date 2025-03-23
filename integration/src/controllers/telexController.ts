@@ -8,8 +8,13 @@ import { TelexService } from "../services/telexRequest.js";
 import { HelperService } from "../utils/helper.js";
 import { telexGeneratedConfig } from "../utils/telexConfig.js";
 import { mastra } from "../mastra/index.js";
-import { getMetricsFromPackage } from "../services/metricsService.js";
+import {
+  getMetricsFromPackage,
+  metricReq,
+} from "../services/metricsService.js";
 import { MetricType } from "../types/metricType.js";
+import { mAV2Agent } from "../mastra/agents/mAV2.js";
+import { z } from "zod";
 
 export async function webhook(req: Request, res: Response) {
   const { channel_id, message, settings } = req.body;
@@ -27,83 +32,57 @@ export async function webhook(req: Request, res: Response) {
 
     // Handle / commands
     if (cleanedMessage.startsWith("/")) {
-      switch (cleanedMessage) {
-        case "/setup-monitoring":
-          const installCommand =
-            IntegrationConstants.Github.InstallationScriptUrl(channel_id);
-
-          // send the setup instructions to the channel
-          TelexService.SendWebhookResponse({
-            channelId: channel_id,
-            message: SetupInstruction(installCommand),
-          });
-          break;
-        case "/cpu":
-          await getMetricsFromPackage(
-            MetricType.getCpuMetrics,
-            channel_id,
-            settings
-          );
-          break;
-        case "/cpuLoadAvg":
-          await getMetricsFromPackage(
-            MetricType.getCpuLoadAverages,
-            channel_id,
-            settings
-          );
-          break;
-        case "/perCoreUsage":
-          await getMetricsFromPackage(
-            MetricType.getCpuUsagePerCore,
-            channel_id,
-            settings
-          );
-          break;
-        default:
-          break;
-      }
-      return;
+      const msg = cleanedMessage.replace("/", "");
+      await metricReq(channel_id, msg, settings);
     }
 
-    // Use the metrics agent to handle the request
-    const agent = mastra.getAgent("metricsAgent");
-    const response = await agent.generate(cleanedMessage, {
-      threadId: channel_id,
-      resourceId: channel_id,
-      context: [
-        {
-          role: "system",
-          content: JSON.stringify({
-            channelId: channel_id,
-            settings: settings,
-          }),
-        },
-      ],
+    const agent = await mAV2Agent.generate(cleanedMessage, {
+      output: z.object({
+        response: z.string(),
+      }),
     });
 
-    console.log("response text =>", response.text);
+    await metricReq(channel_id, agent.object.response, settings);
 
-    // Check if the response contains a tool call
-    const containsToolCall =
-      response.toolCalls && response.toolCalls.length > 0;
+    // // Use the metrics agent to handle the request
+    // const agent = mastra.getAgent("metricsAgent");
+    // const response = await agent.generate(cleanedMessage, {
+    //   threadId: channel_id,
+    //   resourceId: channel_id,
+    //   context: [
+    //     {
+    //       role: "system",
+    //       content: JSON.stringify({
+    //         channelId: channel_id,
+    //         settings: settings,
+    //       }),
+    //     },
+    //   ],
+    // });
 
-    // Validate response before sending
-    if (!response || !response.text) {
-      return;
-    }
+    // console.log("response text =>", response.text);
 
-    // Only send a response if there's no tool call
-    if (!containsToolCall) {
-      // Send the agent's response to telex
-      await TelexService.SendWebhookResponse({
-        channelId: channel_id,
-        message: response.text,
-      });
-    } else {
-      console.log(
-        "Tool call detected, not sending immediate response to Telex"
-      );
-    }
+    // // Check if the response contains a tool call
+    // const containsToolCall =
+    //   response.toolCalls && response.toolCalls.length > 0;
+
+    // // Validate response before sending
+    // if (!response || !response.text) {
+    //   return;
+    // }
+
+    // // Only send a response if there's no tool call
+    // if (!containsToolCall) {
+    //   // Send the agent's response to telex
+    //   await TelexService.SendWebhookResponse({
+    //     channelId: channel_id,
+    //     message: response.text,
+    //   });
+    // } else {
+    //   console.log(
+    //     "Tool call detected, not sending immediate response to Telex"
+    //   );
+    // }
   } catch (error) {
     console.error("Error sending webhook response:", error);
     // Attempt to send error message back to user
