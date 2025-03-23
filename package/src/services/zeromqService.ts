@@ -11,6 +11,7 @@ export enum IncomingMessageType {
   getCpuMetrics = "getCpuMetrics",
   getCpuLoadAverages = "getCpuLoadAverages",
   getCpuUsagePerCore = "getCpuUsagePerCore",
+  getMemoryStats = "getMemoryStats",
   ping = "ping",
 }
 
@@ -19,6 +20,7 @@ export enum OutGoingMessageReplyType {
   getCpuMetrics = "getCpuMetricsReply",
   getCpuLoadAverages = "getCpuLoadAveragesReply",
   getCpuUsagePerCore = "getCpuUsagePerCoreReply",
+  getMemoryStats = "getMemoryStatsReply",
   cpuThresholdAlert = "cpuThresholdAlertReply",
   replyPong = "replyPong",
 }
@@ -29,6 +31,7 @@ export const functionMap = {
   [OutGoingMessageReplyType.getCpuLoadAverages]: CollectorService.getMetrics,
   [OutGoingMessageReplyType.getCpuUsagePerCore]:
     CollectorService.getCpuUsagePerCoreMetrics,
+  [OutGoingMessageReplyType.getMemoryStats]: CollectorService.getMetrics,
 };
 
 export interface IZeromqMessage {
@@ -226,6 +229,12 @@ async function handleMessages(channelId: string): Promise<void> {
             await sendMetrics(
               channelId,
               OutGoingMessageReplyType.getCpuUsagePerCore
+            );
+            break;
+          case IncomingMessageType.getMemoryStats:
+            await sendMetrics(
+              channelId,
+              OutGoingMessageReplyType.getMemoryStats
             );
             break;
           default:

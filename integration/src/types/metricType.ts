@@ -3,6 +3,7 @@ export enum MetricReplyType {
   getCpuMetrics = "getCpuMetricsReply",
   getCpuLoadAverages = "getCpuLoadAveragesReply",
   getCpuUsagePerCore = "getCpuUsagePerCoreReply",
+  getMemoryStats = "getMemoryStatsReply",
   cpuThresholdAlert = "cpuThresholdAlertReply",
 }
 
@@ -31,4 +32,5 @@ export enum MetricType {
   getCpuMetrics = "getCpuMetrics",
   getCpuLoadAverages = "getCpuLoadAverages",
   getCpuUsagePerCore = "getCpuUsagePerCore",
+  getMemoryStats = "getMemoryStats",
 }

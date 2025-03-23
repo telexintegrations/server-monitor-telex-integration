@@ -15,8 +15,7 @@ export function formatMetricsMessage(metrics: MetricsData): string {
 
 ▶ Usage:        ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(metrics.cpu.usage)}
 ▶ Cores:        ${metrics.cpu.cores || "N/A"}
-▶ Load Average: ${metrics.cpu.load_avg?.[0]?.toFixed(2) || "N/A"}
-${formatMemoryMetrics(metrics)}`;
+▶ Load Average: ${metrics.cpu.load_avg?.[0]?.toFixed(2) || "N/A"}`;
 }
 
 /**
@@ -136,6 +135,8 @@ export function formatMetricResponse(
       return getFormattedLoadAverages(metrics);
     case MetricReplyType.getCpuUsagePerCore:
       return formatCpuUsagePerCoreMetrics(metrics);
+    case MetricReplyType.getMemoryStats:
+      return formatMemoryMetrics(metrics);
     case MetricReplyType.cpuThresholdAlert:
       // This typically needs additional parameters beyond just metrics
       // Default threshold value used as fallback
