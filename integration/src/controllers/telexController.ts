@@ -37,7 +37,7 @@ export async function webhook(req: Request, res: Response) {
       }),
     });
 
-    console.log("Agent response =>", agent.object.response);
+    // console.log("Agent response =>", agent.object.response);
 
     await metricReq(channel_id, agent.object.response, settings);
   } catch (error) {
