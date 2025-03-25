@@ -33,10 +33,10 @@ export const getMetricsFromPackage = async (
 
 export async function metricReq(
   channel_id: string,
-  cleanedMessage: string,
+  agentResp: string,
   settings: any
 ) {
-  switch (cleanedMessage) {
+  switch (agentResp) {
     case "setup-monitoring":
       const installCommand =
         IntegrationConstants.Github.InstallationScriptUrl(channel_id);
@@ -48,7 +48,6 @@ export async function metricReq(
       });
       break;
     case "cpu":
-      processMessage(channel_id);
       await getMetricsFromPackage(
         MetricType.getCpuMetrics,
         channel_id,
@@ -56,7 +55,6 @@ export async function metricReq(
       );
       break;
     case "cpuLoadAvg":
-      processMessage(channel_id);
       await getMetricsFromPackage(
         MetricType.getCpuLoadAverages,
         channel_id,
@@ -64,7 +62,6 @@ export async function metricReq(
       );
       break;
     case "perCoreUsage":
-      processMessage(channel_id);
       await getMetricsFromPackage(
         MetricType.getCpuUsagePerCore,
         channel_id,
@@ -72,20 +69,20 @@ export async function metricReq(
       );
       break;
     case "memoryStats":
-      processMessage(channel_id);
       await getMetricsFromPackage(
         MetricType.getMemoryStats,
         channel_id,
         settings
       );
-    default:
       break;
+    default:
+      await processMessage(channel_id, agentResp);
   }
   return;
 }
 
-function processMessage(channel_id: string, message = "Processing...") {
-  TelexService.SendWebhookResponse({
+async function processMessage(channel_id: string, message = "Processing...") {
+  await TelexService.SendWebhookResponse({
     channelId: channel_id,
     message,
   });
