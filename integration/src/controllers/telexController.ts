@@ -30,59 +30,16 @@ export async function webhook(req: Request, res: Response) {
       return;
     }
 
-    // Handle / commands
-    if (cleanedMessage.startsWith("/")) {
-      const msg = cleanedMessage.replace("/", "");
-      await metricReq(channel_id, msg, settings);
-    }
-
+    // Get user message and process
     const agent = await mAV2Agent.generate(cleanedMessage, {
       output: z.object({
         response: z.string(),
       }),
     });
 
+    console.log("Agent response =>", agent.object.response);
+
     await metricReq(channel_id, agent.object.response, settings);
-
-    // // Use the metrics agent to handle the request
-    // const agent = mastra.getAgent("metricsAgent");
-    // const response = await agent.generate(cleanedMessage, {
-    //   threadId: channel_id,
-    //   resourceId: channel_id,
-    //   context: [
-    //     {
-    //       role: "system",
-    //       content: JSON.stringify({
-    //         channelId: channel_id,
-    //         settings: settings,
-    //       }),
-    //     },
-    //   ],
-    // });
-
-    // console.log("response text =>", response.text);
-
-    // // Check if the response contains a tool call
-    // const containsToolCall =
-    //   response.toolCalls && response.toolCalls.length > 0;
-
-    // // Validate response before sending
-    // if (!response || !response.text) {
-    //   return;
-    // }
-
-    // // Only send a response if there's no tool call
-    // if (!containsToolCall) {
-    //   // Send the agent's response to telex
-    //   await TelexService.SendWebhookResponse({
-    //     channelId: channel_id,
-    //     message: response.text,
-    //   });
-    // } else {
-    //   console.log(
-    //     "Tool call detected, not sending immediate response to Telex"
-    //   );
-    // }
   } catch (error) {
     console.error("Error sending webhook response:", error);
     // Attempt to send error message back to user

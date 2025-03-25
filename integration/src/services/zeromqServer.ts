@@ -139,44 +139,6 @@ class ZeromqServer {
               await this.sendTelexResponse(channelId.toString(), alertMessage);
               break;
 
-            // case MetricReplyType.getAllMetrics:
-            //   // Get the metrics agent instance
-            //   const agent = mastra.getAgent("metricsAgent");
-            //   // Generate a response using the agent with the metrics data
-            //   const response = await agent.generate(
-            //     message.data.userMessage ||
-            //       "Analyze these system metrics and provide insights",
-            //     {
-            //       threadId: channelId.toString(),
-            //       resourceId: channelId.toString(),
-            //       context: [
-            //         {
-            //           role: "system",
-            //           content: JSON.stringify({
-            //             metrics: message.data.metrics,
-            //             messageType: message.type,
-            //             timestamp: message.timestamp,
-            //           }),
-            //         },
-            //       ],
-            //     }
-            //   );
-
-            //   // Send the agent's formatted response to Telex
-            //   if (response && response.text) {
-            //     await this.sendTelexResponse(
-            //       channelId.toString(),
-            //       response.text
-            //     );
-            //   } else {
-            //     console.error("Error: Agent response is empty or undefined");
-            //     await this.sendTelexResponse(
-            //       channelId.toString(),
-            //       "Sorry, I encountered an error while analyzing the metrics. Please try again."
-            //     );
-            //   }
-            //   break;
-
             default:
               console.info(`Unhandled message type: ${message.type}`);
           }
