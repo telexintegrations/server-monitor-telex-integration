@@ -6,7 +6,6 @@ import {
   formatCpuAlertMessage,
 } from "./messageFormatters.js";
 import { MetricReplyType } from "../types/metricType.js";
-import { mastra } from "../mastra/index.js";
 
 export interface IZeromqMessage {
   type: string;

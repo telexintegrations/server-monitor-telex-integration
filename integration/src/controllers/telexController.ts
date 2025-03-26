@@ -1,19 +1,14 @@
 import { Request, Response } from "express";
-import {
-  AppResponse,
-  IntegrationConstants,
-  SetupInstruction,
-} from "../utils/constant.js";
+import { AppResponse, IntegrationConstants } from "../utils/constant.js";
 import { TelexService } from "../services/telexRequest.js";
 import { HelperService } from "../utils/helper.js";
 import { telexGeneratedConfig } from "../utils/telexConfig.js";
-import { mastra } from "../mastra/index.js";
 import {
   getMetricsFromPackage,
   metricReq,
 } from "../services/metricsService.js";
 import { MetricType } from "../types/metricType.js";
-import { mAV2Agent } from "../mastra/agents/mAV2.js";
+import { metricsAiAgent } from "../mastra/agents/metricsAgent.js";
 import { z } from "zod";
 
 export async function webhook(req: Request, res: Response) {
@@ -31,7 +26,7 @@ export async function webhook(req: Request, res: Response) {
     }
 
     // Get user message and process
-    const agent = await mAV2Agent.generate(cleanedMessage, {
+    const agent = await metricsAiAgent.generate(cleanedMessage, {
       output: z.object({
         response: z.string(),
       }),
