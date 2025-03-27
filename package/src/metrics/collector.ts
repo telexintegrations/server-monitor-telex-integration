@@ -22,7 +22,7 @@ export interface IMetricsData {
   };
 }
 
-// Get all CPU metrics
+// get cpu and memory metrics
 async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
   try {
     const [currentLoad, cpuInfo] = await Promise.all([
@@ -69,6 +69,7 @@ async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
   }
 }
 
+// get the cpu usage per core
 async function getCpuUsagePerCoreMetrics(): Promise<Partial<IMetricsData>> {
   try {
     const cl = await si.currentLoad();
@@ -83,9 +84,7 @@ async function getCpuUsagePerCoreMetrics(): Promise<Partial<IMetricsData>> {
   }
 }
 
-/**
- * Get formatted CPU metrics for display
- */
+// get the formatted cpu metrics
 async function getFormattedCpuMetrics(): Promise<string> {
   try {
     const { cpu: cpuMetrics } = await getCpuMetrics();
@@ -105,6 +104,7 @@ Load Average: ${cpuMetrics.load_avg?.[0]?.toFixed(2) || "N/A"}
   }
 }
 
+// get all metrics
 const getMetrics = async (): Promise<IMetricsData> => {
   const { cpu, cpuLoadAvgs, memory } = await getCpuMetrics();
   const { cpuUsagePerCore } = await getCpuUsagePerCoreMetrics();
