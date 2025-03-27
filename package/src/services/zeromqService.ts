@@ -12,26 +12,29 @@ export enum IncomingMessageType {
   getCpuLoadAverages = "getCpuLoadAverages",
   getCpuUsagePerCore = "getCpuUsagePerCore",
   getMemoryStats = "getMemoryStats",
+  getDiskMetrics = "getDiskMetrics",
   ping = "ping",
 }
 
 export enum OutGoingMessageReplyType {
-  getAllMetrics = "getAllMetricsReply",
-  getCpuMetrics = "getCpuMetricsReply",
-  getCpuLoadAverages = "getCpuLoadAveragesReply",
-  getCpuUsagePerCore = "getCpuUsagePerCoreReply",
-  getMemoryStats = "getMemoryStatsReply",
-  cpuThresholdAlert = "cpuThresholdAlertReply",
-  replyPong = "replyPong",
+  getAllMetricsReply = "getAllMetricsReply",
+  getCpuMetricsReply = "getCpuMetricsReply",
+  getCpuLoadAveragesReply = "getCpuLoadAveragesReply",
+  getCpuUsagePerCoreReply = "getCpuUsagePerCoreReply",
+  getMemoryStatsReply = "getMemoryStatsReply",
+  getDiskMetricsReply = "getDiskMetricsReply",
+  pingReply = "pingReply",
+  cpuThresholdAlertReply = "cpuThresholdAlertReply",
 }
 
-export const functionMap = {
-  [OutGoingMessageReplyType.getAllMetrics]: CollectorService.getMetrics,
-  [OutGoingMessageReplyType.getCpuMetrics]: CollectorService.getMetrics,
-  [OutGoingMessageReplyType.getCpuLoadAverages]: CollectorService.getMetrics,
-  [OutGoingMessageReplyType.getCpuUsagePerCore]:
-    CollectorService.getCpuUsagePerCoreMetrics,
-  [OutGoingMessageReplyType.getMemoryStats]: CollectorService.getMetrics,
+// Create a mapping of functions for metrics collection
+const functionMap = {
+  getAllMetricsReply: CollectorService.getMetrics,
+  getCpuMetricsReply: CollectorService.getMetrics,
+  getCpuLoadAveragesReply: CollectorService.getMetrics,
+  getCpuUsagePerCoreReply: CollectorService.getCpuUsagePerCoreMetrics,
+  getMemoryStatsReply: CollectorService.getMetrics,
+  getDiskMetricsReply: CollectorService.getDiskMetrics,
 };
 
 export interface IZeromqMessage {
@@ -156,7 +159,7 @@ export async function sendCpuAlert(
   await sendReply(
     channelId,
     alertMessage,
-    OutGoingMessageReplyType.cpuThresholdAlert
+    OutGoingMessageReplyType.cpuThresholdAlertReply
   );
 }
 
@@ -209,35 +212,42 @@ async function handleMessages(channelId: string): Promise<void> {
           case IncomingMessageType.getAllMetrics:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getAllMetrics,
+              OutGoingMessageReplyType.getAllMetricsReply,
               message.data?.userMessage
             );
             break;
           case IncomingMessageType.getCpuMetrics:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getCpuMetrics,
+              OutGoingMessageReplyType.getCpuMetricsReply,
               message.data?.userMessage
             );
             break;
           case IncomingMessageType.getCpuLoadAverages:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getCpuLoadAverages,
+              OutGoingMessageReplyType.getCpuLoadAveragesReply,
               message.data?.userMessage
             );
             break;
           case IncomingMessageType.getCpuUsagePerCore:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getCpuUsagePerCore,
+              OutGoingMessageReplyType.getCpuUsagePerCoreReply,
               message.data?.userMessage
             );
             break;
           case IncomingMessageType.getMemoryStats:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getMemoryStats,
+              OutGoingMessageReplyType.getMemoryStatsReply,
+              message.data?.userMessage
+            );
+            break;
+          case IncomingMessageType.getDiskMetrics:
+            await sendMetrics(
+              channelId,
+              OutGoingMessageReplyType.getDiskMetricsReply,
               message.data?.userMessage
             );
             break;

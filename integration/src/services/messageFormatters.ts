@@ -126,6 +126,49 @@ ${isCritical ? "IMMEDIATE ACTION REQUIRED!" : "Please investigate when possible.
 }
 
 /**
+ * Formats disk metrics if available
+ */
+function formatDiskMetrics(metrics: MetricsData): string {
+  if (!metrics.disk || !metrics.disk.filesystems.length) {
+    return "";
+  }
+
+  let output = `
+┌─────────────────────────┐
+     💿 DISK METRICS     
+└─────────────────────────┘
+
+== FILESYSTEMS ==`;
+
+  // Format each filesystem
+  metrics.disk.filesystems.forEach((fs) => {
+    const usageIndicator = getUsageIndicator(fs.use);
+    output += `
+Mount: ${fs.mount}
+▶ Type: ${fs.type || "Unknown"}
+▶ Size: ${(fs.size / 1024 / 1024 / 1024).toFixed(2)} GB
+▶ Used: ${(fs.used / 1024 / 1024 / 1024).toFixed(2)} GB
+▶ Available: ${(fs.available / 1024 / 1024 / 1024).toFixed(2)} GB
+▶ Usage: ${fs.use.toFixed(2)}%  ${usageIndicator}
+`;
+  });
+
+  // Add IO metrics if available
+  if (metrics.disk.io) {
+    output += `
+== DISK I/O ==
+▶ Read Operations: ${metrics.disk.io.rIO}
+▶ Write Operations: ${metrics.disk.io.wIO}
+▶ Total Operations: ${metrics.disk.io.tIO}
+▶ Reads/sec: ${metrics.disk.io.rPerSec?.toFixed(2) || "N/A"}
+▶ Writes/sec: ${metrics.disk.io.wPerSec?.toFixed(2) || "N/A"}
+`;
+  }
+
+  return output;
+}
+
+/**
  * Universal formatter that determines the appropriate format based on metric type
  */
 export function formatMetricResponse(
@@ -145,6 +188,8 @@ export function formatMetricResponse(
       return formatCpuUsagePerCoreMetrics(metrics);
     case MetricReplyType.getMemoryStats:
       return formatMemoryMetrics(metrics);
+    case MetricReplyType.getDiskMetrics:
+      return formatDiskMetrics(metrics);
     case MetricReplyType.getAllMetrics:
       // Format all available metrics in a comprehensive view
       return formatAllMetrics(metrics);
@@ -200,46 +245,23 @@ export function formatAllMetrics(metrics: MetricsData): string {
 `;
   }
 
-  // Add per-core usage if available
-  if (metrics.cpuUsagePerCore && metrics.cpuUsagePerCore.length > 0) {
-    report += `\n== PER-CORE CPU USAGE ==\n`;
+  // Add disk stats if available
+  if (metrics.disk && metrics.disk.filesystems.length) {
+    report += `
+== DISK USAGE ==`;
 
-    // Create a compact multi-column layout for many cores
-    const cores = metrics.cpuUsagePerCore;
-    const coreCount = cores.length;
+    // Only show first 2 filesystems in the summary to avoid cluttering
+    const topFilesystems = metrics.disk.filesystems.slice(0, 2);
+    topFilesystems.forEach((fs) => {
+      report += `
+▶ ${fs.mount}: ${fs.use.toFixed(2)}% of ${(fs.size / 1024 / 1024 / 1024).toFixed(2)} GB  ${getUsageIndicator(fs.use)}`;
+    });
 
-    if (coreCount <= 8) {
-      // For fewer cores, show them all in a single column
-      cores.forEach((usage, index) => {
-        report += `▶ Core ${index.toString().padEnd(2)}: ${usage.toFixed(2).padEnd(5)}% ${getUsageIndicator(usage)}\n`;
-      });
-    } else {
-      // For many cores, use a two-column layout
-      const halfLength = Math.ceil(coreCount / 2);
-      for (let i = 0; i < halfLength; i++) {
-        const leftCore = `Core ${i.toString().padEnd(2)}: ${cores[i].toFixed(2).padEnd(5)}% ${getUsageIndicator(cores[i])}`;
-
-        let rightCore = "";
-        if (i + halfLength < coreCount) {
-          rightCore = `Core ${(i + halfLength).toString().padEnd(2)}: ${cores[i + halfLength].toFixed(2).padEnd(5)}% ${getUsageIndicator(cores[i + halfLength])}`;
-        }
-
-        if (rightCore) {
-          report += `▶ ${leftCore.padEnd(30)} ▶ ${rightCore}\n`;
-        } else {
-          report += `▶ ${leftCore}\n`;
-        }
-      }
+    if (metrics.disk.filesystems.length > 2) {
+      report += `
+▶ And ${metrics.disk.filesystems.length - 2} more filesystems`;
     }
   }
-
-  // Server name if available
-  if (metrics.serverName) {
-    report += `\n== SERVER INFO ==\n▶ Server Name: ${metrics.serverName}\n`;
-  }
-
-  // Add timestamp
-  report += `\n▶ Updated at: ${new Date().toLocaleString()}\n`;
 
   return report;
 }

@@ -16,6 +16,7 @@ IMPORTANT: You must ONLY respond with ONE of these exact keywords - nothing more
 - "cpuLoadAvg" - When user asks about load average, system load, or CPU load over time periods
 - "perCoreUsage" - When user asks about individual core usage, specific cores, or per-core metrics
 - "memoryStats" - When user asks about memory usage, RAM, memory status, or anything memory-related
+- "diskMetrics" - When user asks about disk usage, storage, disk I/O, read/write speeds, disk operations, or any disk-related metrics
 - "getAllMetrics" - When user asks for all metrics, overall server status, or a complete overview
 - "setup-monitoring" - When user asks about setting up, installing, or configuring monitoring
 - "conversation" - For ANY message that doesn't directly request metrics data:
@@ -31,6 +32,8 @@ Examples:
 - "show me memory stats" → "memoryStats"
 - "how's my server doing?" → "getAllMetrics"
 - "show cpu load" → "cpuLoadAvg"
+- "check disk space" → "diskMetrics"
+- "show me storage usage" → "diskMetrics"
 - "hello there" → "conversation"
 - "thank you for the info" → "conversation"
 - "what does load average mean?" → "conversation"

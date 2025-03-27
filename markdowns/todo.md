@@ -1,51 +1,113 @@
-// add a default setting for the monitoring
-
-"metrics": {
-"cpu": true,
-"memory": true,
-"disk": true
-},
-"thresholds": {
-"cpu": 85,
-"memory": 85,
-"disk": 90
-},
-"frequency": 300,
-
 // clean up logs every week so that the logs directory does not grow too much
 
-// during setup, automatically create the entry on the server to ensure that the monitoring agent is auto restarted if it crashes or if server is restarted
+Features to be added:
 
-// add cron job that runs every 1 hour to check if token would expire soon , e.g 1 day before expiry
+1. **Disk Metrics** (done)
 
-the part where we give them a url they send it to there and then we forward it to telex
+   - Disk usage/space
+   - Disk I/O operations
+   - Read/Write speeds
+   - IOPS (Input/Output Operations Per Second)
+   - Found in todo.md where disk monitoring is planned with a 90% threshold
 
-user url -> my url -> telex url
+2. **Network Metrics**
 
-get token on enablement
+   - Network bandwidth usage
+   - Network latency
+   - Packet loss
+   - Network interface statistics
+   - Connection counts
 
-talk to someone (vicradeon) about the auth between integration and settings
+3. **Process Metrics**
 
-implement tool calling with mastra to enable users chat with the ai to get metrics etc.
+   - Top processes by CPU usage
+   - Top processes by memory usage
+   - Process count
+   - Zombie processes
+   - Process states
 
-// installation flow
+4. **System Load Metrics**
 
-1. user installs the integration and then on any channel then he run the /setup-monitoring command
-2. user will receive a url script that contain the "channel-id" , the url will be a curl url (installation script) with instruction so user will run the curl on their server (vps - aws or digital ocean), the url will then download and install all necessary package and setup the monitoring agent and also start it
-3. the integration will register the monitoring agent
+   - While basic CPU load is implemented, more detailed metrics could include:
+   - Process queue length
+   - Context switches
+   - System interrupts
+   - Detailed load analysis
 
-// ensure to support versioning for sdk and the integration
+5. **Memory Metrics Extensions**
 
-curl --location 'https://5lldpsml-3002.uks1.devtunnels.ms/webhook' \
---header 'Content-Type: application/json' \
---data '{
-"message": "hello",
-"channel_id": "01958c26-84ff-73c1-be12-006bb6e7c906"
-}'
+   - While basic memory usage is implemented, could add:
+   - Swap usage
+   - Page faults
+   - Buffer/cache usage
+   - Memory pressure statistics
 
-curl --location 'http://localhost:3002/webhook' \
---header 'Content-Type: application/json' \
---data '{
-"message": "hello",
-"channel_id": "0195918e-c972-7858-b70c-becb7eb70259"
-}'
+6. **File System Metrics**
+
+   - File system usage by mount point
+   - Inode usage
+   - File system types and states
+   - Mount point statistics
+
+7. **System Services**
+
+   - Service status monitoring
+   - Service uptime
+   - Service resource usage
+   - Service dependencies
+
+8. **Log Monitoring**
+
+   - System log analysis
+   - Error log monitoring
+   - Custom log file monitoring
+   - Log pattern matching
+
+9. **Security Metrics**
+
+   - Failed login attempts
+   - SSH access logs
+   - Firewall statistics
+   - Port scanning detection
+
+10. **Environmental Metrics**
+
+    - CPU temperature
+    - Fan speeds
+    - Power consumption
+    - Hardware health status
+
+11. **Database Metrics** (if databases are running)
+
+    - Connection pool stats
+    - Query performance
+    - Database size
+    - Transaction rates
+
+12. **Container Metrics**
+
+    - Docker container stats
+    - Container resource usage
+    - Container health checks
+    - Container logs
+
+13. **Custom Metrics**
+
+    - User-defined metrics
+    - Application-specific metrics
+    - Custom threshold settings
+    - Custom alert rules
+
+14. **Historical Data**
+
+    - Metric history storage
+    - Trend analysis
+    - Performance baselines
+    - Historical comparisons
+
+15. **Alert System Enhancements**
+    - While basic CPU alerts are implemented, could add:
+    - Custom alert thresholds for all metrics
+    - Alert severity levels
+    - Alert grouping
+    - Alert escalation policies
