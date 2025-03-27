@@ -41,6 +41,26 @@ export interface IMetricsData {
       wPerSec: number; // writes per second
     };
   };
+  processes?: {
+    all: number; // total process count
+    running: number; // number of running processes
+    blocked: number; // number of blocked processes
+    sleeping: number; // number of sleeping processes
+    unknown: number; // number of processes in unknown state
+    zombie: number; // number of zombie processes
+    list: Array<{
+      pid: number; // process ID
+      name: string; // process name
+      cpu: number; // process CPU usage percentage
+      mem: number; // process memory usage percentage
+      priority: number; // process priority
+      memVsz: number; // virtual memory size
+      memRss: number; // resident set size (RAM)
+      state: string; // process state (running, sleeping, etc.)
+      user: string; // user who owns the process
+      command: string; // command used to start the process
+    }>;
+  };
 }
 
 // get cpu and memory metrics
@@ -150,6 +170,71 @@ async function getDiskMetrics(): Promise<Partial<IMetricsData>> {
   }
 }
 
+// get process metrics
+async function getProcessMetrics(): Promise<Partial<IMetricsData>> {
+  try {
+    // Get process information
+    const processes = await si.processes();
+
+    // Get the top 10 processes by CPU usage
+    const topProcessesByCpu = [...processes.list]
+      .sort((a, b) => b.cpu - a.cpu)
+      .slice(0, 10)
+      .map((proc) => ({
+        pid: proc.pid,
+        name: proc.name,
+        cpu: proc.cpu,
+        mem: proc.mem,
+        priority: proc.priority,
+        memVsz: proc.memVsz,
+        memRss: proc.memRss,
+        state: proc.state,
+        user: proc.user,
+        command: proc.command,
+      }));
+
+    // Process state counts
+    const stateCount = {
+      running: 0,
+      sleeping: 0,
+      blocked: 0,
+      zombie: 0,
+      unknown: 0,
+    };
+
+    // Count process states
+    processes.list.forEach((proc) => {
+      const state = proc.state.toLowerCase();
+      if (state.includes("running")) {
+        stateCount.running++;
+      } else if (state.includes("sleep")) {
+        stateCount.sleeping++;
+      } else if (state.includes("blocked") || state.includes("wait")) {
+        stateCount.blocked++;
+      } else if (state.includes("zombie")) {
+        stateCount.zombie++;
+      } else {
+        stateCount.unknown++;
+      }
+    });
+
+    return {
+      processes: {
+        all: processes.all,
+        running: stateCount.running,
+        blocked: stateCount.blocked,
+        sleeping: stateCount.sleeping,
+        unknown: stateCount.unknown,
+        zombie: stateCount.zombie,
+        list: topProcessesByCpu,
+      },
+    };
+  } catch (error) {
+    logger.error(`Failed to get process metrics: ${(error as Error).message}`);
+    throw error;
+  }
+}
+
 // get the formatted cpu metrics
 async function getFormattedCpuMetrics(): Promise<string> {
   try {
@@ -175,6 +260,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
   const { cpu, cpuLoadAvgs, memory } = await getCpuMetrics();
   const { cpuUsagePerCore } = await getCpuUsagePerCoreMetrics();
   const { disk } = await getDiskMetrics();
+  const { processes } = await getProcessMetrics();
 
   const allMetrics = {
     cpu,
@@ -182,6 +268,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
     memory,
     cpuUsagePerCore,
     disk,
+    processes,
   };
   return allMetrics;
 };
@@ -191,4 +278,5 @@ export const CollectorService = {
   getFormattedCpuMetrics,
   getCpuUsagePerCoreMetrics,
   getDiskMetrics,
+  getProcessMetrics,
 };

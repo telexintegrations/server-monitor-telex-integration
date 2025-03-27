@@ -18,7 +18,7 @@ Features to be added:
    - Network interface statistics
    - Connection counts
 
-3. **Process Metrics**
+3. **Process Metrics** (done)
 
    - Top processes by CPU usage
    - Top processes by memory usage
