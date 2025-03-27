@@ -216,25 +216,29 @@ async function handleMessages(channelId: string): Promise<void> {
           case IncomingMessageType.getCpuMetrics:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getCpuMetrics
+              OutGoingMessageReplyType.getCpuMetrics,
+              message.data?.userMessage
             );
             break;
           case IncomingMessageType.getCpuLoadAverages:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getCpuLoadAverages
+              OutGoingMessageReplyType.getCpuLoadAverages,
+              message.data?.userMessage
             );
             break;
           case IncomingMessageType.getCpuUsagePerCore:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getCpuUsagePerCore
+              OutGoingMessageReplyType.getCpuUsagePerCore,
+              message.data?.userMessage
             );
             break;
           case IncomingMessageType.getMemoryStats:
             await sendMetrics(
               channelId,
-              OutGoingMessageReplyType.getMemoryStats
+              OutGoingMessageReplyType.getMemoryStats,
+              message.data?.userMessage
             );
             break;
           default:

@@ -6,6 +6,9 @@ import {
   formatCpuAlertMessage,
 } from "./messageFormatters.js";
 import { MetricReplyType } from "../types/metricType.js";
+import { metricsResponseAgent } from "../mastra/agents/metricsResponseAgent.js";
+import { z } from "zod";
+import { ChatHistoryService } from "../utils/chatHistory.js";
 
 export interface IZeromqMessage {
   type: string;
@@ -22,6 +25,7 @@ class ZeromqServer {
 
   private constructor() {}
 
+  // get the singleton instance of the zeromq server
   public static getInstance(): ZeromqServer {
     if (!ZeromqServer.instance) {
       ZeromqServer.instance = new ZeromqServer();
@@ -29,6 +33,7 @@ class ZeromqServer {
     return ZeromqServer.instance;
   }
 
+  // initialize the zeromq server
   public async initialize(): Promise<void> {
     if (this.isInitialized) {
       console.warn("ZeroMQ server is already initialized");
@@ -64,6 +69,7 @@ class ZeromqServer {
     }
   }
 
+  // handle incoming replies sent from the metrics package
   private async handleReplies(): Promise<void> {
     if (!this.subSocket) {
       throw new Error("Subscriber socket not initialized");
@@ -101,9 +107,9 @@ class ZeromqServer {
           }
 
           console.info(
-            `Received reply message type "${message.type}" from channel ${channelId}`
+            `=> Received reply message type "${message.type}" from channel ${channelId}`
           );
-          console.log("message from package", message);
+          console.log("=> message from package =>", message);
 
           // Process the reply based on message type
           switch (message.type) {
@@ -111,15 +117,80 @@ class ZeromqServer {
             case MetricReplyType.getCpuLoadAverages:
             case MetricReplyType.getCpuUsagePerCore:
             case MetricReplyType.getMemoryStats:
-              // Use the universal formatter for standard metric types
-              const formattedMessage = formatMetricResponse(
+            case MetricReplyType.getAllMetrics:
+              // Format the standard metric response
+              const formattedMetrics = formatMetricResponse(
                 message.type,
                 message.data.metrics
               );
-              await this.sendTelexResponse(
-                channelId.toString(),
-                formattedMessage
-              );
+
+              // If there's a user message, use AI to enhance the response
+              if (message.data.userMessage) {
+                try {
+                  // Get chat history for context
+                  const chatHistory = ChatHistoryService.formatHistoryForAI(
+                    channelId.toString()
+                  );
+
+                  // Combine formatted metrics with user message and history for context
+                  const context = chatHistory
+                    ? `
+Previous conversation:
+${chatHistory}
+
+User asked: ${message.data.userMessage}
+
+Current server metrics:
+${formattedMetrics}
+
+Based on the above metrics and the user's question, provide a helpful, conversational response. 
+Analyze the metrics and provide insights. If values are high (above 80%), include suggestions.`
+                    : `
+User asked: ${message.data.userMessage}
+
+Current server metrics:
+${formattedMetrics}
+
+Based on the above metrics and the user's question, provide a helpful, conversational response.
+Analyze the metrics and provide insights. If values are high (above 80%), include suggestions.`;
+
+                  // Generate enhanced response
+                  const enhancedResponse = await metricsResponseAgent.generate(
+                    context,
+                    {
+                      output: z.object({
+                        response: z.string(),
+                      }),
+                    }
+                  );
+
+                  // Store the AI's response in chat history
+                  ChatHistoryService.addMessage(channelId.toString(), {
+                    role: "assistant",
+                    content: enhancedResponse.object.response,
+                    timestamp: new Date(),
+                  });
+
+                  // Send the enhanced response
+                  await this.sendTelexResponse(
+                    channelId.toString(),
+                    enhancedResponse.object.response
+                  );
+                } catch (error) {
+                  console.error("Error generating enhanced response:", error);
+                  // Fallback to regular formatted metrics
+                  await this.sendTelexResponse(
+                    channelId.toString(),
+                    formattedMetrics
+                  );
+                }
+              } else {
+                // No user message, just send the formatted metrics
+                await this.sendTelexResponse(
+                  channelId.toString(),
+                  formattedMetrics
+                );
+              }
               break;
 
             case MetricReplyType.cpuThresholdAlert:
@@ -158,6 +229,7 @@ class ZeromqServer {
     });
   }
 
+  // publish a message to the subscriber
   public async publish(
     channelId: string,
     message: IZeromqMessage
@@ -169,14 +241,17 @@ class ZeromqServer {
     try {
       await this.pubSocket.send([channelId, JSON.stringify(message)]);
       console.info(
-        `Published message type "${message.type}" to channel ${channelId}`
+        `=> Published message type "${message.type}" to channel ${channelId}`
       );
     } catch (error) {
-      console.error(`Failed to publish message: ${(error as Error).message}`);
+      console.error(
+        `=> Failed to publish message: ${(error as Error).message}`
+      );
       throw error;
     }
   }
 
+  // close the zeromq server
   public async close(): Promise<void> {
     try {
       if (this.pubSocket) {
@@ -188,9 +263,11 @@ class ZeromqServer {
         this.subSocket = null;
       }
       this.isInitialized = false;
-      console.info("ZeroMQ server closed");
+      console.info("=> ZeroMQ server closed");
     } catch (error) {
-      console.error(`Error closing ZeroMQ server: ${(error as Error).message}`);
+      console.error(
+        `=> Error closing ZeroMQ server: ${(error as Error).message}`
+      );
       throw error;
     }
   }
