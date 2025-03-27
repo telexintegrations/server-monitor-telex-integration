@@ -6,6 +6,7 @@ export enum MetricReplyType {
   getMemoryStats = "getMemoryStatsReply",
   cpuThresholdAlert = "cpuThresholdAlertReply",
   getDiskMetrics = "getDiskMetricsReply",
+  getProcessMetrics = "getProcessMetricsReply",
 }
 
 export interface MetricsData {
@@ -46,6 +47,26 @@ export interface MetricsData {
       wPerSec: number; // writes per second
     };
   };
+  processes?: {
+    all: number; // total process count
+    running: number; // number of running processes
+    blocked: number; // number of blocked processes
+    sleeping: number; // number of sleeping processes
+    unknown: number; // number of processes in unknown state
+    zombie: number; // number of zombie processes
+    list: Array<{
+      pid: number; // process ID
+      name: string; // process name
+      cpu: number; // process CPU usage percentage
+      mem: number; // process memory usage percentage
+      priority: number; // process priority
+      memVsz: number; // virtual memory size
+      memRss: number; // resident set size (RAM)
+      state: string; // process state (running, sleeping, etc.)
+      user: string; // user who owns the process
+      command: string; // command used to start the process
+    }>;
+  };
   serverName?: string;
 }
 
@@ -56,6 +77,7 @@ export enum MetricType {
   getCpuUsagePerCore = "getCpuUsagePerCore",
   getMemoryStats = "getMemoryStats",
   getDiskMetrics = "getDiskMetrics",
+  getProcessMetrics = "getProcessMetrics",
 }
 
 export interface IFormatMetricResponseOptions {

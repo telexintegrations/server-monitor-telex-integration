@@ -90,6 +90,14 @@ export async function metricReq(
         userMessage
       );
       break;
+    case "processMetrics":
+      await getMetricsFromPackage(
+        MetricType.getProcessMetrics,
+        channel_id,
+        settings,
+        userMessage
+      );
+      break;
     case "getAllMetrics":
       await getMetricsFromPackage(
         MetricType.getAllMetrics,

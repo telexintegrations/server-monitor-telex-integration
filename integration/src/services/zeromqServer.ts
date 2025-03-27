@@ -119,6 +119,7 @@ class ZeromqServer {
             case MetricReplyType.getMemoryStats:
             case MetricReplyType.getAllMetrics:
             case MetricReplyType.getDiskMetrics:
+            case MetricReplyType.getProcessMetrics:
               // Format the standard metric response
               const formattedMetrics = formatMetricResponse(
                 message.type,

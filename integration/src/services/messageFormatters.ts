@@ -169,6 +169,46 @@ Mount: ${fs.mount}
 }
 
 /**
+ * Formats process metrics if available
+ */
+function formatProcessMetrics(metrics: MetricsData): string {
+  if (!metrics.processes) {
+    return "";
+  }
+
+  const { processes } = metrics;
+
+  let output = `
+┌─────────────────────────┐
+     🔄 PROCESS METRICS     
+└─────────────────────────┘
+
+== PROCESS SUMMARY ==
+▶ Total Processes: ${processes.all}
+▶ Running: ${processes.running}
+▶ Sleeping: ${processes.sleeping}
+▶ Blocked: ${processes.blocked}
+▶ Zombie: ${processes.zombie || 0}${processes.zombie > 0 ? " ⚠️" : ""}
+▶ Unknown: ${processes.unknown}
+
+== TOP PROCESSES BY CPU USAGE ==`;
+
+  // Format top processes
+  if (processes.list && processes.list.length > 0) {
+    processes.list.forEach((proc, index) => {
+      output += `
+${index + 1}. ${proc.name.substring(0, 15).padEnd(15)} [PID: ${proc.pid}]
+   CPU: ${proc.cpu.toFixed(1).padStart(5)}%  MEM: ${proc.mem.toFixed(1).padStart(5)}%  User: ${proc.user || "unknown"}
+   State: ${proc.state || "unknown"}  Command: ${(proc.command || "").substring(0, 40)}${proc.command && proc.command.length > 40 ? "..." : ""}`;
+    });
+  } else {
+    output += `\n▶ No process data available`;
+  }
+
+  return output;
+}
+
+/**
  * Universal formatter that determines the appropriate format based on metric type
  */
 export function formatMetricResponse(
@@ -190,6 +230,8 @@ export function formatMetricResponse(
       return formatMemoryMetrics(metrics);
     case MetricReplyType.getDiskMetrics:
       return formatDiskMetrics(metrics);
+    case MetricReplyType.getProcessMetrics:
+      return formatProcessMetrics(metrics);
     case MetricReplyType.getAllMetrics:
       // Format all available metrics in a comprehensive view
       return formatAllMetrics(metrics);
@@ -260,6 +302,25 @@ export function formatAllMetrics(metrics: MetricsData): string {
     if (metrics.disk.filesystems.length > 2) {
       report += `
 ▶ And ${metrics.disk.filesystems.length - 2} more filesystems`;
+    }
+  }
+
+  // Add process stats if available
+  if (metrics.processes) {
+    report += `
+== PROCESS STATS ==
+▶ Total: ${metrics.processes.all} processes (${metrics.processes.running} running, ${metrics.processes.zombie || 0} zombie${metrics.processes.zombie > 0 ? " ⚠️" : ""})
+`;
+
+    // Add top 3 CPU-consuming processes if available
+    if (metrics.processes.list && metrics.processes.list.length > 0) {
+      report += `▶ Top CPU: `;
+
+      for (let i = 0; i < Math.min(3, metrics.processes.list.length); i++) {
+        const proc = metrics.processes.list[i];
+        if (i > 0) report += ", ";
+        report += `${proc.name} (${proc.cpu.toFixed(1)}%)`;
+      }
     }
   }
 
