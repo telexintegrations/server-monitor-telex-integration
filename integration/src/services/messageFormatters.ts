@@ -1,4 +1,8 @@
-import { MetricsData, MetricReplyType } from "../types/metricType.js";
+import {
+  MetricsData,
+  MetricReplyType,
+  IFormatMetricResponseOptions,
+} from "../types/metricType.js";
 
 /**
  * Formats CPU metrics for display
@@ -126,7 +130,11 @@ ${isCritical ? "IMMEDIATE ACTION REQUIRED!" : "Please investigate when possible.
  */
 export function formatMetricResponse(
   type: string,
-  metrics: MetricsData
+  metrics: MetricsData,
+  options: IFormatMetricResponseOptions = {
+    isCritical: false,
+    cpuThreshold: 80,
+  }
 ): string {
   switch (type) {
     case MetricReplyType.getCpuMetrics:
@@ -137,11 +145,101 @@ export function formatMetricResponse(
       return formatCpuUsagePerCoreMetrics(metrics);
     case MetricReplyType.getMemoryStats:
       return formatMemoryMetrics(metrics);
+    case MetricReplyType.getAllMetrics:
+      // Format all available metrics in a comprehensive view
+      return formatAllMetrics(metrics);
     case MetricReplyType.cpuThresholdAlert:
-      // This typically needs additional parameters beyond just metrics
-      // Default threshold value used as fallback
-      return formatCpuAlertMessage(metrics, 80, false);
+      return formatCpuAlertMessage(
+        metrics,
+        options.cpuThreshold,
+        options.isCritical
+      );
     default:
       return formatMetricsMessage(metrics);
   }
+}
+
+/**
+ * Formats all available metrics into a single comprehensive report
+ */
+export function formatAllMetrics(metrics: MetricsData): string {
+  let report = `
+┌─────────────────────────┐
+    📊 SERVER METRICS     
+└─────────────────────────┘
+
+`;
+
+  // Add CPU metrics if available
+  if (metrics.cpu) {
+    report += `
+== CPU USAGE ==
+▶ Overall Usage: ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(metrics.cpu.usage)}
+▶ Cores:         ${metrics.cpu.cores || "N/A"}
+`;
+  }
+
+  // Add CPU load averages if available
+  if (metrics.cpuLoadAvgs) {
+    report += `
+== LOAD AVERAGES ==
+▶ 1 minute:   ${metrics.cpuLoadAvgs["1min"].toFixed(2)}%  ${getUsageIndicator(metrics.cpuLoadAvgs["1min"])}
+▶ 5 minutes:  ${metrics.cpuLoadAvgs["5mins"].toFixed(2)}%  ${getUsageIndicator(metrics.cpuLoadAvgs["5mins"])}
+▶ 15 minutes: ${metrics.cpuLoadAvgs["15mins"].toFixed(2)}%  ${getUsageIndicator(metrics.cpuLoadAvgs["15mins"])}
+`;
+  }
+
+  // Add memory stats if available
+  if (metrics.memory) {
+    const memoryPercentage = metrics.memory.percentage;
+    report += `
+== MEMORY USAGE ==
+▶ Used:  ${metrics.memory.used.toFixed(2)} GB
+▶ Total: ${metrics.memory.total.toFixed(2)} GB
+▶ Usage: ${memoryPercentage.toFixed(2)}%  ${getUsageIndicator(memoryPercentage)}
+`;
+  }
+
+  // Add per-core usage if available
+  if (metrics.cpuUsagePerCore && metrics.cpuUsagePerCore.length > 0) {
+    report += `\n== PER-CORE CPU USAGE ==\n`;
+
+    // Create a compact multi-column layout for many cores
+    const cores = metrics.cpuUsagePerCore;
+    const coreCount = cores.length;
+
+    if (coreCount <= 8) {
+      // For fewer cores, show them all in a single column
+      cores.forEach((usage, index) => {
+        report += `▶ Core ${index.toString().padEnd(2)}: ${usage.toFixed(2).padEnd(5)}% ${getUsageIndicator(usage)}\n`;
+      });
+    } else {
+      // For many cores, use a two-column layout
+      const halfLength = Math.ceil(coreCount / 2);
+      for (let i = 0; i < halfLength; i++) {
+        const leftCore = `Core ${i.toString().padEnd(2)}: ${cores[i].toFixed(2).padEnd(5)}% ${getUsageIndicator(cores[i])}`;
+
+        let rightCore = "";
+        if (i + halfLength < coreCount) {
+          rightCore = `Core ${(i + halfLength).toString().padEnd(2)}: ${cores[i + halfLength].toFixed(2).padEnd(5)}% ${getUsageIndicator(cores[i + halfLength])}`;
+        }
+
+        if (rightCore) {
+          report += `▶ ${leftCore.padEnd(30)} ▶ ${rightCore}\n`;
+        } else {
+          report += `▶ ${leftCore}\n`;
+        }
+      }
+    }
+  }
+
+  // Server name if available
+  if (metrics.serverName) {
+    report += `\n== SERVER INFO ==\n▶ Server Name: ${metrics.serverName}\n`;
+  }
+
+  // Add timestamp
+  report += `\n▶ Updated at: ${new Date().toLocaleString()}\n`;
+
+  return report;
 }

@@ -34,3 +34,8 @@ export enum MetricType {
   getCpuUsagePerCore = "getCpuUsagePerCore",
   getMemoryStats = "getMemoryStats",
 }
+
+export interface IFormatMetricResponseOptions {
+  isCritical: boolean;
+  cpuThreshold: number;
+}

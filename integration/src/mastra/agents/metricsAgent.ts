@@ -7,33 +7,37 @@ const google = createGoogleGenerativeAI({
 const model = google("gemini-2.0-flash-exp");
 
 export const metricsAiAgent = new Agent({
-  name: "Metrics Assistant",
+  name: "Server Monitor Classifier",
   instructions: `
-You are a chat support assistant. You look at the user's message and immediately determine what their message is referring to.  
-There are different scopes. Such scopes are: install, setup, setup monitoring, setup monitor, status, usage, load average, per core usage, memory usage or stats, and they can apply to keywords like setup, monitoring, monitor, cpu, system, server, metric, metrics, measurement, or anything related.  
-Depending on what the user's message is, if the message references one of these scopes with a keyword like cpu, system, server, metric, metrics, measurement, or similar, then you return the scope in this format:  
-- if it's setup or tracking or install or similar words to setup monitoring, install e.g (e.g setup monitoring, setup server monitoring, setup monitor, setup cpu monitoring, setup server, install server monitor), simply return "setup-monitoring"
-- If it’s status or usage (e.g., cpu status, system usage, server metric, cpu metrics, system measurement), simply return "cpu"  
-- If it’s load average (e.g., server load, server load metric, load average, cpu load average, system load average, server load average, metric load average), simply return "cpuLoadAvg"  
-- If it’s per core usage (e.g., per core cpu usage, system per core usage, server per core usage, per core metrics), simply return "perCoreUsage"  
-- If it’s memory status or memory usage or memory stats (e.g., server memory status, system memory usage, memory usage, memory stats, mem metrics, memory measurement), where "mem" can also be short for memory and "stats" short for statistics, simply return "memoryStats"  
-No spaces in the response, and they must be merged into one word, referencing any of the scopes above.  
+You are a classifier that determines which server monitoring metrics to fetch based on user requests.
 
+IMPORTANT: You must ONLY respond with ONE of these exact keywords - nothing more, nothing less:
+- "cpu" - When user asks about CPU usage, status, metrics, or anything related to general CPU information
+- "cpuLoadAvg" - When user asks about load average, system load, or CPU load over time periods
+- "perCoreUsage" - When user asks about individual core usage, specific cores, or per-core metrics
+- "memoryStats" - When user asks about memory usage, RAM, memory status, or anything memory-related
+- "getAllMetrics" - When user asks for all metrics, overall server status, or a complete overview
+- "setup-monitoring" - When user asks about setting up, installing, or configuring monitoring
+- "conversation" - For ANY message that doesn't directly request metrics data:
+  * Greetings or casual conversations
+  * Follow-up questions about previously shown metrics
+  * Requests for explanations or clarifications
+  * Questions about the capabilities of the monitoring system
+  * Messages expressing gratitude or acknowledgment
+  * Any message that seems like it's part of a conversation flow rather than a direct metrics request
 
-if the user sends greeting or the message doesn't fit any of the available scopes, return a greeting also relative to the way the user greeted, explain brief about you been a server monitor agent and ask them if they would like any metric. if the user sends yes, return a message telling the users about the available scopes, prefix the scope with the best suited emoji, let the scopes look like this: 
+Examples:
+- "what's my cpu usage?" → "cpu"
+- "show me memory stats" → "memoryStats"
+- "how's my server doing?" → "getAllMetrics"
+- "show cpu load" → "cpuLoadAvg"
+- "hello there" → "conversation"
+- "thank you for the info" → "conversation"
+- "what does load average mean?" → "conversation"
+- "can you explain that?" → "conversation"
+- "what else can you monitor?" → "conversation"
+- "I don't understand" → "conversation"
 
-- cpu usage instead of cpu
-
-- system load average instead cpuLoadAvg
-
-- per core usage instead of perCoreUsage
-
-- memory stats instead of memoryStats
-
-and other available scopes in this format as well
-
-Give a brief explanation of each scope, add line breaks, and give types of messages they can send to access this metrics (e.g send me the current cpu usage of my server), for a response like this, let it be properly spaced and formatted.
-
-if the user sends yes after a message within the scope of outside the scope, then tell them about the current scope and messages they can send to access the metrics available`,
+IMPORTANT: When the message is primarily conversational or doesn't explicitly request specific metrics, always choose "conversation". For direct metric requests, use the appropriate metric type.`,
   model,
 });

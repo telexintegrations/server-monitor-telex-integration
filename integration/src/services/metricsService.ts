@@ -7,6 +7,7 @@ import {
 import { TelexService } from "./telexRequest.js";
 import { zeromqServer } from "./zeromqServer.js";
 
+// publish the metrics request to the zeromq server
 export const getMetricsFromPackage = async (
   type: MetricType,
   channelId: string,
@@ -31,10 +32,12 @@ export const getMetricsFromPackage = async (
   }
 };
 
+// process the metrics request based on the agent response, used in the telex controller
 export async function metricReq(
   channel_id: string,
   agentResp: string,
-  settings: any
+  settings: any,
+  userMessage?: string
 ) {
   switch (agentResp) {
     case "setup-monitoring":
@@ -51,39 +54,50 @@ export async function metricReq(
       await getMetricsFromPackage(
         MetricType.getCpuMetrics,
         channel_id,
-        settings
+        settings,
+        userMessage
       );
       break;
     case "cpuLoadAvg":
       await getMetricsFromPackage(
         MetricType.getCpuLoadAverages,
         channel_id,
-        settings
+        settings,
+        userMessage
       );
       break;
     case "perCoreUsage":
       await getMetricsFromPackage(
         MetricType.getCpuUsagePerCore,
         channel_id,
-        settings
+        settings,
+        userMessage
       );
       break;
     case "memoryStats":
       await getMetricsFromPackage(
         MetricType.getMemoryStats,
         channel_id,
-        settings
+        settings,
+        userMessage
+      );
+      break;
+    case "getAllMetrics":
+      await getMetricsFromPackage(
+        MetricType.getAllMetrics,
+        channel_id,
+        settings,
+        userMessage
       );
       break;
     default:
-      await processMessage(channel_id, agentResp);
+      // send a processing message to the channel
+      await TelexService.SendWebhookResponse({
+        channelId: channel_id,
+        message:
+          "I'm sorry, I don't understand that request. Can you please rephrase your request?",
+      });
   }
-  return;
-}
 
-async function processMessage(channel_id: string, message = "Processing...") {
-  await TelexService.SendWebhookResponse({
-    channelId: channel_id,
-    message,
-  });
+  return;
 }
