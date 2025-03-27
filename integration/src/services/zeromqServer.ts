@@ -143,16 +143,18 @@ User asked: ${message.data.userMessage}
 Current server metrics:
 ${formattedMetrics}
 
+IMPORTANT: Only report and discuss the exact metrics shown above. Never make up or hallucinate metrics that aren't explicitly provided.
 Based on the above metrics and the user's question, provide a helpful, conversational response. 
-Analyze the metrics and provide insights. If values are high (above 80%), include suggestions.`
+Analyze only the metrics that are actually present in the data. If values are high (above 80%), include suggestions.`
                     : `
 User asked: ${message.data.userMessage}
 
 Current server metrics:
 ${formattedMetrics}
 
+IMPORTANT: Only report and discuss the exact metrics shown above. Never make up or hallucinate metrics that aren't explicitly provided.
 Based on the above metrics and the user's question, provide a helpful, conversational response.
-Analyze the metrics and provide insights. If values are high (above 80%), include suggestions.`;
+Analyze only the metrics that are actually present in the data. If values are high (above 80%), include suggestions.`;
 
                   // Generate enhanced response
                   const enhancedResponse = await metricsResponseAgent.generate(
