@@ -82,6 +82,14 @@ export async function metricReq(
         userMessage
       );
       break;
+    case "diskMetrics":
+      await getMetricsFromPackage(
+        MetricType.getDiskMetrics,
+        channel_id,
+        settings,
+        userMessage
+      );
+      break;
     case "getAllMetrics":
       await getMetricsFromPackage(
         MetricType.getAllMetrics,
