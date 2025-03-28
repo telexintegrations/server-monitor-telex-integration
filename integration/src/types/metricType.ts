@@ -5,6 +5,7 @@ export enum MetricReplyType {
   getCpuUsagePerCore = "getCpuUsagePerCoreReply",
   getMemoryStats = "getMemoryStatsReply",
   cpuThresholdAlert = "cpuThresholdAlertReply",
+  memoryThresholdAlert = "memoryThresholdAlertReply",
   getDiskMetrics = "getDiskMetricsReply",
   getProcessMetrics = "getProcessMetricsReply",
   getNetworkMetrics = "getNetworkMetricsReply",
@@ -26,6 +27,26 @@ export interface MetricsData {
     used: number;
     total: number;
     percentage: number;
+    // Extended memory metrics
+    swap?: {
+      used: number;
+      total: number;
+      percentage: number;
+    };
+    buffer?: {
+      used: number;
+      percentage: number;
+    };
+    pageFaults?: {
+      pageFaults: number;
+      majorPageFaults: number;
+      minorPageFaults: number;
+    };
+    memoryPressure?: {
+      contextSwitches: number;
+      interrupts: number;
+      activeRatio: number;
+    };
   };
   disk?: {
     filesystems: Array<{
@@ -104,4 +125,5 @@ export interface IFormatMetricResponseOptions {
   isCritical: boolean;
   cpuThreshold: number;
   diskThreshold?: number;
+  memoryThreshold?: number;
 }

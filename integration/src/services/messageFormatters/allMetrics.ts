@@ -38,8 +38,34 @@ export function formatAllMetrics(metrics: MetricsData): string {
   == MEMORY USAGE ==
   ▶ Used:  ${metrics.memory.used.toFixed(2)} GB
   ▶ Total: ${metrics.memory.total.toFixed(2)} GB
-  ▶ Usage: ${memoryPercentage.toFixed(2)}%  ${getUsageIndicator(memoryPercentage)}
-  `;
+  ▶ Usage: ${memoryPercentage.toFixed(2)}%  ${getUsageIndicator(memoryPercentage)}`;
+
+    // Add swap information if available
+    if (metrics.memory.swap) {
+      report += `
+  == SWAP MEMORY ==
+  ▶ Used:  ${metrics.memory.swap.used.toFixed(2)} GB
+  ▶ Total: ${metrics.memory.swap.total.toFixed(2)} GB
+  ▶ Usage: ${metrics.memory.swap.percentage.toFixed(2)}%  ${getUsageIndicator(metrics.memory.swap.percentage)}`;
+    }
+
+    // Add buffer/cache usage if available
+    if (metrics.memory.buffer) {
+      report += `
+  == BUFFER/CACHE ==
+  ▶ Used:       ${metrics.memory.buffer.used.toFixed(2)} GB
+  ▶ Percentage: ${metrics.memory.buffer.percentage.toFixed(2)}%`;
+    }
+
+    // Add memory pressure info if available
+    if (metrics.memory.memoryPressure) {
+      const mp = metrics.memory.memoryPressure;
+      report += `
+  == MEMORY PRESSURE ==
+  ▶ Context Switches: ${mp.contextSwitches.toLocaleString()}
+  ▶ Interrupts:       ${mp.interrupts.toLocaleString()}
+  ▶ Active Ratio:     ${mp.activeRatio.toFixed(2)}%  ${getUsageIndicator(mp.activeRatio)}`;
+    }
   }
 
   // Add disk stats if available
