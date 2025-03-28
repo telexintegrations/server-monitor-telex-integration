@@ -16,6 +16,7 @@ export enum IncomingMessageType {
   getProcessMetrics = "getProcessMetrics",
   getNetworkMetrics = "getNetworkMetrics",
   ping = "ping",
+  memoryThresholdAlert = "memoryThresholdAlert",
 }
 
 export enum OutGoingMessageReplyType {
@@ -29,6 +30,7 @@ export enum OutGoingMessageReplyType {
   getNetworkMetricsReply = "getNetworkMetricsReply",
   pingReply = "pingReply",
   cpuThresholdAlertReply = "cpuThresholdAlertReply",
+  memoryThresholdAlertReply = "memoryThresholdAlertReply",
 }
 
 // Create a mapping of functions for metrics collection
@@ -169,6 +171,40 @@ export async function sendCpuAlert(
   );
 }
 
+// Send a Memory threshold alert to the integration server
+export async function sendMemoryAlert(
+  channelId: string,
+  metrics: any,
+  threshold: number,
+  isCritical: boolean
+) {
+  const severityEmoji = isCritical ? "🔥" : "⚠️";
+  const severityText = isCritical ? "CRITICAL" : "WARNING";
+
+  const alertMessage = {
+    metrics,
+    threshold,
+    severity: isCritical ? "critical" : "warning",
+    message: `${severityEmoji} ${severityText}: Memory Usage Alert ${severityEmoji}\n\nMemory usage (${metrics.memory.percentage.toFixed(
+      1
+    )}%) has exceeded the threshold (${threshold}%)\n\nServer: ${
+      getStoreData()?.serverName || "Unknown"
+    }\nTotal Memory: ${metrics.memory.total.toFixed(
+      2
+    )} GB\nUsed Memory: ${metrics.memory.used.toFixed(2)} GB${
+      metrics.memory.swap
+        ? `\nSwap Usage: ${metrics.memory.swap.percentage.toFixed(1)}%`
+        : ""
+    }\nTimestamp: ${new Date().toLocaleString()}`,
+  };
+
+  await sendReply(
+    channelId,
+    alertMessage,
+    OutGoingMessageReplyType.memoryThresholdAlertReply
+  );
+}
+
 // Handle incoming messages from the integration server
 async function handleMessages(channelId: string): Promise<void> {
   if (!subSocket) {
@@ -201,6 +237,27 @@ async function handleMessages(channelId: string): Promise<void> {
             });
 
             logger.info(`Stored CPU threshold setting: ${thresholdValue}%`);
+          }
+
+          // Handle memory threshold settings
+          const memoryThresholdSetting = message.data.settings.find(
+            (s: any) => s.label === "memory_threshold"
+          );
+
+          if (memoryThresholdSetting) {
+            const memThresholdValue = Number(
+              memoryThresholdSetting.value ||
+                memoryThresholdSetting.default ||
+                90
+            );
+
+            saveStoreData({
+              memoryThreshold: memThresholdValue,
+            });
+
+            logger.info(
+              `Stored Memory threshold setting: ${memThresholdValue}%`
+            );
           }
 
           // Store server name if available
@@ -269,6 +326,21 @@ async function handleMessages(channelId: string): Promise<void> {
               channelId,
               OutGoingMessageReplyType.getNetworkMetricsReply,
               message.data?.userMessage
+            );
+            break;
+          case IncomingMessageType.memoryThresholdAlert:
+            // Handle memory threshold alert request
+            const memMetrics = await CollectorService.getMetrics();
+            const memThreshold = getStoreData()?.memoryThreshold || 90;
+            const memIsCritical =
+              memMetrics.memory &&
+              memMetrics.memory.percentage > memThreshold + 5;
+
+            await sendMemoryAlert(
+              channelId,
+              memMetrics,
+              memThreshold,
+              memIsCritical || false
             );
             break;
           default:

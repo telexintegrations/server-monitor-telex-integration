@@ -10,6 +10,7 @@ export interface IStore {
   outputFrequency: number; // this is in minutes
   outputChannelId: string;
   cpuThreshold: number; // Added CPU threshold setting
+  memoryThreshold: number; // Added Memory threshold setting
 }
 
 // Ensure store directory exists

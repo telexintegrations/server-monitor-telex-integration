@@ -6,10 +6,12 @@ import {
   closeSocket,
   IncomingMessageType,
   sendCpuAlert,
+  sendMemoryAlert,
 } from "../services/zeromqService.js";
 import os from "os";
 
 let cpuCheckInterval: NodeJS.Timeout | null = null;
+let memoryCheckInterval: NodeJS.Timeout | null = null;
 // Track last alert time to prevent alert spam
 let lastAlertTime: { [key: string]: number } = {};
 
@@ -52,6 +54,9 @@ export async function startMonitoring(): Promise<void> {
 
     // Start periodic CPU monitoring
     startCpuMonitoring(channelId);
+
+    // Start periodic Memory monitoring
+    startMemoryMonitoring(channelId);
 
     // Keep the process running
     process.on("SIGINT", async () => {
@@ -142,6 +147,81 @@ function startCpuMonitoring(channelId: string) {
 }
 
 /**
+ * Start periodic Memory monitoring
+ */
+function startMemoryMonitoring(channelId: string) {
+  if (memoryCheckInterval) {
+    clearInterval(memoryCheckInterval);
+  }
+
+  logger.info("Starting Memory threshold monitoring");
+
+  // Reset alert tracking if not already initialized
+  if (!lastAlertTime.memoryWarning) {
+    lastAlertTime.memoryWarning = 0;
+  }
+  if (!lastAlertTime.memoryCritical) {
+    lastAlertTime.memoryCritical = 0;
+  }
+
+  memoryCheckInterval = setInterval(async () => {
+    try {
+      const metrics = await CollectorService.getMetrics();
+      const storeData = getStoreData();
+      const threshold = storeData?.memoryThreshold || 90;
+      const currentTime = Date.now();
+
+      // Only send alerts if Memory usage is above threshold
+      if (metrics.memory && metrics.memory.percentage > threshold) {
+        // Determine alert severity
+        const isCritical = metrics.memory.percentage > threshold + 5;
+
+        // Only send alerts if it has been more than 5 minutes since the last alert of the same severity
+        // This prevents alert flooding
+        const alertKey = isCritical ? "memoryCritical" : "memoryWarning";
+        const cooldownPeriod = 5 * 60 * 1000; // 5 minutes in ms
+
+        if (
+          !lastAlertTime[alertKey] ||
+          currentTime - lastAlertTime[alertKey] > cooldownPeriod
+        ) {
+          // Log and send the alert
+          if (isCritical) {
+            logger.error(
+              `CRITICAL: Memory usage at ${metrics.memory.percentage.toFixed(
+                1
+              )}%, exceeding threshold of ${threshold}%`
+            );
+          } else {
+            logger.warn(
+              `WARNING: Memory usage at ${metrics.memory.percentage.toFixed(
+                1
+              )}%, exceeding threshold of ${threshold}%`
+            );
+          }
+
+          // Send alert via ZeroMQ
+          await sendMemoryAlert(channelId, metrics, threshold, isCritical);
+
+          // Update last alert time
+          lastAlertTime[alertKey] = currentTime;
+        } else {
+          logger.info(
+            `Suppressing ${alertKey} Memory alert (${metrics.memory.percentage.toFixed(
+              1
+            )}%) - cooldown period active`
+          );
+        }
+      }
+    } catch (error) {
+      logger.error(`Error in Memory monitoring: ${(error as Error).message}`);
+    }
+  }, 60000); // Check every minute
+
+  logger.info("Memory monitoring interval started - checking every minute");
+}
+
+/**
  * Stop the monitoring process
  */
 export async function stopMonitoring(): Promise<void> {
@@ -155,6 +235,12 @@ export async function stopMonitoring(): Promise<void> {
       clearInterval(cpuCheckInterval);
       cpuCheckInterval = null;
       logger.info("CPU monitoring stopped");
+    }
+
+    if (memoryCheckInterval) {
+      clearInterval(memoryCheckInterval);
+      memoryCheckInterval = null;
+      logger.info("Memory monitoring stopped");
     }
 
     closeSocket();
