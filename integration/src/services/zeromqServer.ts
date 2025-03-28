@@ -1,14 +1,12 @@
 import { Publisher, Subscriber } from "zeromq";
 import { integrationEnvConfig } from "../utils/config.js";
 import { TelexService } from "./telexRequest.js";
-import {
-  formatMetricResponse,
-  formatCpuAlertMessage,
-} from "./messageFormatters.js";
+import { formatMetricResponse } from "./messageFormatters.js";
 import { MetricReplyType } from "../types/metricType.js";
 import { metricsResponseAgent } from "../mastra/agents/metricsResponseAgent.js";
 import { z } from "zod";
 import { ChatHistoryService } from "../utils/chatHistory.js";
+import { formatCpuAlertMessage } from "./messageFormatters/cpu.js";
 
 export interface IZeromqMessage {
   type: string;
@@ -120,6 +118,7 @@ class ZeromqServer {
             case MetricReplyType.getAllMetrics:
             case MetricReplyType.getDiskMetrics:
             case MetricReplyType.getProcessMetrics:
+            case MetricReplyType.getNetworkMetrics:
               // Format the standard metric response
               const formattedMetrics = formatMetricResponse(
                 message.type,

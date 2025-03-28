@@ -7,6 +7,7 @@ export enum MetricReplyType {
   cpuThresholdAlert = "cpuThresholdAlertReply",
   getDiskMetrics = "getDiskMetricsReply",
   getProcessMetrics = "getProcessMetricsReply",
+  getNetworkMetrics = "getNetworkMetricsReply",
 }
 
 export interface MetricsData {
@@ -67,6 +68,24 @@ export interface MetricsData {
       command: string; // command used to start the process
     }>;
   };
+  networkMetrics?: {
+    timestamp: number;
+    bandwidthUsage: {
+      received: number; // bytes per second
+      sent: number; // bytes per second
+      lastMeasurement: number;
+    };
+    latency: number; // milliseconds
+    packetLoss: number; // percentage
+    interfaceStats: {
+      [interfaceName: string]: {
+        rxBytes: number;
+        txBytes: number;
+        errors: number;
+      };
+    };
+    connectionCount: number;
+  };
   serverName?: string;
 }
 
@@ -78,6 +97,7 @@ export enum MetricType {
   getMemoryStats = "getMemoryStats",
   getDiskMetrics = "getDiskMetrics",
   getProcessMetrics = "getProcessMetrics",
+  getNetworkMetrics = "getNetworkMetrics",
 }
 
 export interface IFormatMetricResponseOptions {

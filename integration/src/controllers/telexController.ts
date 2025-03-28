@@ -15,8 +15,8 @@ import { metricsResponseAgent } from "../mastra/agents/metricsResponseAgent.js";
 
 export async function webhook(req: Request, res: Response) {
   const { channel_id, message, settings } = req.body;
-  console.log("full body request =>", req.body);
   console.log("=> new webhook from telex =>", message);
+
   try {
     // Return initial response to telex immediately
     res.status(200).json({ status: "success", message: "Message received" });
