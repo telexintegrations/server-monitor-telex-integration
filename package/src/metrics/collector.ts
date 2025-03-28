@@ -111,6 +111,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
   const { cpuUsagePerCore } = await getCpuUsagePerCoreMetrics();
   const { disk } = await getDiskMetrics();
   const { processes } = await getProcessMetrics();
+  const { networkMetrics } = await getNetworkMetrics();
 
   const allMetrics = {
     cpu,
@@ -119,6 +120,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
     cpuUsagePerCore,
     disk,
     processes,
+    networkMetrics,
   };
   return allMetrics;
 };

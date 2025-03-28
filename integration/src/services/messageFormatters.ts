@@ -46,7 +46,6 @@ export function formatMetricResponse(
     case MetricReplyType.getDiskMetrics:
       return formatDiskMetrics(metrics);
     case MetricReplyType.getProcessMetrics:
-      console.log(formatProcessMetrics(metrics));
       return formatProcessMetrics(metrics);
     case MetricReplyType.getAllMetrics:
       // Format all available metrics in a comprehensive view

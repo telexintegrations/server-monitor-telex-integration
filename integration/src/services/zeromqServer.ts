@@ -125,8 +125,6 @@ class ZeromqServer {
                 message.data.metrics
               );
 
-              console.log(formattedMetrics);
-
               // If there's a user message, use AI to enhance the response
               if (message.data.userMessage) {
                 try {

@@ -79,5 +79,25 @@ export function formatAllMetrics(metrics: MetricsData): string {
     }
   }
 
+  // Add network metrics if available
+  if (metrics.networkMetrics) {
+    const nm = metrics.networkMetrics;
+    report += `
+
+  == NETWORK STATS ==
+  ▶ Bandwidth: ↓ ${(nm.bandwidthUsage.received / 1024).toFixed(2)} KB/s, ↑ ${(nm.bandwidthUsage.sent / 1024).toFixed(2)} KB/s
+  ▶ Latency: ${nm.latency === -1 ? "Measurement Failed" : `${nm.latency.toFixed(2)} ms`}
+  ▶ Packet Loss: ${nm.packetLoss === -1 ? "Measurement Failed" : `${nm.packetLoss.toFixed(2)}%`}
+  ▶ Active Connections: ${nm.connectionCount}
+  
+  == NETWORK INTERFACES ==`;
+
+    // Show interface statistics
+    for (const [ifaceName, stats] of Object.entries(nm.interfaceStats)) {
+      report += `
+  ▶ ${ifaceName}: RX ${(stats.rxBytes / 1024 / 1024).toFixed(2)} MB, TX ${(stats.txBytes / 1024 / 1024).toFixed(2)} MB${stats.errors > 0 ? ` ⚠️ ${stats.errors} errors` : ""}`;
+    }
+  }
+
   return report;
 }
