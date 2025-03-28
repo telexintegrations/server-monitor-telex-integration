@@ -2,17 +2,17 @@ import os from "os";
 import si from "systeminformation";
 import { IMetricsData } from "./collector.js";
 import { logger } from "../utils/logger.js";
-// get cpu and memory metrics
+import { promises as fs } from "fs";
+
+// Get CPU and memory metrics along with system load metrics
 async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
   try {
-    const [currentLoad, cpuInfo] = await Promise.all([
+    const [currentLoad, cpuInfo, processCount] = await Promise.all([
       si.currentLoad(),
       si.cpu(),
+      si.processes(),
     ]);
 
-    const load = await si.currentLoad();
-
-    // CPU Load average
     const loadAverages = os.loadavg();
     const numCores = cpuInfo.cores;
 
@@ -34,14 +34,28 @@ async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
       percentage: percentUsed,
     };
 
+    // Read context switches and interrupts from /proc/stat
+    const statData = await fs.readFile("/proc/stat", "utf8");
+    const lines = statData.split("\n");
+    const cpuLine = lines[0].split(" "); // The first line contains CPU stats
+    const contextSwitches = cpuLine[3]; // 4th value in the line (index 3)
+    const interrupts = cpuLine[4]; // 5th value in the line (index 4)
+
+    const processQueueLength = processCount.all;
+
     return {
       cpu: {
         usage: currentLoad.currentLoad,
         cores: cpuInfo.cores,
-        load_avg: [load.avgLoad],
+        load_avg: [currentLoad.avgLoad],
       },
       cpuLoadAvgs: normalizedLoad,
       memory: memData,
+      cpuLoadMetrics: {
+        process_queue_length: processQueueLength,
+        context_switches: parseInt(contextSwitches, 10),
+        interrupts: parseInt(interrupts, 10),
+      },
     };
   } catch (error) {
     logger.error(`Failed to get CPU metrics: ${(error as Error).message}`);

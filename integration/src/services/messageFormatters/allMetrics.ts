@@ -16,18 +16,36 @@ export function formatAllMetrics(metrics: MetricsData): string {
   if (metrics.cpu) {
     report += `
   == CPU USAGE ==
-  ▶ Overall Usage: ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(metrics.cpu.usage)}
+  ▶ Overall Usage: ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
+      metrics.cpu.usage
+    )}
   ▶ Cores:         ${metrics.cpu.cores || "N/A"}
   `;
+  }
+
+  // Add CPU load metrics if available
+  if (metrics.cpuLoadMetrics) {
+    report += `
+== CPU LOAD METRICS ==
+▶ Processes:        ${metrics.cpuLoadMetrics.process_queue_length || "N/A"}
+▶ Context switches: ${metrics.cpuLoadMetrics.context_switches || "N/A"}
+▶ Interrupts:       ${metrics.cpuLoadMetrics.interrupts || "N/A"}
+`;
   }
 
   // Add CPU load averages if available
   if (metrics.cpuLoadAvgs) {
     report += `
   == LOAD AVERAGES ==
-  ▶ 1 minute:   ${metrics.cpuLoadAvgs["1min"].toFixed(2)}%  ${getUsageIndicator(metrics.cpuLoadAvgs["1min"])}
-  ▶ 5 minutes:  ${metrics.cpuLoadAvgs["5mins"].toFixed(2)}%  ${getUsageIndicator(metrics.cpuLoadAvgs["5mins"])}
-  ▶ 15 minutes: ${metrics.cpuLoadAvgs["15mins"].toFixed(2)}%  ${getUsageIndicator(metrics.cpuLoadAvgs["15mins"])}
+  ▶ 1 minute:   ${metrics.cpuLoadAvgs["1min"].toFixed(2)}%  ${getUsageIndicator(
+      metrics.cpuLoadAvgs["1min"]
+    )}
+  ▶ 5 minutes:  ${metrics.cpuLoadAvgs["5mins"].toFixed(
+    2
+  )}%  ${getUsageIndicator(metrics.cpuLoadAvgs["5mins"])}
+  ▶ 15 minutes: ${metrics.cpuLoadAvgs["15mins"].toFixed(
+    2
+  )}%  ${getUsageIndicator(metrics.cpuLoadAvgs["15mins"])}
   `;
   }
 
@@ -38,7 +56,9 @@ export function formatAllMetrics(metrics: MetricsData): string {
   == MEMORY USAGE ==
   ▶ Used:  ${metrics.memory.used.toFixed(2)} GB
   ▶ Total: ${metrics.memory.total.toFixed(2)} GB
-  ▶ Usage: ${memoryPercentage.toFixed(2)}%  ${getUsageIndicator(memoryPercentage)}
+  ▶ Usage: ${memoryPercentage.toFixed(2)}%  ${getUsageIndicator(
+      memoryPercentage
+    )}
   `;
   }
 
@@ -51,7 +71,12 @@ export function formatAllMetrics(metrics: MetricsData): string {
     const topFilesystems = metrics.disk.filesystems.slice(0, 2);
     topFilesystems.forEach((fs) => {
       report += `
-  ▶ ${fs.mount}: ${fs.use.toFixed(2)}% of ${(fs.size / 1024 / 1024 / 1024).toFixed(2)} GB  ${getUsageIndicator(fs.use)}`;
+  ▶ ${fs.mount}: ${fs.use.toFixed(2)}% of ${(
+        fs.size /
+        1024 /
+        1024 /
+        1024
+      ).toFixed(2)} GB  ${getUsageIndicator(fs.use)}`;
     });
 
     if (metrics.disk.filesystems.length > 2) {
@@ -64,7 +89,11 @@ export function formatAllMetrics(metrics: MetricsData): string {
   if (metrics.processes) {
     report += `
   == PROCESS STATS ==
-  ▶ Total: ${metrics.processes.all} processes (${metrics.processes.running} running, ${metrics.processes.zombie || 0} zombie${metrics.processes.zombie > 0 ? " ⚠️" : ""})
+  ▶ Total: ${metrics.processes.all} processes (${
+      metrics.processes.running
+    } running, ${metrics.processes.zombie || 0} zombie${
+      metrics.processes.zombie > 0 ? " ⚠️" : ""
+    })
   `;
 
     // Add top 3 CPU-consuming processes if available
@@ -85,9 +114,15 @@ export function formatAllMetrics(metrics: MetricsData): string {
     report += `
 
   == NETWORK STATS ==
-  ▶ Bandwidth: ↓ ${(nm.bandwidthUsage.received / 1024).toFixed(2)} KB/s, ↑ ${(nm.bandwidthUsage.sent / 1024).toFixed(2)} KB/s
-  ▶ Latency: ${nm.latency === -1 ? "Measurement Failed" : `${nm.latency.toFixed(2)} ms`}
-  ▶ Packet Loss: ${nm.packetLoss === -1 ? "Measurement Failed" : `${nm.packetLoss.toFixed(2)}%`}
+  ▶ Bandwidth: ↓ ${(nm.bandwidthUsage.received / 1024).toFixed(2)} KB/s, ↑ ${(
+      nm.bandwidthUsage.sent / 1024
+    ).toFixed(2)} KB/s
+  ▶ Latency: ${
+    nm.latency === -1 ? "Measurement Failed" : `${nm.latency.toFixed(2)} ms`
+  }
+  ▶ Packet Loss: ${
+    nm.packetLoss === -1 ? "Measurement Failed" : `${nm.packetLoss.toFixed(2)}%`
+  }
   ▶ Active Connections: ${nm.connectionCount}
   
   == NETWORK INTERFACES ==`;
@@ -95,7 +130,11 @@ export function formatAllMetrics(metrics: MetricsData): string {
     // Show interface statistics
     for (const [ifaceName, stats] of Object.entries(nm.interfaceStats)) {
       report += `
-  ▶ ${ifaceName}: RX ${(stats.rxBytes / 1024 / 1024).toFixed(2)} MB, TX ${(stats.txBytes / 1024 / 1024).toFixed(2)} MB${stats.errors > 0 ? ` ⚠️ ${stats.errors} errors` : ""}`;
+  ▶ ${ifaceName}: RX ${(stats.rxBytes / 1024 / 1024).toFixed(2)} MB, TX ${(
+        stats.txBytes /
+        1024 /
+        1024
+      ).toFixed(2)} MB${stats.errors > 0 ? ` ⚠️ ${stats.errors} errors` : ""}`;
     }
   }
 
