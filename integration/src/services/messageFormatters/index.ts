@@ -1,6 +1,7 @@
 import {
   formatMemoryMetrics,
   formatCpuAlertMessage,
+  formatMemoryAlertMessage,
   formatCpuUsagePerCoreMetrics,
   formatMetricsMessage,
   formatLoadAverages,

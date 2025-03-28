@@ -5,6 +5,7 @@ import { getProcessMetrics } from "./processes.js";
 import { getDiskMetrics } from "./disk.js";
 import { getCpuMetrics, getCpuUsagePerCoreMetrics } from "./cpu.js";
 import { getNetworkMetrics } from "./network.js";
+import { getMemoryMetrics } from "./memory.js";
 
 // Define the metrics data structure
 export interface IMetricsData {
@@ -28,6 +29,26 @@ export interface IMetricsData {
     used: number;
     total: number;
     percentage: number;
+    // Extended memory metrics
+    swap?: {
+      used: number;
+      total: number;
+      percentage: number;
+    };
+    buffer?: {
+      used: number;
+      percentage: number;
+    };
+    pageFaults?: {
+      pageFaults: number;
+      majorPageFaults: number;
+      minorPageFaults: number;
+    };
+    memoryPressure?: {
+      contextSwitches: number;
+      interrupts: number;
+      activeRatio: number;
+    };
   };
   disk?: {
     filesystems: Array<{
@@ -112,8 +133,9 @@ Load Average: ${cpuMetrics.load_avg?.[0]?.toFixed(2) || "N/A"}
 
 // get all metrics
 const getMetrics = async (): Promise<IMetricsData> => {
-  const { cpu, cpuLoadAvgs, memory } = await getCpuMetrics();
+  const { cpu, cpuLoadAvgs } = await getCpuMetrics();
   const { cpuUsagePerCore } = await getCpuUsagePerCoreMetrics();
+  const { memory } = await getMemoryMetrics();
   const { disk } = await getDiskMetrics();
   const { processes } = await getProcessMetrics();
   const { networkMetrics } = await getNetworkMetrics();
@@ -137,4 +159,5 @@ export const CollectorService = {
   getDiskMetrics,
   getProcessMetrics,
   getNetworkMetrics,
+  getMemoryMetrics,
 };

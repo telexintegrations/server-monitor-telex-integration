@@ -51,7 +51,8 @@ export function formatMemoryMetrics(metrics: MetricsData): string {
   const memoryPercentage = metrics.memory.percentage;
   const memoryIndicator = getUsageIndicator(memoryPercentage);
 
-  return `
+  // Build basic memory stats
+  let memoryStats = `
   ┌─────────────────────────┐
        💾 MEMORY STATS     
   └─────────────────────────┘
@@ -59,6 +60,45 @@ export function formatMemoryMetrics(metrics: MetricsData): string {
   ▶ Used:  ${metrics.memory.used.toFixed(2)} GB
   ▶ Total: ${metrics.memory.total.toFixed(2)} GB
   ▶ Usage: ${memoryPercentage.toFixed(2)}%  ${memoryIndicator}`;
+
+  // Add swap information if available
+  if (metrics.memory.swap) {
+    const swapPercentage = metrics.memory.swap.percentage;
+    memoryStats += `\n
+  ┌─────────────────────────┐
+       🔄 SWAP MEMORY     
+  └─────────────────────────┘
+  
+  ▶ Used:  ${metrics.memory.swap.used.toFixed(2)} GB
+  ▶ Total: ${metrics.memory.swap.total.toFixed(2)} GB
+  ▶ Usage: ${swapPercentage.toFixed(2)}%  ${getUsageIndicator(swapPercentage)}`;
+  }
+
+  // Add buffer/cache information if available
+  if (metrics.memory.buffer) {
+    memoryStats += `\n
+  ┌─────────────────────────┐
+       📦 BUFFER/CACHE     
+  └─────────────────────────┘
+  
+  ▶ Used:       ${metrics.memory.buffer.used.toFixed(2)} GB
+  ▶ Percentage: ${metrics.memory.buffer.percentage.toFixed(2)}%`;
+  }
+
+  // Add memory pressure information if available
+  if (metrics.memory.memoryPressure) {
+    const mp = metrics.memory.memoryPressure;
+    memoryStats += `\n
+  ┌─────────────────────────┐
+       🔥 MEMORY PRESSURE     
+  └─────────────────────────┘
+  
+  ▶ Context Switches: ${mp.contextSwitches.toLocaleString()}
+  ▶ Interrupts:       ${mp.interrupts.toLocaleString()}
+  ▶ Active Ratio:     ${mp.activeRatio.toFixed(2)}%  ${getUsageIndicator(mp.activeRatio)}`;
+  }
+
+  return memoryStats;
 }
 
 /**
@@ -140,4 +180,34 @@ export function formatCpuAlertMessage(
       ? "IMMEDIATE ACTION REQUIRED!"
       : "Please investigate when possible."
   }`;
+}
+
+/**
+ * Formats memory alert messages
+ */
+export function formatMemoryAlertMessage(
+  metrics: MetricsData,
+  threshold: number,
+  isCritical: boolean
+): string {
+  const severityEmoji = isCritical ? "🔥" : "⚠️";
+  const severityText = isCritical ? "CRITICAL" : "WARNING";
+
+  if (!metrics.memory) {
+    return `${severityEmoji} ${severityText}: Memory usage data not available`;
+  }
+
+  return `
+  ┌─────────────────────────┐
+   ${severityEmoji} ${severityText} MEMORY ALERT 
+  └─────────────────────────┘
+  
+  Memory usage (${metrics.memory.percentage.toFixed(1)}%) has exceeded the threshold (${threshold}%)
+  
+  ▶ Total:     ${metrics.memory.total.toFixed(2)} GB
+  ▶ Used:      ${metrics.memory.used.toFixed(2)} GB
+  ${metrics.memory.swap ? `▶ Swap Used:  ${metrics.memory.swap.used.toFixed(2)} GB (${metrics.memory.swap.percentage.toFixed(1)}%)` : ""}
+  ▶ Timestamp: ${new Date().toLocaleString()}
+  
+  ${isCritical ? "IMMEDIATE ACTION REQUIRED!" : "Please investigate when possible."}`;
 }

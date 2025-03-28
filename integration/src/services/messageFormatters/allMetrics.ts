@@ -52,7 +52,7 @@ export function formatAllMetrics(metrics: MetricsData): string {
   // Add memory stats if available
   if (metrics.memory) {
     const memoryPercentage = metrics.memory.percentage;
-    report += `
+    report += `\n
   == MEMORY USAGE ==
   ▶ Used:  ${metrics.memory.used.toFixed(2)} GB
   ▶ Total: ${metrics.memory.total.toFixed(2)} GB
@@ -64,7 +64,7 @@ export function formatAllMetrics(metrics: MetricsData): string {
 
   // Add disk stats if available
   if (metrics.disk && metrics.disk.filesystems.length) {
-    report += `
+    report += `\n
   == DISK USAGE ==`;
 
     // Only show first 2 filesystems in the summary to avoid cluttering
@@ -87,7 +87,7 @@ export function formatAllMetrics(metrics: MetricsData): string {
 
   // Add process stats if available
   if (metrics.processes) {
-    report += `
+    report += `\n
   == PROCESS STATS ==
   ▶ Total: ${metrics.processes.all} processes (${
       metrics.processes.running
@@ -111,8 +111,7 @@ export function formatAllMetrics(metrics: MetricsData): string {
   // Add network metrics if available
   if (metrics.networkMetrics) {
     const nm = metrics.networkMetrics;
-    report += `
-
+    report += `\n
   == NETWORK STATS ==
   ▶ Bandwidth: ↓ ${(nm.bandwidthUsage.received / 1024).toFixed(2)} KB/s, ↑ ${(
       nm.bandwidthUsage.sent / 1024

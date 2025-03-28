@@ -6,6 +6,7 @@ import {
 import {
   formatAllMetrics,
   formatCpuAlertMessage,
+  formatMemoryAlertMessage,
   formatCpuUsagePerCoreMetrics,
   formatDiskMetrics,
   formatLoadAverages,
@@ -59,6 +60,12 @@ export function formatMetricResponse(
       return formatCpuAlertMessage(
         metrics,
         options.cpuThreshold,
+        options.isCritical
+      );
+    case MetricReplyType.memoryThresholdAlert:
+      return formatMemoryAlertMessage(
+        metrics,
+        options.memoryThreshold || 90,
         options.isCritical
       );
 

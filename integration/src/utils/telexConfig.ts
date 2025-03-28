@@ -50,9 +50,16 @@ export const telexGeneratedConfig = {
       {
         label: "cpu_threshold",
         type: "number",
-        default: 80,
+        default: 50,
         description:
           "The threshold for CPU usage. If the CPU usage exceeds this threshold, the server will send an alert to the user.",
+      },
+      {
+        label: "memory_threshold",
+        type: "number",
+        default: 50,
+        description:
+          "The threshold for memory usage. If the memory usage exceeds this threshold, the server will send an alert to the user.",
       },
     ],
     endpoints: [],

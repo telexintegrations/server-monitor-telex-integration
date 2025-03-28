@@ -6,7 +6,10 @@ import { MetricReplyType } from "../types/metricType.js";
 import { metricsResponseAgent } from "../mastra/agents/metricsResponseAgent.js";
 import { z } from "zod";
 import { ChatHistoryService } from "../utils/chatHistory.js";
-import { formatCpuAlertMessage } from "./messageFormatters/cpu.js";
+import {
+  formatCpuAlertMessage,
+  formatMemoryAlertMessage,
+} from "./messageFormatters/cpu.js";
 
 export interface IZeromqMessage {
   type: string;
@@ -203,14 +206,36 @@ Analyze only the metrics that are actually present in the data. If values are hi
                 `CPU threshold alert received: ${message.data.severity} level`
               );
               // If a message is provided in the data, use it, otherwise format it ourselves
-              const alertMessage =
+              const cpuAlertMessage =
                 message.data.message ||
                 formatCpuAlertMessage(
                   message.data.metrics,
                   message.data.threshold,
                   message.data.severity === "critical"
                 );
-              await this.sendTelexResponse(channelId.toString(), alertMessage);
+              await this.sendTelexResponse(
+                channelId.toString(),
+                cpuAlertMessage
+              );
+              break;
+
+            case MetricReplyType.memoryThresholdAlert:
+              // Handle the memory threshold alert
+              console.warn(
+                `Memory threshold alert received: ${message.data.severity} level`
+              );
+              // If a message is provided in the data, use it, otherwise format it ourselves
+              const memoryAlertMessage =
+                message.data.message ||
+                formatMemoryAlertMessage(
+                  message.data.metrics,
+                  message.data.threshold,
+                  message.data.severity === "critical"
+                );
+              await this.sendTelexResponse(
+                channelId.toString(),
+                memoryAlertMessage
+              );
               break;
 
             default:
