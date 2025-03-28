@@ -4,7 +4,8 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 });
-const model = google("gemini-2.0-flash-exp");
+// const model = google("gemini-2.0-flash-exp");
+const model = google("gemini-2.0-flash-001");
 
 export const metricsResponseAgent = new Agent({
   name: "Metrics Response Agent",
