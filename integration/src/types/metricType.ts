@@ -1,6 +1,7 @@
 export enum MetricReplyType {
   getAllMetrics = "getAllMetricsReply",
   getCpuMetrics = "getCpuMetricsReply",
+  getCpuLoadMetrics = "getCpuLoadMetricsReply",
   getCpuLoadAverages = "getCpuLoadAveragesReply",
   getCpuUsagePerCore = "getCpuUsagePerCoreReply",
   getMemoryStats = "getMemoryStatsReply",
@@ -97,6 +98,7 @@ export interface MetricsData {
 export enum MetricType {
   getAllMetrics = "getAllMetrics",
   getCpuMetrics = "getCpuMetrics",
+  getCpuLoadMetrics = "getCpuLoadMetrics",
   getCpuLoadAverages = "getCpuLoadAverages",
   getCpuUsagePerCore = "getCpuUsagePerCore",
   getMemoryStats = "getMemoryStats",

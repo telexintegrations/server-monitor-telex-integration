@@ -13,6 +13,7 @@ import {
   formatMetricsMessage,
   formatNetworkMetrics,
   formatProcessMetrics,
+  formatLoadMetricsMessage,
 } from "./messageFormatters/index.js";
 /**
  * Returns a visual indicator based on usage percentage
@@ -37,6 +38,8 @@ export function formatMetricResponse(
   switch (type) {
     case MetricReplyType.getCpuMetrics:
       return formatMetricsMessage(metrics);
+    case MetricReplyType.getCpuLoadMetrics:
+      return formatLoadMetricsMessage(metrics);
     case MetricReplyType.getCpuLoadAverages:
       return formatLoadAverages(metrics);
     case MetricReplyType.getCpuUsagePerCore:

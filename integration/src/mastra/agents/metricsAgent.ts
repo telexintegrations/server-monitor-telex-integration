@@ -14,6 +14,7 @@ You are a classifier that determines which server monitoring metrics to fetch ba
 
 IMPORTANT: You must ONLY respond with ONE of these exact keywords - nothing more, nothing less:
 - "cpu" - When user asks about CPU usage, status, metrics, or anything related to general CPU information
+- "cpuLoadMetrics" - When user asks about CPU process queue length, interrupts, or context switches
 - "cpuLoadAvg" - When user asks about load average, system load, or CPU load over time periods
 - "perCoreUsage" - When user asks about individual core usage, specific cores, or per-core metrics
 - "memoryStats" - When user asks about memory usage, RAM, memory status, or anything memory-related
