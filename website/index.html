@@ -1274,194 +1274,462 @@
         </div>
 
         <div class="mt-20">
-          <h2 class="text-3xl font-bold text-center mb-6 animate-fade-in">
-            Managing Your Monitoring Service
+          <h2 class="text-3xl font-bold text-center mb-8 animate-fade-in">
+            Keeping Your Monitor Healthy
           </h2>
-          <div
-            class="max-w-3xl mx-auto bg-gray-50 p-5 rounded-xl shadow-sm sm:p-8"
-          >
-            <p class="text-lg text-gray-700 mb-6">
-              After installation, you can manage your monitoring service using
-              these PM2 commands:
-            </p>
-            <div class="space-y-4">
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
+          <div class="max-w-4xl mx-auto space-y-12">
+            <!-- PM2 Commands Section -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+            >
+              <h3
+                class="text-xl font-bold mb-6 text-gray-800 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 mr-3 text-primary"
                 >
-                  pm2 status telex-server-monitor
-                </div>
-                <p class="text-gray-600">
-                  Check if the monitoring service is running
-                </p>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
+                  />
+                </svg>
+                Basic Service Controls (via Terminal)
+              </h3>
+              <p class="text-gray-600 mb-6 text-sm">
+                Use these commands directly on your server to manage the
+                monitoring service process.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Check Status -->
                 <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
+                  class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition duration-300"
                 >
-                  pm2 logs telex-server-monitor
+                  <div class="flex items-center mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-2 text-green-500"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <h4 class="font-semibold text-gray-700">Check Status</h4>
+                  </div>
+                  <code
+                    class="block bg-gray-900 text-white px-3 py-1.5 rounded text-xs mb-2 overflow-x-auto"
+                    >pm2 status telex-server-monitor</code
+                  >
+                  <p class="text-xs text-gray-500">
+                    See if the monitor is running.
+                  </p>
                 </div>
-                <p class="text-gray-600">
-                  View real-time logs from the monitoring service
-                </p>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <!-- View Logs -->
                 <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
+                  class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition duration-300"
                 >
-                  pm2 restart telex-server-monitor
+                  <div class="flex items-center mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-2 text-blue-500"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+                      />
+                    </svg>
+                    <h4 class="font-semibold text-gray-700">View Logs</h4>
+                  </div>
+                  <code
+                    class="block bg-gray-900 text-white px-3 py-1.5 rounded text-xs mb-2 overflow-x-auto"
+                    >pm2 logs telex-server-monitor</code
+                  >
+                  <p class="text-xs text-gray-500">
+                    Check for errors or activity.
+                  </p>
                 </div>
-                <p class="text-gray-600">
-                  Restart the monitoring service if needed
-                </p>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <!-- Restart Service -->
                 <div
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-mono w-full md:w-64 flex-shrink-0"
+                  class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition duration-300"
                 >
-                  pm2 stop telex-server-monitor
+                  <div class="flex items-center mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-2 text-yellow-500"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                      />
+                    </svg>
+                    <h4 class="font-semibold text-gray-700">Restart</h4>
+                  </div>
+                  <code
+                    class="block bg-gray-900 text-white px-3 py-1.5 rounded text-xs mb-2 overflow-x-auto"
+                    >pm2 restart telex-server-monitor</code
+                  >
+                  <p class="text-xs text-gray-500">Turn it off and on again.</p>
                 </div>
-                <p class="text-gray-600">
-                  Temporarily stop the monitoring service
-                </p>
+                <!-- Stop Service -->
+                <div
+                  class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition duration-300"
+                >
+                  <div class="flex items-center mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-2 text-red-500"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z"
+                      />
+                    </svg>
+                    <h4 class="font-semibold text-gray-700">Stop</h4>
+                  </div>
+                  <code
+                    class="block bg-gray-900 text-white px-3 py-1.5 rounded text-xs mb-2 overflow-x-auto"
+                    >pm2 stop telex-server-monitor</code
+                  >
+                  <p class="text-xs text-gray-500">
+                    Temporarily pause monitoring.
+                  </p>
+                </div>
+                <!-- Start Service -->
+                <div
+                  class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition duration-300"
+                >
+                  <div class="flex items-center mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-2 text-green-500"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"
+                      />
+                    </svg>
+                    <h4 class="font-semibold text-gray-700">Start</h4>
+                  </div>
+                  <code
+                    class="block bg-gray-900 text-white px-3 py-1.5 rounded text-xs mb-2 overflow-x-auto"
+                    >pm2 start telex-server-monitor</code
+                  >
+                  <p class="text-xs text-gray-500">
+                    Resume monitoring if stopped.
+                  </p>
+                </div>
+                <!-- Save Configuration -->
+                <div
+                  class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition duration-300"
+                >
+                  <div class="flex items-center mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-2 text-purple-500"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
+                      />
+                    </svg>
+                    <h4 class="font-semibold text-gray-700">Save Startup</h4>
+                  </div>
+                  <code
+                    class="block bg-gray-900 text-white px-3 py-1.5 rounded text-xs mb-2 overflow-x-auto"
+                    >pm2 save</code
+                  >
+                  <p class="text-xs text-gray-500">
+                    Make sure PM2 starts on boot.
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div class="mt-8 border-t border-gray-200 pt-6">
-              <h3 class="text-xl font-bold mb-4">
-                Customizing Your Configuration
+            <!-- Alerts & Reports Section -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+            >
+              <h3
+                class="text-xl font-bold mb-6 text-gray-800 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 mr-3 text-primary"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"
+                  />
+                </svg>
+                Alerts & Reports (via Telex AI Chat)
               </h3>
-              <p class="text-gray-600 mb-4">
-                The Telex Server Monitor offers several customization options
-                you can configure directly in your Telex channel:
+              <p class="text-gray-600 mb-6 text-sm">
+                Control when and how you get notified directly by talking to the
+                AI assistant in your Telex channel.
               </p>
-
-              <div class="space-y-6">
-                <div class="bg-white p-4 rounded-md shadow-sm">
-                  <h4 class="font-semibold text-gray-800 mb-2">
-                    CPU Alert Thresholds
-                  </h4>
-                  <p class="text-gray-600 mb-3">
-                    You can customize when you receive CPU alerts by adjusting
-                    the threshold (default: 80%):
-                  </p>
-                  <ul class="list-disc pl-6 text-gray-600 space-y-1">
-                    <li>
-                      The system has two alert levels: warning and critical
-                    </li>
-                    <li>
-                      Critical alerts trigger when CPU usage exceeds threshold +
-                      10%
-                    </li>
-                    <li>
-                      Alert cooldown periods prevent notification spam (5
-                      minutes between alerts of the same type)
-                    </li>
-                  </ul>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div
+                  class="bg-indigo-50 p-4 rounded-lg border border-indigo-200"
+                >
+                  <div class="flex items-start mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-3 text-indigo-600 flex-shrink-0 mt-1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"
+                      />
+                    </svg>
+                    <div>
+                      <h4 class="font-semibold text-indigo-800">
+                        CPU Alert Thresholds
+                      </h4>
+                      <p class="text-sm text-indigo-700 mt-1">
+                        Default is 80%. Ask the AI: "Set CPU warning alert to
+                        75%" or "Change critical CPU alert to 90%". Includes
+                        smart 5-min cooldowns.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-
-                <div class="bg-white p-4 rounded-md shadow-sm">
-                  <h4 class="font-semibold text-gray-800 mb-2">
-                    Scheduled Reporting
-                  </h4>
-                  <p class="text-gray-600 mb-3">
-                    Control how often you receive automated metric reports:
-                  </p>
-                  <ul class="list-disc pl-6 text-gray-600 space-y-1">
-                    <li>Enable or disable interval metrics reporting</li>
-                    <li>
-                      Configure reporting schedules using cron expressions
-                      (default: "* * * * *" for every minute)
-                    </li>
-                    <li>
-                      Balance between real-time awareness and channel message
-                      volume
-                    </li>
-                  </ul>
+                <div
+                  class="bg-yellow-50 p-4 rounded-lg border border-yellow-200"
+                >
+                  <div class="flex items-start mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-3 text-yellow-600 flex-shrink-0 mt-1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5.25 8.25h13.5m-13.5 7.5h13.5m-1.875-3.75a.375.375 0 11-1.5 0 .375.375 0 011.5 0zm-3.75 0a.375.375 0 11-1.5 0 .375.375 0 011.5 0zm-3.75 0a.375.375 0 11-1.5 0 .375.375 0 011.5 0z"
+                      />
+                    </svg>
+                    <div>
+                      <h4 class="font-semibold text-yellow-800">
+                        Memory Alert Thresholds
+                      </h4>
+                      <p class="text-sm text-yellow-700 mt-1">
+                        Default is 85%. Ask the AI: "Set memory warning alert to
+                        80%" or "Change critical memory alert to 95%". Includes
+                        smart 5-min cooldowns.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-
-                <div class="bg-white p-4 rounded-md shadow-sm">
-                  <h4 class="font-semibold text-gray-800 mb-2">
-                    System Management Commands
-                  </h4>
-                  <p class="text-gray-600 mb-3">
-                    Advanced commands for managing your monitoring installation:
-                  </p>
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-gray-600">
-                      <thead class="bg-gray-100">
-                        <tr>
-                          <th class="py-2 px-3 text-left">Command</th>
-                          <th class="py-2 px-3 text-left">Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr class="border-b border-gray-200">
-                          <td class="py-2 px-3 font-mono">
-                            telex-server-monitor help
-                          </td>
-                          <td class="py-2 px-3">View all available commands</td>
-                        </tr>
-                        <tr class="border-b border-gray-200">
-                          <td class="py-2 px-3 font-mono">
-                            telex-server-monitor reset
-                          </td>
-                          <td class="py-2 px-3">
-                            Reset all settings to defaults
-                          </td>
-                        </tr>
-                        <tr class="border-b border-gray-200">
-                          <td class="py-2 px-3 font-mono">
-                            telex-server-monitor start
-                          </td>
-                          <td class="py-2 px-3">
-                            Start the monitoring service
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="py-2 px-3 font-mono">
-                            telex-server-monitor stop
-                          </td>
-                          <td class="py-2 px-3">Stop the monitoring service</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <div class="flex items-start mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5 mr-3 text-green-600 flex-shrink-0 mt-1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                      />
+                    </svg>
+                    <div>
+                      <h4 class="font-semibold text-green-800">
+                        Scheduled Reports
+                      </h4>
+                      <p class="text-sm text-green-700 mt-1">
+                        Default is every minute. Ask the AI: "Send reports every
+                        10 minutes" or "Disable scheduled reports". Uses cron
+                        syntax.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h4 class="font-semibold text-blue-800 mb-2">
-                Troubleshooting Tips
-              </h4>
-              <ul class="list-disc pl-6 text-gray-700 space-y-1">
+            <!-- Advanced Commands Section -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+            >
+              <h3
+                class="text-xl font-bold mb-6 text-gray-800 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 mr-3 text-primary"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.108 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.27.96-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.78.93l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.149-.894c-.07-.424-.384-.764-.78-.93-.398-.164-.854-.142-1.204.108l-.738.527a1.125 1.125 0 01-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.93l.15-.894Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0Z"
+                  />
+                </svg>
+                Advanced Controls (via Terminal)
+              </h3>
+              <p class="text-gray-600 mb-6 text-sm">
+                Rarely needed, but these commands provide deeper control over
+                the monitor installation.
+              </p>
+              <div
+                class="overflow-x-auto bg-gray-50 p-4 rounded-lg border border-gray-200"
+              >
+                <table class="min-w-full text-sm">
+                  <tbody>
+                    <tr class="hover:bg-gray-100">
+                      <td class="py-2 px-3 font-mono text-gray-700">
+                        telex-server-monitor help
+                      </td>
+                      <td class="py-2 px-3 text-gray-600">
+                        See all available monitor commands.
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                      <td class="py-2 px-3 font-mono text-gray-700">
+                        telex-server-monitor reset
+                      </td>
+                      <td class="py-2 px-3 text-gray-600">
+                        Reset all monitor settings to their defaults.
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                      <td class="py-2 px-3 font-mono text-gray-700">
+                        telex-server-monitor start
+                      </td>
+                      <td class="py-2 px-3 text-gray-600">
+                        Manually start the monitoring service (if not using
+                        PM2).
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                      <td class="py-2 px-3 font-mono text-gray-700">
+                        telex-server-monitor stop
+                      </td>
+                      <td class="py-2 px-3 text-gray-600">
+                        Manually stop the monitoring service (if not using PM2).
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Quick Fixes Section -->
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+              <h3
+                class="text-xl font-bold mb-4 text-blue-800 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 mr-3"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9.813 15.904L9 15l.813-.904m-2.829 3.712L6 18l.813.904m-2.226-1.808L4 16.5l.813.904M3 15c0-2.886 1.884-5.408 4.5-6.417M15 15a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm0 0h.01M12 12.75h.008v.008H12v-.008zm0 0c.004 0 .008.002.008.006v.005a.01.01 0 01-.008.006H12a.01.01 0 01-.008-.006v-.005a.01.01 0 01.008-.006zm-4.5-1.5h.008v.008H7.5v-.008zm0 0c.004 0 .008.002.008.006v.005a.01.01 0 01-.008.006H7.5a.01.01 0 01-.008-.006v-.005a.01.01 0 01.008-.006zM21 15c0 2.886-1.884 5.408-4.5 6.417M19.5 10.5c0-4.142-3.358-7.5-7.5-7.5s-7.5 3.358-7.5 7.5"
+                  />
+                </svg>
+                Quick Fixes
+              </h3>
+              <ul class="list-disc pl-6 text-gray-700 space-y-2 text-sm">
                 <li>
-                  If the service isn't running, try restarting with
-                  <code class="bg-gray-200 px-1 rounded"
+                  <strong class="text-blue-700">Service not running?</strong>
+                  Try restarting:
+                  <code class="bg-gray-200 px-1 rounded text-xs"
                     >pm2 restart telex-server-monitor</code
                   >
                 </li>
                 <li>
-                  Check logs for any errors with
-                  <code class="bg-gray-200 px-1 rounded"
+                  <strong class="text-blue-700">Seeing errors?</strong> Check
+                  the logs:
+                  <code class="bg-gray-200 px-1 rounded text-xs"
                     >pm2 logs telex-server-monitor</code
                   >
                 </li>
                 <li>
-                  Logs are also stored in
-                  <code class="bg-gray-200 px-1 rounded"
+                  <strong class="text-blue-700">Logs also stored here:</strong>
+                  <code class="bg-gray-200 px-1 rounded text-xs"
                     >/var/log/telex-server-monitor/</code
                   >
                   and
-                  <code class="bg-gray-200 px-1 rounded"
+                  <code class="bg-gray-200 px-1 rounded text-xs"
                     >~/.telex-monitor/logs</code
                   >
                 </li>
                 <li>
-                  If changes don't appear to be working, ensure PM2 startup is
-                  configured:
-                  <code class="bg-gray-200 px-1 rounded">pm2 save</code>
+                  <strong class="text-blue-700">Not starting on boot?</strong>
+                  Ensure PM2 is saved:
+                  <code class="bg-gray-200 px-1 rounded text-xs">pm2 save</code>
                 </li>
               </ul>
             </div>
