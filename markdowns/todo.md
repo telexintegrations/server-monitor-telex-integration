@@ -10,7 +10,7 @@ Features to be added:
    - IOPS (Input/Output Operations Per Second)
    - Found in todo.md where disk monitoring is planned with a 90% threshold
 
-2. **Network Metrics**
+2. **Network Metrics** (done)
 
    - Network bandwidth usage
    - Network latency
