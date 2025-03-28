@@ -2,7 +2,7 @@
 
 Features to be added:
 
-1. **Disk Metrics** (done)
+1. **Disk Metrics** (done - jc)
 
    - Disk usage/space
    - Disk I/O operations
@@ -10,7 +10,7 @@ Features to be added:
    - IOPS (Input/Output Operations Per Second)
    - Found in todo.md where disk monitoring is planned with a 90% threshold
 
-2. **Network Metrics** (done)
+2. **Network Metrics** (done - knowledge)
 
    - Network bandwidth usage
    - Network latency
@@ -18,7 +18,7 @@ Features to be added:
    - Network interface statistics
    - Connection counts
 
-3. **Process Metrics** (done)
+3. **Process Metrics** (done - jc)
 
    - Top processes by CPU usage
    - Top processes by memory usage
@@ -34,13 +34,14 @@ Features to be added:
    - System interrupts
    - Detailed load analysis
 
-5. **Memory Metrics Extensions**
+5. **Memory Metrics Extensions** (done)
 
    - While basic memory usage is implemented, could add:
    - Swap usage
    - Page faults
    - Buffer/cache usage
    - Memory pressure statistics
+   - custom threshold settings for memory usage
 
 6. **File System Metrics**
 
@@ -70,44 +71,30 @@ Features to be added:
    - Firewall statistics
    - Port scanning detection
 
-10. **Environmental Metrics**
-
-    - CPU temperature
-    - Fan speeds
-    - Power consumption
-    - Hardware health status
-
-11. **Database Metrics** (if databases are running)
+10. **Database Metrics** (if databases are running)
 
     - Connection pool stats
     - Query performance
     - Database size
     - Transaction rates
 
-12. **Container Metrics**
+11. **Container Metrics**
 
     - Docker container stats
     - Container resource usage
     - Container health checks
     - Container logs
 
-13. **Custom Metrics**
+12. **Custom Metrics**
 
     - User-defined metrics
     - Application-specific metrics
     - Custom threshold settings
     - Custom alert rules
 
-14. **Historical Data**
+13. **Historical Data**
 
     - Metric history storage
     - Trend analysis
     - Performance baselines
     - Historical comparisons
-
-15. **Alert System Enhancements**
-    - While basic CPU alerts are implemented, could add:
-    - Custom alert thresholds for all metrics
-    - Alert severity levels
-    - Alert grouping
-    - Alert escalation policies

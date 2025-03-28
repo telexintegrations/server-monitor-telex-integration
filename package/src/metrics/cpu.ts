@@ -22,18 +22,6 @@ async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
       "15mins": (loadAverages[2] / numCores) * 100,
     };
 
-    // CPU memory
-    const mem = await si.mem();
-    const usedGB = mem.used / 1024 ** 3; // Convert to GB
-    const totalGB = mem.total / 1024 ** 3;
-    const percentUsed = (mem.used / mem.total) * 100;
-
-    const memData = {
-      used: usedGB,
-      total: totalGB,
-      percentage: percentUsed,
-    };
-
     return {
       cpu: {
         usage: currentLoad.currentLoad,
@@ -41,7 +29,6 @@ async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
         load_avg: [load.avgLoad],
       },
       cpuLoadAvgs: normalizedLoad,
-      memory: memData,
     };
   } catch (error) {
     logger.error(`Failed to get CPU metrics: ${(error as Error).message}`);

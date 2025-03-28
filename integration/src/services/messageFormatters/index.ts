@@ -1,6 +1,7 @@
 import {
   formatMemoryMetrics,
   formatCpuAlertMessage,
+  formatMemoryAlertMessage,
   formatCpuUsagePerCoreMetrics,
   formatMetricsMessage,
   formatLoadAverages,
@@ -14,6 +15,7 @@ import { formatNetworkMetrics } from "./network.js";
 export {
   formatAllMetrics,
   formatCpuAlertMessage,
+  formatMemoryAlertMessage,
   formatCpuUsagePerCoreMetrics,
   formatDiskMetrics,
   formatLoadAverages,
