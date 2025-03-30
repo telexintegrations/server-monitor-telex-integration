@@ -64,7 +64,7 @@ Features to be added:
    - Custom log file monitoring
    - Log pattern matching
 
-9. **Security Metrics**
+9. **Security Metrics** (done)
 
    - Failed login attempts
    - SSH access logs
@@ -98,3 +98,7 @@ Features to be added:
     - Trend analysis
     - Performance baselines
     - Historical comparisons
+
+14. **Environmental Metrics**
+
+// refactor alert coming in from zeromqService. just return the metrics and the formatter will handle the message

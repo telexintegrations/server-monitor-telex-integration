@@ -11,6 +11,11 @@ export interface IStore {
   outputChannelId: string;
   cpuThreshold: number; // Added CPU threshold setting
   memoryThreshold: number; // Added Memory threshold setting
+  securitySettings: {
+    failedLoginThreshold: number; // Maximum number of failed logins before alert
+    monitorPortScanning: boolean; // Whether to monitor for port scanning
+    monitorFirewall: boolean; // Whether to monitor firewall logs
+  };
 }
 
 // Ensure store directory exists
