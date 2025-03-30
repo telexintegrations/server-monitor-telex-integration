@@ -20,6 +20,7 @@ IMPORTANT: You must ONLY respond with ONE of these exact keywords - nothing more
 - "diskMetrics" - When user asks about disk usage, storage, disk I/O, read/write speeds, disk operations, or any disk-related metrics
 - "processMetrics" - When user asks about running processes, top processes, CPU-intensive processes, process count, zombie processes, or any process-related metrics
 - "networkMetrics" - When user asks about network usage, bandwidth, latency, packet loss, network interfaces, or any network-related metrics
+- "securityMetrics" - When user asks about security, failed logins, SSH access logs, firewall status, port scanning, or any security-related metrics
 - "getAllMetrics" - When user asks for all metrics, overall server status, or a complete overview
 - "setup-monitoring" - When user asks about setting up, installing, or configuring monitoring
 - "conversation" - For ANY message that doesn't directly request metrics data:
@@ -43,6 +44,11 @@ Examples:
 - "check network bandwidth" → "networkMetrics"
 - "show me latency" → "networkMetrics"
 - "what's the packet loss?" → "networkMetrics"
+- "check for failed login attempts" → "securityMetrics"
+- "show me ssh access logs" → "securityMetrics" 
+- "check security status" → "securityMetrics"
+- "any suspicious port scanning?" → "securityMetrics"
+- "show firewall statistics" → "securityMetrics"
 - "hello there" → "conversation"
 - "thank you for the info" → "conversation"
 - "what does load average mean?" → "conversation"

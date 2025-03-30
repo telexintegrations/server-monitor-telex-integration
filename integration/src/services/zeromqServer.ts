@@ -10,6 +10,7 @@ import {
   formatCpuAlertMessage,
   formatMemoryAlertMessage,
 } from "./messageFormatters/cpu.js";
+import { formatSecurityAlertMessage } from "./messageFormatters/security.js";
 
 export interface IZeromqMessage {
   type: string;
@@ -122,6 +123,7 @@ class ZeromqServer {
             case MetricReplyType.getDiskMetrics:
             case MetricReplyType.getProcessMetrics:
             case MetricReplyType.getNetworkMetrics:
+            case MetricReplyType.getSecurityMetrics:
               // Format the standard metric response
               const formattedMetrics = formatMetricResponse(
                 message.type,
@@ -231,9 +233,32 @@ Analyze only the metrics that are actually present in the data. If values are hi
                   message.data.threshold,
                   message.data.severity === "critical"
                 );
+
+              // Send the memory alert message to telex
               await this.sendTelexResponse(
                 channelId.toString(),
                 memoryAlertMessage
+              );
+              break;
+
+            case MetricReplyType.securityAlert:
+              // Handle the security alert
+              console.warn(
+                `Security alert received: ${message.data.severity} level`
+              );
+
+              const securityAlertMessage =
+                message.data.message ||
+                formatSecurityAlertMessage(
+                  message.data.metrics,
+                  message.data.alerts,
+                  message.data.severity === "critical"
+                );
+
+              // Send the security alert message to telex
+              await this.sendTelexResponse(
+                channelId.toString(),
+                securityAlertMessage
               );
               break;
 

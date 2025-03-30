@@ -5,7 +5,7 @@ import {
   startMonitoring,
   stopMonitoring,
   isMonitoringRunning,
-} from "../lib/monitor.js";
+} from "../services/periodicMonitorServices/monitor.js";
 import { logger } from "../utils/logger.js";
 import fs from "fs";
 import { CollectorService } from "../index.js";

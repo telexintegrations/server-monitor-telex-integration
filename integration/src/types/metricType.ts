@@ -6,9 +6,11 @@ export enum MetricReplyType {
   getMemoryStats = "getMemoryStatsReply",
   cpuThresholdAlert = "cpuThresholdAlertReply",
   memoryThresholdAlert = "memoryThresholdAlertReply",
+  securityAlert = "securityAlertReply",
   getDiskMetrics = "getDiskMetricsReply",
   getProcessMetrics = "getProcessMetricsReply",
   getNetworkMetrics = "getNetworkMetricsReply",
+  getSecurityMetrics = "getSecurityMetricsReply",
 }
 
 export interface MetricsData {
@@ -108,6 +110,48 @@ export interface MetricsData {
     connectionCount: number;
   };
   serverName?: string;
+  security?: {
+    failedLogins: {
+      count: number;
+      recent: Array<{
+        timestamp: string;
+        user: string;
+        source: string;
+        message: string;
+      }>;
+    };
+    sshAccess: {
+      count: number;
+      recent: Array<{
+        timestamp: string;
+        user: string;
+        source: string;
+        message: string;
+      }>;
+    };
+    firewall: {
+      connections: number;
+      blocked: number;
+      rules: Array<{
+        chain: string;
+        target: string;
+        protocol: string;
+        source: string;
+        destination: string;
+      }>;
+    };
+    portScanning: {
+      detected: boolean;
+      attempts: Array<{
+        timestamp: string;
+        source: string;
+        ports: string;
+        message: string;
+      }>;
+    };
+    lastUpdated: string;
+    error?: string;
+  };
 }
 
 export enum MetricType {
@@ -119,6 +163,7 @@ export enum MetricType {
   getDiskMetrics = "getDiskMetrics",
   getProcessMetrics = "getProcessMetrics",
   getNetworkMetrics = "getNetworkMetrics",
+  getSecurityMetrics = "getSecurityMetrics",
 }
 
 export interface IFormatMetricResponseOptions {
@@ -126,4 +171,5 @@ export interface IFormatMetricResponseOptions {
   cpuThreshold: number;
   diskThreshold?: number;
   memoryThreshold?: number;
+  securityAlerts?: string[];
 }
