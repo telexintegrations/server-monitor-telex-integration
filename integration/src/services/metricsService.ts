@@ -114,6 +114,14 @@ export async function metricReq(
         userMessage
       );
       break;
+    case "securityMetrics":
+      await getMetricsFromPackage(
+        MetricType.getSecurityMetrics,
+        channel_id,
+        settings,
+        userMessage
+      );
+      break;
     case "getAllMetrics":
       await getMetricsFromPackage(
         MetricType.getAllMetrics,

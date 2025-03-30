@@ -1,17 +1,20 @@
-import { logger } from "../utils/logger.js";
-import { getStoreData, saveStoreData } from "../utils/store.js";
-import { CollectorService } from "../metrics/collector.js";
+import { logger } from "../../utils/logger.js";
+import { getStoreData, saveStoreData } from "../../utils/store.js";
+import { CollectorService } from "../../metrics/collector.js";
 import {
   connectToIntegrationServer,
   closeSocket,
   IncomingMessageType,
   sendCpuAlert,
   sendMemoryAlert,
-} from "../services/zeromqService.js";
+  sendSecurityAlert,
+} from "../zeromqService.js";
 import os from "os";
+import { checkSecurityThresholds } from "../../metrics/security.js";
 
 let cpuCheckInterval: NodeJS.Timeout | null = null;
 let memoryCheckInterval: NodeJS.Timeout | null = null;
+let securityCheckInterval: NodeJS.Timeout | null = null;
 // Track last alert time to prevent alert spam
 let lastAlertTime: { [key: string]: number } = {};
 
@@ -57,6 +60,9 @@ export async function startMonitoring(): Promise<void> {
 
     // Start periodic Memory monitoring
     startMemoryMonitoring(channelId);
+
+    // Start periodic Security monitoring
+    startSecurityMonitoring(channelId);
 
     // Keep the process running
     process.on("SIGINT", async () => {
@@ -222,6 +228,94 @@ function startMemoryMonitoring(channelId: string) {
 }
 
 /**
+ * Start periodic Security monitoring
+ */
+function startSecurityMonitoring(channelId: string) {
+  if (securityCheckInterval) {
+    clearInterval(securityCheckInterval);
+  }
+
+  logger.info("Starting Security monitoring");
+
+  // Reset alert tracking if not already initialized
+  if (!lastAlertTime.securityWarning) {
+    lastAlertTime.securityWarning = 0;
+  }
+  if (!lastAlertTime.securityCritical) {
+    lastAlertTime.securityCritical = 0;
+  }
+
+  // Security checks run less frequently than CPU/memory as they're more resource-intensive
+  securityCheckInterval = setInterval(async () => {
+    try {
+      const securityMetrics = await CollectorService.getSecurityMetrics();
+      const currentTime = Date.now();
+      const storeData = getStoreData();
+
+      // Get security settings from store or use defaults
+      const securitySettings = storeData?.securitySettings || {
+        failedLoginThreshold: 5,
+        monitorPortScanning: true,
+        monitorFirewall: true,
+      };
+
+      // Only proceed if we have security metrics
+      if (securityMetrics.security) {
+        // Check for security issues
+        const { alertRequired, isCritical, alerts } = checkSecurityThresholds(
+          securityMetrics.security,
+          securitySettings.failedLoginThreshold
+        );
+
+        if (alertRequired) {
+          // Only send alerts if it has been more than 15 minutes since the last alert of the same severity
+          // Security alerts use longer cooldown periods than CPU/memory to avoid flooding
+          const alertKey = isCritical ? "securityCritical" : "securityWarning";
+          const cooldownPeriod = 15 * 60 * 1000; // 15 minutes in ms
+
+          if (
+            !lastAlertTime[alertKey] ||
+            currentTime - lastAlertTime[alertKey] > cooldownPeriod
+          ) {
+            // Log and send the alert
+            if (isCritical) {
+              logger.error(
+                `CRITICAL: Security issues detected: ${alerts.join(", ")}`
+              );
+            } else {
+              logger.warn(
+                `WARNING: Security issues detected: ${alerts.join(", ")}`
+              );
+            }
+
+            // Send alert via ZeroMQ
+            await sendSecurityAlert(
+              channelId,
+              securityMetrics,
+              alerts,
+              isCritical
+            );
+
+            // Update last alert time
+            lastAlertTime[alertKey] = currentTime;
+          } else {
+            logger.info(
+              `Suppressing ${alertKey} security alert - cooldown period active`
+            );
+          }
+        }
+      }
+    } catch (error) {
+      logger.error(`Error in Security monitoring: ${(error as Error).message}`);
+    }
+  }, 5 * 60 * 1000); // Check every 5 minutes (less frequently than CPU/memory)
+
+  logger.info(
+    "Security monitoring interval started - checking every 5 minutes"
+  );
+}
+
+/**
  * Stop the monitoring process
  */
 export async function stopMonitoring(): Promise<void> {
@@ -241,6 +335,12 @@ export async function stopMonitoring(): Promise<void> {
       clearInterval(memoryCheckInterval);
       memoryCheckInterval = null;
       logger.info("Memory monitoring stopped");
+    }
+
+    if (securityCheckInterval) {
+      clearInterval(securityCheckInterval);
+      securityCheckInterval = null;
+      logger.info("Security monitoring stopped");
     }
 
     closeSocket();

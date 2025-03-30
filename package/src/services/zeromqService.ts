@@ -15,8 +15,10 @@ export enum IncomingMessageType {
   getDiskMetrics = "getDiskMetrics",
   getProcessMetrics = "getProcessMetrics",
   getNetworkMetrics = "getNetworkMetrics",
+  getSecurityMetrics = "getSecurityMetrics",
   ping = "ping",
   memoryThresholdAlert = "memoryThresholdAlert",
+  securityAlert = "securityAlert",
 }
 
 export enum OutGoingMessageReplyType {
@@ -28,9 +30,11 @@ export enum OutGoingMessageReplyType {
   getDiskMetricsReply = "getDiskMetricsReply",
   getProcessMetricsReply = "getProcessMetricsReply",
   getNetworkMetricsReply = "getNetworkMetricsReply",
+  getSecurityMetricsReply = "getSecurityMetricsReply",
   pingReply = "pingReply",
   cpuThresholdAlertReply = "cpuThresholdAlertReply",
   memoryThresholdAlertReply = "memoryThresholdAlertReply",
+  securityAlertReply = "securityAlertReply",
 }
 
 // Create a mapping of functions for metrics collection
@@ -43,6 +47,7 @@ const functionMap = {
   getDiskMetricsReply: CollectorService.getDiskMetrics,
   getProcessMetricsReply: CollectorService.getProcessMetrics,
   getNetworkMetricsReply: CollectorService.getNetworkMetrics,
+  getSecurityMetricsReply: CollectorService.getSecurityMetrics,
 };
 
 export interface IZeromqMessage {
@@ -205,6 +210,33 @@ export async function sendMemoryAlert(
   );
 }
 
+// Send a Security alert to the integration server
+export async function sendSecurityAlert(
+  channelId: string,
+  metrics: any,
+  alerts: string[],
+  isCritical: boolean
+) {
+  const severityEmoji = isCritical ? "🔥" : "⚠️";
+  const severityText = isCritical ? "CRITICAL" : "WARNING";
+
+  const alertMessage = {
+    metrics,
+    severity: isCritical ? "critical" : "warning",
+    message: `${severityEmoji} ${severityText}: Security Alert ${severityEmoji}\n\n${alerts.join(
+      "\n"
+    )}\n\nServer: ${
+      getStoreData()?.serverName || "Unknown"
+    }\nTimestamp: ${new Date().toLocaleString()}`,
+  };
+
+  await sendReply(
+    channelId,
+    alertMessage,
+    OutGoingMessageReplyType.securityAlertReply
+  );
+}
+
 // Handle incoming messages from the integration server
 async function handleMessages(channelId: string): Promise<void> {
   if (!subSocket) {
@@ -259,6 +291,56 @@ async function handleMessages(channelId: string): Promise<void> {
               `Stored Memory threshold setting: ${memThresholdValue}%`
             );
           }
+
+          // Handle security settings
+          const securitySettings = {
+            failedLoginThreshold: 5, // Default value
+            monitorPortScanning: true,
+            monitorFirewall: true,
+          };
+
+          // Failed login threshold
+          const failedLoginSetting = message.data.settings.find(
+            (s: any) => s.label === "failed_login_threshold"
+          );
+
+          if (failedLoginSetting) {
+            securitySettings.failedLoginThreshold = Number(
+              failedLoginSetting.value || failedLoginSetting.default || 5
+            );
+          }
+
+          // Port scanning monitoring
+          const portScanSetting = message.data.settings.find(
+            (s: any) => s.label === "monitor_port_scanning"
+          );
+
+          if (portScanSetting) {
+            securitySettings.monitorPortScanning =
+              portScanSetting.value === "true" ||
+              portScanSetting.value === true ||
+              portScanSetting.default === "true" ||
+              portScanSetting.default === true;
+          }
+
+          // Firewall monitoring
+          const firewallSetting = message.data.settings.find(
+            (s: any) => s.label === "monitor_firewall"
+          );
+
+          if (firewallSetting) {
+            securitySettings.monitorFirewall =
+              firewallSetting.value === "true" ||
+              firewallSetting.value === true ||
+              firewallSetting.default === "true" ||
+              firewallSetting.default === true;
+          }
+
+          // Save all security settings at once
+          saveStoreData({ securitySettings });
+          logger.info(
+            `Stored security settings: ${JSON.stringify(securitySettings)}`
+          );
 
           // Store server name if available
           if (!getStoreData()?.serverName) {
@@ -328,6 +410,13 @@ async function handleMessages(channelId: string): Promise<void> {
               message.data?.userMessage
             );
             break;
+          case IncomingMessageType.getSecurityMetrics:
+            await sendMetrics(
+              channelId,
+              OutGoingMessageReplyType.getSecurityMetricsReply,
+              message.data?.userMessage
+            );
+            break;
           case IncomingMessageType.memoryThresholdAlert:
             // Handle memory threshold alert request
             const memMetrics = await CollectorService.getMetrics();
@@ -342,6 +431,40 @@ async function handleMessages(channelId: string): Promise<void> {
               memThreshold,
               memIsCritical || false
             );
+            break;
+          case IncomingMessageType.securityAlert:
+            // Handle security alert request
+            const securityMetrics = await CollectorService.getSecurityMetrics();
+
+            // Import the security thresholds check from the security module
+            const { checkSecurityThresholds } = await import(
+              "../metrics/security.js"
+            );
+            const { alertRequired, isCritical, alerts } =
+              checkSecurityThresholds(
+                securityMetrics.security,
+                5 // Default failed login threshold
+              );
+
+            if (alertRequired) {
+              // Send security alert if issues detected
+              await sendSecurityAlert(
+                channelId,
+                securityMetrics,
+                alerts,
+                isCritical
+              );
+            } else {
+              // Send an "all clear" message if no issues
+              await sendReply(
+                channelId,
+                {
+                  metrics: securityMetrics,
+                  message: "✅ No security issues detected.",
+                },
+                OutGoingMessageReplyType.securityAlertReply
+              );
+            }
             break;
           default:
             logger.warn(`Unknown message type: ${incomingMessageType}`);

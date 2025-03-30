@@ -137,5 +137,43 @@ export function formatAllMetrics(metrics: MetricsData): string {
     }
   }
 
+  // Add security metrics if available
+  if (metrics.security) {
+    const security = metrics.security;
+
+    report += `
+
+== SECURITY SUMMARY ==`;
+
+    // Add failed login summary
+    if (security.failedLogins) {
+      const failedLoginIndicator =
+        security.failedLogins.count > 10
+          ? "🔴 High"
+          : security.failedLogins.count > 5
+            ? "🟠 Moderate"
+            : "🟢 Normal";
+
+      report += `
+▶ Failed Logins: ${security.failedLogins.count} ${failedLoginIndicator}`;
+    }
+
+    // Add port scanning summary
+    if (security.portScanning) {
+      const scanStatus = security.portScanning.detected
+        ? "🔴 Detected"
+        : "🟢 None";
+
+      report += `
+▶ Port Scanning: ${scanStatus}`;
+    }
+
+    // Add firewall summary
+    if (security.firewall) {
+      report += `
+▶ Firewall: ${security.firewall.blocked} blocked connections out of ${security.firewall.connections} total`;
+    }
+  }
+
   return report;
 }

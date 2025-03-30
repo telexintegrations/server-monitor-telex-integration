@@ -6,6 +6,7 @@ import { getDiskMetrics } from "./disk.js";
 import { getCpuMetrics, getCpuUsagePerCoreMetrics } from "./cpu.js";
 import { getNetworkMetrics } from "./network.js";
 import { getMemoryMetrics } from "./memory.js";
+import { getSecurityMetrics } from "./security.js";
 
 // Define the metrics data structure
 export interface IMetricsData {
@@ -49,6 +50,48 @@ export interface IMetricsData {
       interrupts: number;
       activeRatio: number;
     };
+  };
+  security?: {
+    failedLogins: {
+      count: number;
+      recent: Array<{
+        timestamp: string;
+        user: string;
+        source: string;
+        message: string;
+      }>;
+    };
+    sshAccess: {
+      count: number;
+      recent: Array<{
+        timestamp: string;
+        user: string;
+        source: string;
+        message: string;
+      }>;
+    };
+    firewall: {
+      connections: number;
+      blocked: number;
+      rules: Array<{
+        chain: string;
+        target: string;
+        protocol: string;
+        source: string;
+        destination: string;
+      }>;
+    };
+    portScanning: {
+      detected: boolean;
+      attempts: Array<{
+        timestamp: string;
+        source: string;
+        ports: string;
+        message: string;
+      }>;
+    };
+    lastUpdated: string;
+    error?: string;
   };
   disk?: {
     filesystems: Array<{
@@ -139,6 +182,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
   const { disk } = await getDiskMetrics();
   const { processes } = await getProcessMetrics();
   const { networkMetrics } = await getNetworkMetrics();
+  const { security } = await getSecurityMetrics();
 
   const allMetrics = {
     cpu,
@@ -148,6 +192,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
     disk,
     processes,
     networkMetrics,
+    security,
   };
   return allMetrics;
 };
@@ -160,4 +205,5 @@ export const CollectorService = {
   getProcessMetrics,
   getNetworkMetrics,
   getMemoryMetrics,
+  getSecurityMetrics,
 };
