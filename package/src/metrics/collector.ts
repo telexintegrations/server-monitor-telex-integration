@@ -14,8 +14,6 @@ export interface IMetricsData {
     usage: number;
     cores?: number;
     load_avg?: number[];
-  };
-  cpuLoadMetrics?: {
     process_queue_length?: number;
     context_switches?: number;
     interrupts?: number;
@@ -167,6 +165,9 @@ async function getFormattedCpuMetrics(): Promise<string> {
 CPU Usage: ${cpuMetrics.usage.toFixed(2)}%
 CPU Cores: ${cpuMetrics.cores || "N/A"}
 Load Average: ${cpuMetrics.load_avg?.[0]?.toFixed(2) || "N/A"}
+Process Queue Length: ${cpuMetrics.process_queue_length || "N/A"}
+Interrupts: ${cpuMetrics.interrupts || "N/A"}
+Context switches: ${cpuMetrics.context_switches || "N/A"}
     `.trim();
   } catch (error) {
     logger.error(`Failed to format CPU metrics: ${(error as Error).message}`);

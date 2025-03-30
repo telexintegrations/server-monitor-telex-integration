@@ -15,7 +15,6 @@ import {
   formatMetricsMessage,
   formatNetworkMetrics,
   formatProcessMetrics,
-  formatLoadMetricsMessage, // From victor/4
   formatSecurityMetrics, // From dev
 } from "./messageFormatters/index.js";
 
@@ -42,8 +41,6 @@ export function formatMetricResponse(
   switch (type) {
     case MetricReplyType.getCpuMetrics:
       return formatMetricsMessage(metrics);
-    case MetricReplyType.getCpuLoadMetrics:
-      return formatLoadMetricsMessage(metrics);
     case MetricReplyType.getCpuLoadAverages:
       return formatLoadAverages(metrics);
     case MetricReplyType.getCpuUsagePerCore:

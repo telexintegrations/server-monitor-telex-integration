@@ -117,7 +117,6 @@ class ZeromqServer {
           switch (message.type) {
             case MetricReplyType.getCpuMetrics:
             case MetricReplyType.getCpuLoadAverages:
-            case MetricReplyType.getCpuLoadMetrics:
             case MetricReplyType.getCpuUsagePerCore:
             case MetricReplyType.getMemoryStats:
             case MetricReplyType.getAllMetrics:

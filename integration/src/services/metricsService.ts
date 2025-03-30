@@ -58,14 +58,6 @@ export async function metricReq(
         userMessage
       );
       break;
-    case "cpuLoadMetrics":
-      await getMetricsFromPackage(
-        MetricType.getCpuLoadMetrics,
-        channel_id,
-        settings,
-        userMessage
-      );
-      break;
     case "cpuLoadAvg":
       await getMetricsFromPackage(
         MetricType.getCpuLoadAverages,

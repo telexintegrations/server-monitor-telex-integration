@@ -17,27 +17,11 @@ export function formatMetricsMessage(metrics: MetricsData): string {
   ▶ Usage:        ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
     metrics.cpu.usage
   )}
-  ▶ Cores:        ${metrics.cpu.cores || "N/A"}
-  ▶ Load Average: ${metrics.cpu.load_avg?.[0]?.toFixed(2) || "N/A"}`;
-}
-
-/**
- * Formats CPU metrics for display
- */
-export function formatLoadMetricsMessage(metrics: MetricsData): string {
-  if (!metrics.cpuLoadMetrics) {
-    return "No CPU load metrics available";
-  }
-
-  return `
-  ┌─────────────────────────┐
-      📊 CPU LOAD METRICS     
-  └─────────────────────────┘
-  
-  ▶ Processes:        ${metrics.cpuLoadMetrics.process_queue_length || "N/A"}
-  ▶ Context switches: ${metrics.cpuLoadMetrics.context_switches || "N/A"}
-  ▶ Interrupts:       ${metrics.cpuLoadMetrics.interrupts || "N/A"}
-`;
+  ▶ Cores:            ${metrics.cpu.cores || "N/A"}
+  ▶ Load Average:     ${metrics.cpu.load_avg?.[0]?.toFixed(2) || "N/A"}
+  ▶ Processes:        ${metrics.cpu.process_queue_length || "N/A"}
+  ▶ Context switches: ${metrics.cpu.context_switches || "N/A"}
+  ▶ Interrupts:       ${metrics.cpu.interrupts || "N/A"}`;
 }
 
 /**
@@ -95,7 +79,9 @@ export function formatMemoryMetrics(metrics: MetricsData): string {
   
   ▶ Context Switches: ${mp.contextSwitches.toLocaleString()}
   ▶ Interrupts:       ${mp.interrupts.toLocaleString()}
-  ▶ Active Ratio:     ${mp.activeRatio.toFixed(2)}%  ${getUsageIndicator(mp.activeRatio)}`;
+  ▶ Active Ratio:     ${mp.activeRatio.toFixed(2)}%  ${getUsageIndicator(
+      mp.activeRatio
+    )}`;
   }
 
   return memoryStats;
@@ -202,12 +188,24 @@ export function formatMemoryAlertMessage(
    ${severityEmoji} ${severityText} MEMORY ALERT 
   └─────────────────────────┘
   
-  Memory usage (${metrics.memory.percentage.toFixed(1)}%) has exceeded the threshold (${threshold}%)
+  Memory usage (${metrics.memory.percentage.toFixed(
+    1
+  )}%) has exceeded the threshold (${threshold}%)
   
   ▶ Total:     ${metrics.memory.total.toFixed(2)} GB
   ▶ Used:      ${metrics.memory.used.toFixed(2)} GB
-  ${metrics.memory.swap ? `▶ Swap Used:  ${metrics.memory.swap.used.toFixed(2)} GB (${metrics.memory.swap.percentage.toFixed(1)}%)` : ""}
+  ${
+    metrics.memory.swap
+      ? `▶ Swap Used:  ${metrics.memory.swap.used.toFixed(
+          2
+        )} GB (${metrics.memory.swap.percentage.toFixed(1)}%)`
+      : ""
+  }
   ▶ Timestamp: ${new Date().toLocaleString()}
   
-  ${isCritical ? "IMMEDIATE ACTION REQUIRED!" : "Please investigate when possible."}`;
+  ${
+    isCritical
+      ? "IMMEDIATE ACTION REQUIRED!"
+      : "Please investigate when possible."
+  }`;
 }

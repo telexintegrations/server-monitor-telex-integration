@@ -16,21 +16,14 @@ export function formatAllMetrics(metrics: MetricsData): string {
   if (metrics.cpu) {
     report += `
   == CPU USAGE ==
-  ▶ Overall Usage: ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
+  ▶ Overall Usage:    ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
       metrics.cpu.usage
     )}
-  ▶ Cores:         ${metrics.cpu.cores || "N/A"}
+  ▶ Cores:            ${metrics.cpu.cores || "N/A"}
+  ▶ Processes:        ${metrics.cpu.process_queue_length || "N/A"}
+  ▶ Context switches: ${metrics.cpu.context_switches || "N/A"}
+  ▶ Interrupts:       ${metrics.cpu.interrupts || "N/A"}
   `;
-  }
-
-  // Add CPU load metrics if available
-  if (metrics.cpuLoadMetrics) {
-    report += `
-== CPU LOAD METRICS ==
-▶ Processes:        ${metrics.cpuLoadMetrics.process_queue_length || "N/A"}
-▶ Context switches: ${metrics.cpuLoadMetrics.context_switches || "N/A"}
-▶ Interrupts:       ${metrics.cpuLoadMetrics.interrupts || "N/A"}
-`;
   }
 
   // Add CPU load averages if available

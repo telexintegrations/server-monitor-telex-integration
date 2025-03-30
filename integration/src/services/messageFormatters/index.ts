@@ -5,7 +5,6 @@ import {
   formatCpuUsagePerCoreMetrics,
   formatMetricsMessage,
   formatLoadAverages,
-  formatLoadMetricsMessage,
 } from "./cpu.js";
 
 import { formatAllMetrics } from "./allMetrics.js";
@@ -20,7 +19,6 @@ import {
 export {
   formatAllMetrics,
   formatCpuAlertMessage,
-  formatLoadMetricsMessage,
   formatCpuUsagePerCoreMetrics,
   formatDiskMetrics,
   formatLoadAverages,

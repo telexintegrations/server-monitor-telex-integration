@@ -1,7 +1,6 @@
 export enum MetricReplyType {
   getAllMetrics = "getAllMetricsReply",
   getCpuMetrics = "getCpuMetricsReply",
-  getCpuLoadMetrics = "getCpuLoadMetricsReply",
   getCpuLoadAverages = "getCpuLoadAveragesReply",
   getCpuUsagePerCore = "getCpuUsagePerCoreReply",
   getMemoryStats = "getMemoryStatsReply",
@@ -19,8 +18,6 @@ export interface MetricsData {
     usage: number;
     cores?: number;
     load_avg?: number[];
-  };
-  cpuLoadMetrics?: {
     process_queue_length?: number;
     context_switches?: number;
     interrupts?: number;
@@ -163,7 +160,6 @@ export interface MetricsData {
 export enum MetricType {
   getAllMetrics = "getAllMetrics",
   getCpuMetrics = "getCpuMetrics",
-  getCpuLoadMetrics = "getCpuLoadMetrics",
   getCpuLoadAverages = "getCpuLoadAverages",
   getCpuUsagePerCore = "getCpuUsagePerCore",
   getMemoryStats = "getMemoryStats",

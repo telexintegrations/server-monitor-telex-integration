@@ -37,25 +37,32 @@ async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
     // Read context switches and interrupts from /proc/stat
     const statData = await fs.readFile("/proc/stat", "utf8");
     const lines = statData.split("\n");
-    const cpuLine = lines[0].split(" "); // The first line contains CPU stats
-    const contextSwitches = cpuLine[3]; // 4th value in the line (index 3)
-    const interrupts = cpuLine[4]; // 5th value in the line (index 4)
 
-    const processQueueLength = processCount.all;
+    let contextSwitches = 0;
+    let interrupts = 0;
+
+    for (const line of lines) {
+      if (line.startsWith("intr")) {
+        interrupts = parseInt(line.split(/\s+/)[1], 10); // First number after 'intr'
+      } else if (line.startsWith("ctxt")) {
+        contextSwitches = parseInt(line.split(/\s+/)[1], 10); // First number after 'ctxt'
+      }
+    }
+
+    // Process queue length is best estimated by the 1-minute load average
+    const processQueueLength = loadAverages[0];
 
     return {
       cpu: {
         usage: currentLoad.currentLoad,
         cores: cpuInfo.cores,
         load_avg: [currentLoad.avgLoad],
+        process_queue_length: processQueueLength,
+        context_switches: contextSwitches,
+        interrupts: interrupts,
       },
       cpuLoadAvgs: normalizedLoad,
       memory: memData,
-      cpuLoadMetrics: {
-        process_queue_length: processQueueLength,
-        context_switches: parseInt(contextSwitches, 10),
-        interrupts: parseInt(interrupts, 10),
-      },
     };
   } catch (error) {
     logger.error(`Failed to get CPU metrics: ${(error as Error).message}`);
