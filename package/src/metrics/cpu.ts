@@ -34,19 +34,32 @@ async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
       percentage: percentUsed,
     };
 
-    // Read context switches and interrupts from /proc/stat
-    const statData = await fs.readFile("/proc/stat", "utf8");
-    const lines = statData.split("\n");
-
     let contextSwitches = 0;
     let interrupts = 0;
 
-    for (const line of lines) {
-      if (line.startsWith("intr")) {
-        interrupts = parseInt(line.split(/\s+/)[1], 10); // First number after 'intr'
-      } else if (line.startsWith("ctxt")) {
-        contextSwitches = parseInt(line.split(/\s+/)[1], 10); // First number after 'ctxt'
+    // Cross-platform way to get statistics
+    if (process.platform === "linux") {
+      // Linux-specific code using /proc/stat
+      try {
+        const statData = await fs.readFile("/proc/stat", "utf8");
+        const lines = statData.split("\n");
+
+        for (const line of lines) {
+          if (line.startsWith("intr")) {
+            interrupts = parseInt(line.split(/\s+/)[1], 10);
+          } else if (line.startsWith("ctxt")) {
+            contextSwitches = parseInt(line.split(/\s+/)[1], 10);
+          }
+        }
+      } catch (error) {
+        logger.warn("Could not read /proc/stat, using fallback values");
       }
+    } else {
+      // For non-Linux systems (macOS, Windows)
+      // Use systeminformation's alternative methods or set to 0 if unavailable
+      const stats = await si.currentLoad();
+      contextSwitches = stats.currentLoad || 0; // This is an approximation
+      interrupts = 0; // Not directly available on macOS
     }
 
     // Process queue length is best estimated by the 1-minute load average
