@@ -2,17 +2,17 @@ import os from "os";
 import si from "systeminformation";
 import { IMetricsData } from "./collector.js";
 import { logger } from "../utils/logger.js";
-// get cpu and memory metrics
+import { promises as fs } from "fs";
+
+// Get CPU and memory metrics along with system load metrics
 async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
   try {
-    const [currentLoad, cpuInfo] = await Promise.all([
+    const [currentLoad, cpuInfo, processCount] = await Promise.all([
       si.currentLoad(),
       si.cpu(),
+      si.processes(),
     ]);
 
-    const load = await si.currentLoad();
-
-    // CPU Load average
     const loadAverages = os.loadavg();
     const numCores = cpuInfo.cores;
 
@@ -22,13 +22,47 @@ async function getCpuMetrics(): Promise<Partial<IMetricsData>> {
       "15mins": (loadAverages[2] / numCores) * 100,
     };
 
+    // CPU memory
+    const mem = await si.mem();
+    const usedGB = mem.used / 1024 ** 3; // Convert to GB
+    const totalGB = mem.total / 1024 ** 3;
+    const percentUsed = (mem.used / mem.total) * 100;
+
+    const memData = {
+      used: usedGB,
+      total: totalGB,
+      percentage: percentUsed,
+    };
+
+    // Read context switches and interrupts from /proc/stat
+    const statData = await fs.readFile("/proc/stat", "utf8");
+    const lines = statData.split("\n");
+
+    let contextSwitches = 0;
+    let interrupts = 0;
+
+    for (const line of lines) {
+      if (line.startsWith("intr")) {
+        interrupts = parseInt(line.split(/\s+/)[1], 10); // First number after 'intr'
+      } else if (line.startsWith("ctxt")) {
+        contextSwitches = parseInt(line.split(/\s+/)[1], 10); // First number after 'ctxt'
+      }
+    }
+
+    // Process queue length is best estimated by the 1-minute load average
+    const processQueueLength = loadAverages[0];
+
     return {
       cpu: {
         usage: currentLoad.currentLoad,
         cores: cpuInfo.cores,
-        load_avg: [load.avgLoad],
+        load_avg: [currentLoad.avgLoad],
+        process_queue_length: processQueueLength,
+        context_switches: contextSwitches,
+        interrupts: interrupts,
       },
       cpuLoadAvgs: normalizedLoad,
+      memory: memData,
     };
   } catch (error) {
     logger.error(`Failed to get CPU metrics: ${(error as Error).message}`);
