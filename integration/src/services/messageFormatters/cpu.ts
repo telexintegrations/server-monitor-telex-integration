@@ -14,9 +14,14 @@ export function formatMetricsMessage(metrics: MetricsData): string {
        📊 CPU METRICS     
   └─────────────────────────┘
   
-  ▶ Usage:        ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(metrics.cpu.usage)}
-  ▶ Cores:        ${metrics.cpu.cores || "N/A"}
-  ▶ Load Average: ${metrics.cpu.load_avg?.[0]?.toFixed(2) || "N/A"}`;
+  ▶ Usage:            ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
+    metrics.cpu.usage
+  )}
+  ▶ Cores:            ${metrics.cpu.cores || "N/A"}
+  ▶ Load Average:     ${metrics.cpu.load_avg?.[0]?.toFixed(2) || "N/A"}
+  ▶ Processes:        ${metrics.cpu.process_queue_length || "N/A"}
+  ▶ Context switches: ${metrics.cpu.context_switches || "N/A"}
+  ▶ Interrupts:       ${metrics.cpu.interrupts || "N/A"}`;
 }
 
 /**
@@ -74,7 +79,9 @@ export function formatMemoryMetrics(metrics: MetricsData): string {
   
   ▶ Context Switches: ${mp.contextSwitches.toLocaleString()}
   ▶ Interrupts:       ${mp.interrupts.toLocaleString()}
-  ▶ Active Ratio:     ${mp.activeRatio.toFixed(2)}%  ${getUsageIndicator(mp.activeRatio)}`;
+  ▶ Active Ratio:     ${mp.activeRatio.toFixed(2)}%  ${getUsageIndicator(
+      mp.activeRatio
+    )}`;
   }
 
   return memoryStats;
@@ -113,7 +120,9 @@ export function formatCpuUsagePerCoreMetrics(metrics: MetricsData): string {
   const coresInfo = metrics.cpuUsagePerCore
     .map(
       (usage: number, index: number) =>
-        `▶ Core ${index.toString().padEnd(2)}: ${usage.toFixed(2).padEnd(5)}% ${getUsageIndicator(usage)}`
+        `▶ Core ${index.toString().padEnd(2)}: ${usage
+          .toFixed(2)
+          .padEnd(5)}% ${getUsageIndicator(usage)}`
     )
     .join("\n");
 
@@ -145,12 +154,18 @@ export function formatCpuAlertMessage(
    ${severityEmoji} ${severityText} CPU ALERT 
   └─────────────────────────┘
   
-  CPU usage (${metrics.cpu.usage.toFixed(1)}%) has exceeded the threshold (${threshold}%)
+  CPU usage (${metrics.cpu.usage.toFixed(
+    1
+  )}%) has exceeded the threshold (${threshold}%)
   
   ▶ Cores:     ${metrics.cpu.cores || "N/A"}
   ▶ Timestamp: ${new Date().toLocaleString()}
   
-  ${isCritical ? "IMMEDIATE ACTION REQUIRED!" : "Please investigate when possible."}`;
+  ${
+    isCritical
+      ? "IMMEDIATE ACTION REQUIRED!"
+      : "Please investigate when possible."
+  }`;
 }
 
 /**
@@ -173,12 +188,24 @@ export function formatMemoryAlertMessage(
    ${severityEmoji} ${severityText} MEMORY ALERT 
   └─────────────────────────┘
   
-  Memory usage (${metrics.memory.percentage.toFixed(1)}%) has exceeded the threshold (${threshold}%)
+  Memory usage (${metrics.memory.percentage.toFixed(
+    1
+  )}%) has exceeded the threshold (${threshold}%)
   
   ▶ Total:     ${metrics.memory.total.toFixed(2)} GB
   ▶ Used:      ${metrics.memory.used.toFixed(2)} GB
-  ${metrics.memory.swap ? `▶ Swap Used:  ${metrics.memory.swap.used.toFixed(2)} GB (${metrics.memory.swap.percentage.toFixed(1)}%)` : ""}
+  ${
+    metrics.memory.swap
+      ? `▶ Swap Used:  ${metrics.memory.swap.used.toFixed(
+          2
+        )} GB (${metrics.memory.swap.percentage.toFixed(1)}%)`
+      : ""
+  }
   ▶ Timestamp: ${new Date().toLocaleString()}
   
-  ${isCritical ? "IMMEDIATE ACTION REQUIRED!" : "Please investigate when possible."}`;
+  ${
+    isCritical
+      ? "IMMEDIATE ACTION REQUIRED!"
+      : "Please investigate when possible."
+  }`;
 }

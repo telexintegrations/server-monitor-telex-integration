@@ -14,6 +14,9 @@ export interface IMetricsData {
     usage: number;
     cores?: number;
     load_avg?: number[];
+    process_queue_length?: number;
+    context_switches?: number;
+    interrupts?: number;
   };
   cpuLoadAvgs?: {
     "1min": number;
