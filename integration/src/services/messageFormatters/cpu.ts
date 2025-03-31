@@ -14,7 +14,7 @@ export function formatMetricsMessage(metrics: MetricsData): string {
        📊 CPU METRICS     
   └─────────────────────────┘
   
-  ▶ Usage:        ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
+  ▶ Usage:            ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
     metrics.cpu.usage
   )}
   ▶ Cores:            ${metrics.cpu.cores || "N/A"}
