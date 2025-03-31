@@ -64,41 +64,137 @@ Features to be added:
    - Custom log file monitoring
    - Log pattern matching
 
-9. **Security Metrics** (done)
+9. **Security Metrics** (done - jc)
 
    - Failed login attempts
    - SSH access logs
    - Firewall statistics
    - Port scanning detection
 
-10. **Database Metrics** (if databases are running)
+// Todo
 
-    - Connection pool stats
-    - Query performance
-    - Database size
-    - Transaction rates
+1. refactor alert coming in from zeromqService. just return the metrics and the formatter will handle the message
+2. Add a new bot configuration field to the integration config
+3. Make the agent to work with DM on the telex platform
 
-11. **Container Metrics**
+// format for tickets
+Ticket ID Tasks Title User story/Description Acceptance Criteria Assignee Timeline Status Label
 
-    - Docker container stats
-    - Container resource usage
-    - Container health checks
-    - Container logs
+// tickets below
 
-12. **Custom Metrics**
+TICK-001 (added)
+Title: ZeroMQ Service Alert Refactoring
+Description: As a developer, I want to refactor the alert system in zeromqService to separate concerns between metrics collection and message formatting, so that the code is more maintainable and follows single responsibility principle.
+Acceptance Criteria:
 
-    - User-defined metrics
-    - Application-specific metrics
-    - Custom threshold settings
-    - Custom alert rules
+- ZeroMQ service only returns raw metrics data
+- Message formatting logic is moved to a dedicated formatter service
+- All existing alert functionality continues to work without interruption
+- Unit tests are updated to reflect the new structure
+  Assignee: TBD
+  Timeline: 1-2 days
+  Status: TODO
+  Label: enhancement, refactor
 
-13. **Historical Data**
+TICK-002 (added)
+Title: Add Bot Configuration Field to Telex Integration Config
+Description: As a developer, I need to add a bot configuration field to the telexConfig.ts file to properly identify this integration as a bot in the Telex platform, ensuring proper bot-specific functionality is enabled.
+Acceptance Criteria:
 
-    - Metric history storage
-    - Trend analysis
-    - Performance baselines
-    - Historical comparisons
+- Add 'bot: true' field to the telexGeneratedConfig data object in telexConfig.ts
+- Ensure the new field follows the existing configuration structure
+- Verify the integration still works after adding the field
+- Update integration documentation to reflect the new bot configuration
+- Test the integration's bot functionality after the change
+  Assignee: TBD
+  Timeline: 1 day
+  Status: TODO
+  Label: feature, configuration
 
-14. **Environmental Metrics**
+TICK-003 (added)
+Title: Telex Platform DM Integration
+Description: As a user, I want the monitoring agent to communicate through direct messages on the Telex platform, so that I can receive private notifications about system status.
+Acceptance Criteria:
 
-// refactor alert coming in from zeromqService. just return the metrics and the formatter will handle the message
+- Agent can send direct messages to specified users on Telex
+- Message format is consistent with other notifications
+- Error handling for failed DM attempts
+- Rate limiting implementation to prevent spam
+- Documentation for DM feature setup and usage
+  Assignee: TBD
+  Timeline: 2-3 days
+  Status: TODO
+  Label: feature, integration
+
+TICK-004 (added)
+Title: Log Directory Cleanup Implementation
+Description: As a system administrator, I want the telex-agent logs directory to be automatically cleaned up weekly to prevent excessive disk usage.
+Acceptance Criteria:
+
+- Weekly automated cleanup of log files
+- Logging of cleanup operations
+- Fail-safe mechanisms to prevent accidental deletion of current logs
+  Assignee: TBD
+  Timeline: 1 day
+  Status: TODO
+  Label: maintenance, automation
+
+TICK-005 (added)
+Title: System Load Metrics Implementation
+Description: As a system administrator, I need detailed system load metrics to better understand system performance.
+Acceptance Criteria:
+
+- Implementation of process queue length monitoring
+- Context switches tracking
+- System interrupts monitoring
+- Detailed load analysis reporting
+
+  Assignee: TBD
+  Timeline: 2-3 days
+  Status: TODO
+  Label: feature, monitoring
+
+TICK-006 (added)
+Title: File System Metrics Integration
+Description: As a system administrator, I need comprehensive file system metrics to monitor storage health and usage patterns.
+Acceptance Criteria:
+
+- Monitor file system usage by mount point
+- Track inode usage and limits
+- Report file system types and states
+- Collect mount point statistics
+
+  Assignee: TBD
+  Timeline: 2 days
+  Status: TODO
+  Label: feature, monitoring
+
+TICK-007 (added)
+Title: System Services Monitoring Implementation
+Description: As a system administrator, I need to monitor system services to ensure critical services are running properly.
+Acceptance Criteria:
+
+- Service status monitoring implementation
+- Service uptime tracking
+- Resource usage monitoring per service
+- Service dependencies mapping
+
+  Assignee: TBD
+  Timeline: 2-3 days
+  Status: TODO
+  Label: feature, monitoring
+
+TICK-008
+Title: Log Monitoring System Implementation
+Description: As a system administrator, I need comprehensive log monitoring to detect and respond to system issues proactively.
+Acceptance Criteria:
+
+- System log analysis implementation
+- Error log monitoring setup
+- Custom log file monitoring capability
+- Log pattern matching functionality
+
+  Assignee: TBD
+  Timeline: 3-4 days
+  Status: TODO
+  Label: feature, monitoring
