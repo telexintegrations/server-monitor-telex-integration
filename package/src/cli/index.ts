@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import {
-  startMonitoring,
-  stopMonitoring,
-  isMonitoringRunning,
-} from "../services/periodicMonitorServices/monitor.js";
 import { logger } from "../utils/logger.js";
 import fs from "fs";
-import { CollectorService } from "../index.js";
-import { AppConstants, clearStore, saveStoreData } from "../index.js";
+import {
+  AppConstants,
+  clearStore,
+  saveStoreData,
+  startAllIntervalMonitoring,
+  stopAllIntervalMonitoring,
+} from "../index.js";
 import chalk from "chalk";
 import ora from "ora";
 
@@ -99,13 +99,23 @@ program
   .description("Start the monitoring service to listen for commands")
   .action(async () => {
     try {
-      if (isMonitoringRunning()) {
-        logger.warn("Monitoring is already running");
-        return;
-      }
-
       logger.info("Starting Telex Server Monitor...");
-      await startMonitoring();
+
+      // Handle graceful shutdown
+      process.on("SIGINT", async () => {
+        logger.info("\nReceived SIGINT (Ctrl+C). Cleaning up...");
+        stopAllIntervalMonitoring();
+        process.exit(0);
+      });
+
+      process.on("SIGTERM", async () => {
+        logger.info("Received SIGTERM. Cleaning up...");
+        stopAllIntervalMonitoring();
+        process.exit(0);
+      });
+
+      // Start all monitoring processes
+      startAllIntervalMonitoring();
       logger.info("Monitoring started successfully. Press Ctrl+C to stop.");
     } catch (error) {
       logger.error(`Failed to start monitoring: ${(error as Error).message}`);
@@ -119,13 +129,9 @@ program
   .description("Stop the monitoring service")
   .action(async () => {
     try {
-      if (!isMonitoringRunning()) {
-        logger.warn("Monitoring is not running");
-        return;
-      }
-
       logger.info("Stopping Telex Server Monitor...");
-      await stopMonitoring();
+      stopAllIntervalMonitoring();
+      logger.info("Monitoring stopped successfully.");
     } catch (error) {
       logger.error(`Failed to stop monitoring: ${(error as Error).message}`);
       process.exit(1);
@@ -140,17 +146,7 @@ program
   )
   .action(async () => {
     try {
-      console.log("isMonitoringRunning", isMonitoringRunning());
-      if (isMonitoringRunning()) {
-        logger.info("Monitoring is currently running");
-
-        // Display current CPU metrics
-        const cpuMetrics = await CollectorService.getFormattedCpuMetrics();
-        console.log("\nCurrent CPU Metrics:");
-        console.log(cpuMetrics);
-      } else {
-        logger.info("Monitoring is not currently running");
-      }
+      logger.info("Monitoring is currently running");
     } catch (error) {
       logger.error(`Failed to check status: ${(error as Error).message}`);
       process.exit(1);
@@ -163,10 +159,6 @@ program
   .description("Reset all configuration and stop monitoring")
   .action(async () => {
     try {
-      if (isMonitoringRunning()) {
-        await stopMonitoring();
-      }
-
       clearStore();
       logger.info("All configuration has been reset");
     } catch (error) {

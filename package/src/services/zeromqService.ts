@@ -17,8 +17,6 @@ export enum IncomingMessageType {
   getNetworkMetrics = "getNetworkMetrics",
   getSecurityMetrics = "getSecurityMetrics",
   ping = "ping",
-  memoryThresholdAlert = "memoryThresholdAlert",
-  securityAlert = "securityAlert",
 }
 
 export enum OutGoingMessageReplyType {
@@ -144,70 +142,6 @@ export async function sendMetrics(
   let metrics = await functionMap[messageType as keyof typeof functionMap]();
   logger.info(`Collected metrics for ${channelId}`);
   await sendReply(channelId, { metrics, userMessage }, messageType);
-}
-
-// Send a CPU threshold alert to the integration server
-export async function sendCpuAlert(
-  channelId: string,
-  metrics: any,
-  threshold: number,
-  isCritical: boolean
-) {
-  const severityEmoji = isCritical ? "🔥" : "⚠️";
-  const severityText = isCritical ? "CRITICAL" : "WARNING";
-
-  const alertMessage = {
-    metrics,
-    threshold,
-    severity: isCritical ? "critical" : "warning",
-    message: `${severityEmoji} ${severityText}: CPU Usage Alert ${severityEmoji}\n\nCPU usage (${metrics.cpu.usage.toFixed(
-      1
-    )}%) has exceeded the threshold (${threshold}%)\n\nServer: ${
-      getStoreData()?.serverName || "Unknown"
-    }\nCPU Cores: ${
-      metrics.cpu?.cores || "N/A"
-    }\nTimestamp: ${new Date().toLocaleString()}`,
-  };
-
-  await sendReply(
-    channelId,
-    alertMessage,
-    OutGoingMessageReplyType.cpuThresholdAlertReply
-  );
-}
-
-// Send a Memory threshold alert to the integration server
-export async function sendMemoryAlert(
-  channelId: string,
-  metrics: any,
-  threshold: number,
-  isCritical: boolean
-) {
-  const severityEmoji = isCritical ? "🔥" : "⚠️";
-  const severityText = isCritical ? "CRITICAL" : "WARNING";
-
-  const alertMessage = {
-    metrics,
-    threshold,
-    severity: isCritical ? "critical" : "warning",
-    message: `${severityEmoji} ${severityText}: Memory Usage Alert ${severityEmoji}\n\nMemory usage (${metrics.memory.percentage.toFixed(
-      1
-    )}%) has exceeded the threshold (${threshold}%)\n\nServer: ${
-      getStoreData()?.serverName || "Unknown"
-    }\nTotal Memory: ${metrics.memory.total.toFixed(
-      2
-    )} GB\nUsed Memory: ${metrics.memory.used.toFixed(2)} GB${
-      metrics.memory.swap
-        ? `\nSwap Usage: ${metrics.memory.swap.percentage.toFixed(1)}%`
-        : ""
-    }\nTimestamp: ${new Date().toLocaleString()}`,
-  };
-
-  await sendReply(
-    channelId,
-    alertMessage,
-    OutGoingMessageReplyType.memoryThresholdAlertReply
-  );
 }
 
 // Send a Security alert to the integration server
@@ -416,55 +350,6 @@ async function handleMessages(channelId: string): Promise<void> {
               OutGoingMessageReplyType.getSecurityMetricsReply,
               message.data?.userMessage
             );
-            break;
-          case IncomingMessageType.memoryThresholdAlert:
-            // Handle memory threshold alert request
-            const memMetrics = await CollectorService.getMetrics();
-            const memThreshold = getStoreData()?.memoryThreshold || 90;
-            const memIsCritical =
-              memMetrics.memory &&
-              memMetrics.memory.percentage > memThreshold + 5;
-
-            await sendMemoryAlert(
-              channelId,
-              memMetrics,
-              memThreshold,
-              memIsCritical || false
-            );
-            break;
-          case IncomingMessageType.securityAlert:
-            // Handle security alert request
-            const securityMetrics = await CollectorService.getSecurityMetrics();
-
-            // Import the security thresholds check from the security module
-            const { checkSecurityThresholds } = await import(
-              "../metrics/security.js"
-            );
-            const { alertRequired, isCritical, alerts } =
-              checkSecurityThresholds(
-                securityMetrics.security,
-                5 // Default failed login threshold
-              );
-
-            if (alertRequired) {
-              // Send security alert if issues detected
-              await sendSecurityAlert(
-                channelId,
-                securityMetrics,
-                alerts,
-                isCritical
-              );
-            } else {
-              // Send an "all clear" message if no issues
-              await sendReply(
-                channelId,
-                {
-                  metrics: securityMetrics,
-                  message: "✅ No security issues detected.",
-                },
-                OutGoingMessageReplyType.securityAlertReply
-              );
-            }
             break;
           default:
             logger.warn(`Unknown message type: ${incomingMessageType}`);
