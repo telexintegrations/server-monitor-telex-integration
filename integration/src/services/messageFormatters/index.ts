@@ -11,6 +11,7 @@ import { formatAllMetrics } from "./allMetrics.js";
 import { formatProcessMetrics } from "./processes.js";
 import { formatDiskMetrics } from "./disk.js";
 import { formatNetworkMetrics } from "./network.js";
+import { formatServiceMetrics } from "./services.js";
 import {
   formatSecurityMetrics,
   formatSecurityAlertMessage,
@@ -29,4 +30,5 @@ export {
   formatProcessMetrics,
   formatSecurityMetrics,
   formatSecurityAlertMessage,
+  formatServiceMetrics,
 };

@@ -7,7 +7,6 @@ import {
   formatAllMetrics,
   formatCpuAlertMessage,
   formatMemoryAlertMessage,
-  formatSecurityAlertMessage,
   formatCpuUsagePerCoreMetrics,
   formatDiskMetrics,
   formatLoadAverages,
@@ -16,7 +15,10 @@ import {
   formatNetworkMetrics,
   formatProcessMetrics,
   formatSecurityMetrics,
+  formatSecurityAlertMessage,
+  formatServiceMetrics,
 } from "./messageFormatters/index.js";
+
 /**
  * Returns a visual indicator based on usage percentage
  */
@@ -51,12 +53,13 @@ export function formatMetricResponse(
     case MetricReplyType.getProcessMetrics:
       return formatProcessMetrics(metrics);
     case MetricReplyType.getAllMetrics:
-      // Format all available metrics in a comprehensive view
       return formatAllMetrics(metrics);
     case MetricReplyType.getNetworkMetrics:
       return formatNetworkMetrics(metrics);
     case MetricReplyType.getSecurityMetrics:
       return formatSecurityMetrics(metrics);
+    case MetricReplyType.getServicesReply:
+      return formatServiceMetrics(metrics);
     case MetricReplyType.cpuThresholdAlert:
       return formatCpuAlertMessage(
         metrics,
@@ -75,8 +78,7 @@ export function formatMetricResponse(
         options.securityAlerts || ["Security issue detected"],
         options.isCritical
       );
-
     default:
-      return formatMetricsMessage(metrics);
+      return formatAllMetrics(metrics);
   }
 }

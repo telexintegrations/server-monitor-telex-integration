@@ -50,7 +50,7 @@ Features to be added:
    - File system types and states
    - Mount point statistics
 
-7. **System Services**
+7. **System Services** (done - jc)
 
    - Service status monitoring
    - Service uptime

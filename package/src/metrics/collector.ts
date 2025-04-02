@@ -1,5 +1,3 @@
-import os from "os";
-import si from "systeminformation";
 import { logger } from "../utils/logger.js";
 import { getProcessMetrics } from "./processes.js";
 import { getDiskMetrics } from "./disk.js";
@@ -7,6 +5,7 @@ import { getCpuMetrics, getCpuUsagePerCoreMetrics } from "./cpu.js";
 import { getNetworkMetrics } from "./network.js";
 import { getMemoryMetrics } from "./memory.js";
 import { getSecurityMetrics } from "./security.js";
+import { getServiceMetrics } from "./services.js";
 
 // Define the metrics data structure
 export interface IMetricsData {
@@ -150,6 +149,24 @@ export interface IMetricsData {
     };
     connectionCount: number;
   };
+  services?: {
+    all: number; // total number of services
+    running: number; // number of running services
+    stopped: number; // number of stopped services
+    failed: number; // number of failed services
+    list: Array<{
+      name: string; // service name
+      status: string; // current status (running, stopped, failed)
+      pid?: number; // process ID if running
+      memory?: number; // memory usage in bytes
+      cpu?: number; // CPU usage percentage
+      uptime: number; // uptime in seconds
+      dependencies: string[]; // service dependencies
+      description?: string; // service description
+      startTime?: string; // service start time
+    }>;
+    lastUpdated: string;
+  };
 }
 
 // get the formatted cpu metrics
@@ -181,6 +198,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
   const { processes } = await getProcessMetrics();
   const { networkMetrics } = await getNetworkMetrics();
   const { security } = await getSecurityMetrics();
+  const { services } = await getServiceMetrics();
 
   const allMetrics = {
     cpu,
@@ -191,6 +209,7 @@ const getMetrics = async (): Promise<IMetricsData> => {
     processes,
     networkMetrics,
     security,
+    services,
   };
   return allMetrics;
 };
@@ -204,4 +223,5 @@ export const CollectorService = {
   getNetworkMetrics,
   getMemoryMetrics,
   getSecurityMetrics,
+  getServiceMetrics,
 };
