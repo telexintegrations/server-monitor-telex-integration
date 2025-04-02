@@ -11,6 +11,7 @@ export enum MetricReplyType {
   getProcessMetrics = "getProcessMetricsReply",
   getNetworkMetrics = "getNetworkMetricsReply",
   getSecurityMetrics = "getSecurityMetricsReply",
+  getServicesReply = "getServicesReply",
 }
 
 export interface MetricsData {
@@ -155,6 +156,24 @@ export interface MetricsData {
     lastUpdated: string;
     error?: string;
   };
+  services?: {
+    all: number;
+    running: number;
+    stopped: number;
+    failed: number;
+    list: Array<{
+      name: string;
+      status: string;
+      pid?: number;
+      memory?: number;
+      cpu?: number;
+      uptime: number;
+      dependencies: string[];
+      description?: string;
+      startTime?: string;
+    }>;
+    lastUpdated: string;
+  };
 }
 
 export enum MetricType {
@@ -167,6 +186,7 @@ export enum MetricType {
   getProcessMetrics = "getProcessMetrics",
   getNetworkMetrics = "getNetworkMetrics",
   getSecurityMetrics = "getSecurityMetrics",
+  getServices = "getServices",
 }
 
 export interface IFormatMetricResponseOptions {

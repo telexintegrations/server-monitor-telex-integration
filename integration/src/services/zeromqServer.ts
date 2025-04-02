@@ -124,6 +124,7 @@ class ZeromqServer {
             case MetricReplyType.getProcessMetrics:
             case MetricReplyType.getNetworkMetrics:
             case MetricReplyType.getSecurityMetrics:
+            case MetricReplyType.getServicesReply:
               // Format the standard metric response
               const formattedMetrics = formatMetricResponse(
                 message.type,

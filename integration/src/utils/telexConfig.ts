@@ -8,6 +8,7 @@ export const telexGeneratedConfig = {
       created_at: "2025-03-11",
       updated_at: "2025-03-11",
     },
+    bot: true,
     integration_category: "AI & Machine Learning",
     integration_type: "interval",
     descriptions: {

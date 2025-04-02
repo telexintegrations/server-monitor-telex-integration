@@ -26,7 +26,7 @@ Features to be added:
    - Zombie processes
    - Process states
 
-4. **System Load Metrics**
+4. **System Load Metrics** (done - victor)
 
    - While basic CPU load is implemented, more detailed metrics could include:
    - Process queue length
@@ -34,7 +34,7 @@ Features to be added:
    - System interrupts
    - Detailed load analysis
 
-5. **Memory Metrics Extensions** (done)
+5. **Memory Metrics Extensions** (done - jc)
 
    - While basic memory usage is implemented, could add:
    - Swap usage
@@ -50,7 +50,7 @@ Features to be added:
    - File system types and states
    - Mount point statistics
 
-7. **System Services**
+7. **System Services** (done - jc)
 
    - Service status monitoring
    - Service uptime
@@ -74,12 +74,46 @@ Features to be added:
 // Todo
 
 1. refactor alert coming in from zeromqService. just return the metrics and the formatter will handle the message
-2. Add a new bot configuration field to the integration config
+2. Add a new bot configuration field to the integration config (done)
 3. Make the agent to work with DM on the telex platform
 4. Add a periodic check on the package to find out if there's a new version, then send a message to the user via the telex platform to the channelId configured . it should include instructions on how to update the package which is the same command as the one used to install the package.
 
-// format for tickets
-Ticket ID Tasks Title User story/Description Acceptance Criteria Assignee Timeline Status Label
+To-Do List:
+
+1. [ ] Refactor ZeroMQ Service Alert System
+
+   - Separate metrics collection from message formatting
+   - Create dedicated formatter service
+
+2. [ ] Implement Telex Platform DM Integration
+
+   - Enable direct message functionality
+   - Add rate limiting
+   - Add error handling
+
+3. [ ] Set up Weekly Log Directory Cleanup
+
+   - Implement automated cleanup script
+   - Add safety measures for current logs
+
+4. [ ] Implement System Load Metrics
+
+   - Process queue length monitoring
+   - Context switches tracking
+   - System interrupts monitoring
+   - Load analysis reporting
+
+5. [ ] Add File System Metrics
+
+   - Mount point usage monitoring
+   - Inode usage tracking
+   - File system states monitoring
+
+7. [ ] Set up Log Monitoring System
+   - System log analysis
+   - Error log monitoring
+   - Custom log file monitoring
+   - Pattern matching
 
 // tickets below
 

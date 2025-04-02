@@ -6,10 +6,10 @@ import { getUsageIndicator } from "../messageFormatters.js";
  */
 export function formatAllMetrics(metrics: MetricsData): string {
   let report = `
-  ┌─────────────────────────┐
+┌─────────────────────────┐
       📊 SERVER METRICS     
-  └─────────────────────────┘
-  
+└─────────────────────────┘
+
   `;
 
   // Add CPU metrics if available
@@ -17,8 +17,8 @@ export function formatAllMetrics(metrics: MetricsData): string {
     report += `
   == CPU USAGE ==
   ▶ Overall Usage:    ${metrics.cpu.usage.toFixed(2)}%  ${getUsageIndicator(
-      metrics.cpu.usage
-    )}
+    metrics.cpu.usage
+  )}
   ▶ Cores:            ${metrics.cpu.cores || "N/A"}
   ▶ Processes:        ${metrics.cpu.process_queue_length || "N/A"}
   ▶ Context switches: ${metrics.cpu.context_switches || "N/A"}
@@ -31,8 +31,8 @@ export function formatAllMetrics(metrics: MetricsData): string {
     report += `
   == LOAD AVERAGES ==
   ▶ 1 minute:   ${metrics.cpuLoadAvgs["1min"].toFixed(2)}%  ${getUsageIndicator(
-      metrics.cpuLoadAvgs["1min"]
-    )}
+    metrics.cpuLoadAvgs["1min"]
+  )}
   ▶ 5 minutes:  ${metrics.cpuLoadAvgs["5mins"].toFixed(
     2
   )}%  ${getUsageIndicator(metrics.cpuLoadAvgs["5mins"])}
@@ -50,8 +50,8 @@ export function formatAllMetrics(metrics: MetricsData): string {
   ▶ Used:  ${metrics.memory.used.toFixed(2)} GB
   ▶ Total: ${metrics.memory.total.toFixed(2)} GB
   ▶ Usage: ${memoryPercentage.toFixed(2)}%  ${getUsageIndicator(
-      memoryPercentage
-    )}`;
+    memoryPercentage
+  )}`;
 
     // Add swap information if available
     if (metrics.memory.swap) {
@@ -60,8 +60,8 @@ export function formatAllMetrics(metrics: MetricsData): string {
   ▶ Used:  ${metrics.memory.swap.used.toFixed(2)} GB
   ▶ Total: ${metrics.memory.swap.total.toFixed(2)} GB
   ▶ Usage: ${metrics.memory.swap.percentage.toFixed(2)}%  ${getUsageIndicator(
-        metrics.memory.swap.percentage
-      )}`;
+    metrics.memory.swap.percentage
+  )}`;
     }
 
     // Add buffer/cache usage if available
@@ -80,8 +80,8 @@ export function formatAllMetrics(metrics: MetricsData): string {
   ▶ Context Switches: ${mp.contextSwitches.toLocaleString()}
   ▶ Interrupts:       ${mp.interrupts.toLocaleString()}
   ▶ Active Ratio:     ${mp.activeRatio.toFixed(2)}%  ${getUsageIndicator(
-        mp.activeRatio
-      )}`;
+    mp.activeRatio
+  )}`;
     }
   }
 
@@ -95,11 +95,11 @@ export function formatAllMetrics(metrics: MetricsData): string {
     topFilesystems.forEach((fs) => {
       report += `
   ▶ ${fs.mount}: ${fs.use.toFixed(2)}% of ${(
-        fs.size /
-        1024 /
-        1024 /
-        1024
-      ).toFixed(2)} GB  ${getUsageIndicator(fs.use)}`;
+    fs.size /
+    1024 /
+    1024 /
+    1024
+  ).toFixed(2)} GB  ${getUsageIndicator(fs.use)}`;
     });
 
     if (metrics.disk.filesystems.length > 2) {
@@ -113,10 +113,10 @@ export function formatAllMetrics(metrics: MetricsData): string {
     report += `\n
   == PROCESS STATS ==
   ▶ Total: ${metrics.processes.all} processes (${
-      metrics.processes.running
-    } running, ${metrics.processes.zombie || 0} zombie${
-      metrics.processes.zombie > 0 ? " ⚠️" : ""
-    })
+    metrics.processes.running
+  } running, ${metrics.processes.zombie || 0} zombie${
+    metrics.processes.zombie > 0 ? " ⚠️" : ""
+  })
   `;
 
     // Add top 3 CPU-consuming processes if available
@@ -137,8 +137,8 @@ export function formatAllMetrics(metrics: MetricsData): string {
     report += `\n
   == NETWORK STATS ==
   ▶ Bandwidth: ↓ ${(nm.bandwidthUsage.received / 1024).toFixed(2)} KB/s, ↑ ${(
-      nm.bandwidthUsage.sent / 1024
-    ).toFixed(2)} KB/s
+    nm.bandwidthUsage.sent / 1024
+  ).toFixed(2)} KB/s
   ▶ Latency: ${
     nm.latency === -1 ? "Measurement Failed" : `${nm.latency.toFixed(2)} ms`
   }
@@ -153,10 +153,10 @@ export function formatAllMetrics(metrics: MetricsData): string {
     for (const [ifaceName, stats] of Object.entries(nm.interfaceStats)) {
       report += `
   ▶ ${ifaceName}: RX ${(stats.rxBytes / 1024 / 1024).toFixed(2)} MB, TX ${(
-        stats.txBytes /
-        1024 /
-        1024
-      ).toFixed(2)} MB${stats.errors > 0 ? ` ⚠️ ${stats.errors} errors` : ""}`;
+    stats.txBytes /
+    1024 /
+    1024
+  ).toFixed(2)} MB${stats.errors > 0 ? ` ⚠️ ${stats.errors} errors` : ""}`;
     }
   }
 
@@ -174,8 +174,8 @@ export function formatAllMetrics(metrics: MetricsData): string {
         security.failedLogins.count > 10
           ? "🔴 High"
           : security.failedLogins.count > 5
-          ? "🟠 Moderate"
-          : "🟢 Normal";
+            ? "🟠 Moderate"
+            : "🟢 Normal";
 
       report += `
 ▶ Failed Logins: ${security.failedLogins.count} ${failedLoginIndicator}`;
@@ -195,6 +195,45 @@ export function formatAllMetrics(metrics: MetricsData): string {
     if (security.firewall) {
       report += `
 ▶ Firewall: ${security.firewall.blocked} blocked connections out of ${security.firewall.connections} total`;
+    }
+  }
+
+  // Add service metrics if available
+  if (metrics.services) {
+    const services = metrics.services;
+    const failedServices = services.failed > 0 ? ` (${services.failed} failed ⚠️)` : "";
+
+    report += `\n
+== SYSTEM SERVICES ==
+▶ Running: ${services.running} of ${services.all}${failedServices}`;
+
+    // Show failed services first if any
+    const failedServicesList = services.list
+      .filter(svc => svc.status.toLowerCase() === "failed")
+      .slice(0, 3);
+    
+    if (failedServicesList.length > 0) {
+      report += "\n▶ Failed services:";
+      failedServicesList.forEach(svc => {
+        report += `\n   - ${svc.name}`;
+      });
+      if (services.failed > 3) {
+        report += `\n   ... and ${services.failed - 3} more`;
+      }
+    }
+
+    // Show a few important running services
+    const runningServicesList = services.list
+      .filter(svc => svc.status.toLowerCase() === "running")
+      .filter(svc => svc.cpu && svc.cpu > 1.0) // Show services using >1% CPU
+      .slice(0, 3);
+
+    if (runningServicesList.length > 0) {
+      report += "\n▶ Notable active services:";
+      runningServicesList.forEach(svc => {
+        const cpuStr = svc.cpu ? ` (CPU: ${svc.cpu.toFixed(1)}%)` : "";
+        report += `\n   - ${svc.name}${cpuStr}`;
+      });
     }
   }
 
