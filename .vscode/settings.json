@@ -1,4 +1,10 @@
 {
-  "cSpell.words": ["luxon", "mastra", "organisation", "organisations"],
+  "cSpell.words": [
+    "cooldown",
+    "luxon",
+    "mastra",
+    "organisation",
+    "organisations"
+  ],
   "cSpell.ignoreWords": ["Avgs"]
 }
