@@ -109,13 +109,6 @@ To-Do List:
    - Inode usage tracking
    - File system states monitoring
 
-6. [ ] Implement System Services Monitoring
-
-   - Service status tracking
-   - Uptime monitoring
-   - Resource usage per service
-   - Dependencies mapping
-
 7. [ ] Set up Log Monitoring System
    - System log analysis
    - Error log monitoring
