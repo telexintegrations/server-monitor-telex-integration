@@ -76,6 +76,7 @@ Features to be added:
 1. refactor alert coming in from zeromqService. just return the metrics and the formatter will handle the message
 2. Add a new bot configuration field to the integration config
 3. Make the agent to work with DM on the telex platform
+4. Add a periodic check on the package to find out if there's a new version, then send a message to the user via the telex platform to the channelId configured . it should include instructions on how to update the package which is the same command as the one used to install the package.
 
 // format for tickets
 Ticket ID Tasks Title User story/Description Acceptance Criteria Assignee Timeline Status Label
