@@ -41,9 +41,11 @@ async function getInodeStats(): Promise<Array<InodeStat>> {
 // Get disk metrics
 async function getDiskMetrics(): Promise<Partial<IMetricsData>> {
   try {
-    const fsSize = await si.fsSize();
-    const diskIO = await si.disksIO();
-    const inodeStats = await getInodeStats();
+    const [fsSize, diskIO, inodeStats] = await Promise.all([
+      si.fsSize(),
+      si.disksIO(),
+      getInodeStats(),
+    ]);
 
     // Merge inode stats with filesystem stats
     const filesystems = fsSize.map((fs) => {
