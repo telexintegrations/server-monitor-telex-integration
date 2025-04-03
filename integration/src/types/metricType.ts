@@ -63,6 +63,10 @@ export interface MetricsData {
       available: number; // available in bytes
       use: number; // used in %
       mount: string; // mount point
+      inodes: number;
+      inodesUsed: number;
+      inodesFree: number;
+      inodesUsage: number;
     }>;
     io?: {
       rIO: number; // read I/O operations

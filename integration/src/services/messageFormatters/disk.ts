@@ -26,6 +26,10 @@ Mount: ${fs.mount}
 ▶ Used: ${(fs.used / 1024 / 1024 / 1024).toFixed(2)} GB
 ▶ Available: ${(fs.available / 1024 / 1024 / 1024).toFixed(2)} GB
 ▶ Usage: ${fs.use.toFixed(2)}%  ${usageIndicator}
+▶ Inodes: ${fs.inodes}
+▶ Inodes Used: ${fs.inodesUsed}
+▶ Inodes Free: ${fs.inodesFree}
+▶ Inodes Usage: ${fs.inodesUsage}
 `;
   });
 
