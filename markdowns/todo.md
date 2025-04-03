@@ -43,7 +43,7 @@ Features to be added:
    - Memory pressure statistics
    - custom threshold settings for memory usage
 
-6. **File System Metrics**
+6. **File System Metrics** (done - victor)
 
    - File system usage by mount point
    - Inode usage

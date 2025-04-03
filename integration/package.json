@@ -9,7 +9,8 @@
     "dev": "nodemon --exec 'tsx' src/index.ts",
     "dev:mastra": "mastra dev",
     "start": "tsc && tsx dist/index.js",
-    "start:prod": "pm2 startOrReload ./ecosystem.config.json"
+    "start:prod": "pm2 startOrReload ./ecosystem.config.json",
+    "test:newman": "tsc && node dist/tests/newmanApiTest.js"
   },
   "keywords": [
     "telex",
@@ -38,9 +39,12 @@
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
+    "@types/newman": "^5.3.6",
     "@types/node": "^22.13.10",
     "@types/winston": "^2.4.4",
     "@types/zeromq": "^5.2.5",
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
