@@ -1,6 +1,7 @@
 import { logger } from "../../utils/logger.js";
 import "./cpuMonitor.js";
 import { startCpuMonitoring } from "./cpuMonitor.js";
+import { startLogMonitor } from "./logMonitor.js";
 import { startMemoryMonitoring } from "./memoryMonitor.js";
 import { startSecurityMonitoring } from "./securityMonitor.js";
 
@@ -18,8 +19,9 @@ export const startAllIntervalMonitoring = async () => {
   const cpuTimer = await startCpuMonitoring();
   const memoryTimer = await startMemoryMonitoring();
   const securityTimer = await startSecurityMonitoring();
+  const logTimer = await startLogMonitor();
 
-  monitoringIntervals.push(cpuTimer, memoryTimer, securityTimer);
+  monitoringIntervals.push(cpuTimer, memoryTimer, securityTimer, logTimer);
   isMonitoringRunning = true;
   logger.info("All monitoring processes started");
 };

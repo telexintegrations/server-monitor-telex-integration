@@ -62,6 +62,13 @@ export const telexGeneratedConfig = {
         description:
           "The threshold for memory usage. If the memory usage exceeds this threshold, the server will send an alert to the user.",
       },
+      {
+        label: "custom_log_path",
+        type: "text",
+        default: "",
+        description:
+          "The path to the custom log file to monitor. If this is not set, the server will monitor the default log file.",
+      },
     ],
     endpoints: [],
     is_active: true,

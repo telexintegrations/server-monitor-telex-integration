@@ -16,6 +16,7 @@ export interface IStore {
     monitorPortScanning: boolean; // Whether to monitor for port scanning
     monitorFirewall: boolean; // Whether to monitor firewall logs
   };
+  customLogPath: string; // Path to custom log file
 }
 
 // Ensure store directory exists
