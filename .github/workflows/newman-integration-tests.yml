@@ -48,7 +48,6 @@ jobs:
           TIMESTAMP=$(date +"%Y-%m-%d")
           mkdir -p test-reports
           newman run postman/server-monitor.postman_collection.json \
-          -e postman/server-monitor.environment.json \
           --env-var "base_url=https://system-integration.staging.telex.im" \
           --reporters cli,json,html \
           --reporter-json-export test-reports/newman-report-$TIMESTAMP.json \
