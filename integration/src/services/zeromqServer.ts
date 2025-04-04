@@ -263,6 +263,16 @@ Analyze only the metrics that are actually present in the data. If values are hi
               );
               break;
 
+            // log monitoring
+            case MetricReplyType.logMetricReply:
+              const logMetricMessage = message.data.message;
+              console.log(logMetricMessage);
+              await this.sendTelexResponse(
+                channelId.toString(),
+                logMetricMessage
+              );
+              break;
+
             default:
               console.info(`Unhandled message type: ${message.type}`);
           }

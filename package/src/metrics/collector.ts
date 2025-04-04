@@ -171,6 +171,17 @@ export interface IMetricsData {
     }>;
     lastUpdated: string;
   };
+  logMetrics?: {
+    timestamp: number;
+    systemErrors: {
+      timestamp: string;
+      message: string;
+    }[];
+    customLogEntries: {
+      timestamp: string;
+      message: string;
+    }[];
+  };
 }
 
 // get the formatted cpu metrics

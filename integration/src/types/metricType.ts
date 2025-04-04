@@ -12,6 +12,7 @@ export enum MetricReplyType {
   getNetworkMetrics = "getNetworkMetricsReply",
   getSecurityMetrics = "getSecurityMetricsReply",
   getServicesReply = "getServicesReply",
+  logMetricReply = "LogMetricReply",
 }
 
 export interface MetricsData {
@@ -177,6 +178,17 @@ export interface MetricsData {
       startTime?: string;
     }>;
     lastUpdated: string;
+  };
+  logMetrics?: {
+    timestamp: number;
+    systemErrors: {
+      timestamp: string;
+      message: string;
+    }[];
+    customLogEntries: {
+      timestamp: string;
+      message: string;
+    }[];
   };
 }
 

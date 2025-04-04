@@ -35,6 +35,7 @@ export enum OutGoingMessageReplyType {
   cpuThresholdAlertReply = "cpuThresholdAlertReply",
   memoryThresholdAlertReply = "memoryThresholdAlertReply",
   securityAlertReply = "securityAlertReply",
+  logMetricReply = "LogMetricReply",
 }
 
 // Create a mapping of functions for metrics collection
@@ -278,6 +279,19 @@ async function handleMessages(channelId: string): Promise<void> {
           logger.info(
             `Stored security settings: ${JSON.stringify(securitySettings)}`
           );
+
+          // Handle custom log path settings
+          const customLogPathSetting = message.data.settings.find(
+            (s: any) => s.label === "custom_log_path"
+          );
+          if (customLogPathSetting) {
+            const customLogPath = customLogPathSetting.default || "";
+
+            saveStoreData({
+              customLogPath: customLogPath,
+            });
+            logger.info(`Stored custom log path: ${customLogPath}`);
+          }
 
           // Store server name if available
           if (!getStoreData()?.serverName) {
