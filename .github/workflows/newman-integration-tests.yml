@@ -1,0 +1,64 @@
+name: Newman Integration Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "integration/**"
+      - "postman/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "integration/**"
+      - "postman/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "./integration/package-lock.json"
+
+      - name: Install Dependencies
+        working-directory: ./integration
+        run: npm install
+
+      - name: Install Newman and Reporters
+        run: npm install -g newman newman-reporter-html newman-reporter-json
+
+      - name: Ensure Postman Files Exist
+        run: |
+          if [ ! -f postman/server-monitor.postman_collection.json ]; then
+            echo "ERROR: Postman collection file not found!"
+            exit 1
+          fi
+          if [ ! -f postman/server-monitor.environment.json ]; then
+            echo "ERROR: Postman environment file not found!"
+            exit 1
+          fi
+
+      - name: Run Newman Tests and Generate Report
+        run: |
+          TIMESTAMP=$(date +"%Y-%m-%d")
+          mkdir -p test-reports
+          newman run postman/server-monitor.postman_collection.json \
+          -e postman/server-monitor.environment.json \
+          --env-var "base_url=https://system-integration.staging.telex.im" \
+          --reporters cli,json,html \
+          --reporter-json-export test-reports/newman-report-$TIMESTAMP.json \
+          --reporter-html-export test-reports/newman-report-$TIMESTAMP.html
+
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-test-reports
+          path: test-reports/
+          retention-days: 7
