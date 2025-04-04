@@ -38,10 +38,6 @@ jobs:
             echo "ERROR: Postman collection file not found!"
             exit 1
           fi
-          if [ ! -f postman/server-monitor.environment.json ]; then
-            echo "ERROR: Postman environment file not found!"
-            exit 1
-          fi
 
       - name: Run Newman Tests and Generate Report
         run: |
